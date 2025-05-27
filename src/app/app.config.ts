@@ -12,6 +12,8 @@ import {
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
+export const API_BASE_URL = 'http://localhost:8080/api';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
