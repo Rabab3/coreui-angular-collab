@@ -1,43 +1,41 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { INavData } from '@coreui/angular';
+import { INavData, SidebarModule } from '@coreui/angular';
 import { navItems } from './_nav';
-
-import { SidebarModule } from '@coreui/angular'; // ✔️ OK
-import { NgScrollbarModule } from 'ngx-scrollbar';
 
 import { DefaultFooterComponent } from './default-footer/default-footer.component';
 import { DefaultHeaderComponent } from './default-header/default-header.component';
 
+import { NgScrollbarModule } from 'ngx-scrollbar';
+
 @Component({
   selector: 'app-default-layout',
   standalone: true,
-  templateUrl: './default-layout.component.html',
   imports: [
     RouterOutlet,
     SidebarModule,
     NgScrollbarModule,
     DefaultHeaderComponent,
     DefaultFooterComponent
-  ]
+  ],
+  templateUrl: './default-layout.component.html'
 })
 export class DefaultLayoutComponent implements OnInit {
   public role: string | null = '';
   public filteredNavItems: INavData[] = [];
 
   ngOnInit(): void {
-    this.role = localStorage.getItem('role');
-    this.filteredNavItems = this.filterNavItems(navItems);
-  }
+  this.role = localStorage.getItem('role') || 'admin';
+  this.filteredNavItems = this.filterNavItems(navItems);
+}
+
 
   filterNavItems(items: INavData[]): INavData[] {
     return items
       .filter(item => this.isItemVisibleForRole(item))
       .map(item => ({
         ...item,
-        children: item.children
-          ? item.children.filter(child => this.isItemVisibleForRole(child))
-          : undefined
+        children: item.children?.filter(child => this.isItemVisibleForRole(child))
       }))
       .filter(item => !item.children || item.children.length > 0);
   }

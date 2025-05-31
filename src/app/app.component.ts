@@ -9,12 +9,13 @@ import { IconSetService } from '@coreui/icons-angular';
 import { iconSubset } from './icons/icon-subset';
 
 @Component({
-    selector: 'app-root',
-    template: '<router-outlet />',
-    imports: [RouterOutlet]
+  selector: 'app-root',
+  standalone: true,
+  template: '<router-outlet />',
+  imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
-  title = 'CoreUI Angular Admin Template';
+  title = 'Base de connaissance';
 
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #activatedRoute: ActivatedRoute = inject(ActivatedRoute);
@@ -26,17 +27,27 @@ export class AppComponent implements OnInit {
 
   constructor() {
     this.#titleService.setTitle(this.title);
-    // iconSet singleton
     this.#iconSetService.icons = { ...iconSubset };
     this.#colorModeService.localStorageItemName.set('coreui-free-angular-admin-template-theme-default');
     this.#colorModeService.eventName.set('ColorSchemeChange');
+
+    // ✅ Initialiser rôle admin si absent
+    const currentRole = localStorage.getItem('role');
+    if (!currentRole) {
+      localStorage.setItem('role', 'admin');
+    }
+
+    // ✅ Rediriger vers /dashboard si on est à la racine
+    const currentUrl = window.location.pathname + window.location.hash;
+    if (currentUrl === '/' || currentUrl === '/#' || currentUrl === '/#/') {
+      window.location.href = '/#/dashboard';
+    }
   }
 
   ngOnInit(): void {
-
     this.#router.events.pipe(
-        takeUntilDestroyed(this.#destroyRef)
-      ).subscribe((evt) => {
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;
       }
