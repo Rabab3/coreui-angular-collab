@@ -1,0 +1,70 @@
+<div class="container mt-4">
+  <h2 class="mb-2">Mes contributions</h2>
+  <p class="text-muted mb-4">Liste des articles rédigés ou en attente de validation.</p>
+
+  <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-3">
+    <input type="text" class="form-control w-25" placeholder="🔍 Rechercher un titre" [(ngModel)]="searchText">
+
+    <select class="form-select w-auto" [(ngModel)]="selectedAuteur">
+      <option value="">Tous les auteurs</option>
+      <option *ngFor="let a of auteurs" [value]="a">{{ a }}</option>
+    </select>
+
+    <select class="form-select w-auto" [(ngModel)]="selectedStatut">
+      <option value="">Tous les statuts</option>
+      <option *ngFor="let s of statuts" [value]="s">{{ s }}</option>
+    </select>
+
+    <div class="d-flex gap-2 ms-auto">
+      <button class="btn btn-outline-danger btn-sm" (click)="exportToPDF()">📄 Exporter PDF</button>
+      <button class="btn btn-outline-success btn-sm" (click)="exportToExcel()">📊 Télécharger Excel</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover text-center shadow-sm align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Titre</th>
+          <th>Auteur</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th *ngIf="role === 'ADMIN'">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let article of filteredArticles">
+          <td>{{ article.titre }}</td>
+          <td>{{ article.auteur }}</td>
+          <td>
+            <span [ngClass]="{
+              'badge bg-warning text-dark': article.statut === 'En attente',
+              'badge bg-success': article.statut === 'Publié',
+              'badge bg-secondary': article.statut === 'À corriger'
+            }">{{ article.statut }}</span>
+          </td>
+          <td>{{ article.date | date:'dd/MM/yyyy' }}</td>
+          <td *ngIf="role === 'ADMIN'">
+            <button class="btn btn-outline-success btn-sm me-1" (click)="valider(article)">✅ Valider</button>
+            <button class="btn btn-outline-secondary btn-sm me-1" (click)="retourner(article)">↩️ Retourner</button>
+            <button class="btn btn-outline-primary btn-sm" (click)="voir(article)">👁 Voir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav *ngIf="totalPages > 1" class="mt-3">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="setPage(currentPage - 1)">Précédent</a>
+      </li>
+      <li *ngFor="let p of [].constructor(totalPages); let i = index" class="page-item" [class.active]="currentPage === i + 1">
+        <a class="page-link" (click)="setPage(i + 1)">{{ i + 1 }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="setPage(currentPage + 1)">Suivant</a>
+      </li>
+    </ul>
+  </nav>
+</div>

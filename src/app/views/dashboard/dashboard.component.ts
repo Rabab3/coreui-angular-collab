@@ -63,7 +63,7 @@ interface IUser {
     TableDirective,
     AvatarComponent
   ]
-})
+})  
 
 export class DashboardComponent implements OnInit {
 

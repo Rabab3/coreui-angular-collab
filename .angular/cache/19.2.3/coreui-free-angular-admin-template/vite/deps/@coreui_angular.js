@@ -1,23 +1,4 @@
 import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterModule
-} from "./chunk-ZAVJN4YP.js";
-import {
-  Platform,
-  _bindEventWithOptions,
-  _getEventTarget,
-  _getFocusedElementPierceShadowDom,
-  _getShadowRoot,
-  coerceArray,
-  coerceElement,
-  coerceNumberProperty,
-  normalizePassiveListenerOptions
-} from "./chunk-JP23VCWP.js";
-import {
   AnimationBuilder,
   animate,
   animateChild,
@@ -29,15 +10,35 @@ import {
   transition,
   trigger,
   useAnimation
-} from "./chunk-2R6UYQXR.js";
+} from "./chunk-DM7N6JRW.js";
+import {
+  IconDirective
+} from "./chunk-VKRGOW56.js";
+import {
+  Platform,
+  _bindEventWithOptions,
+  _getEventTarget,
+  _getFocusedElementPierceShadowDom,
+  _getShadowRoot,
+  coerceArray,
+  coerceElement,
+  coerceNumberProperty,
+  normalizePassiveListenerOptions
+} from "./chunk-7X37OJ4X.js";
 import {
   takeUntilDestroyed,
   toObservable
-} from "./chunk-TOV26B7B.js";
+} from "./chunk-N443T4C5.js";
 import {
-  IconDirective
-} from "./chunk-IZQGUJUQ.js";
-import "./chunk-W4XWCQSP.js";
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterModule
+} from "./chunk-BQ6VVJWV.js";
+import "./chunk-DGYUHTZW.js";
+import "./chunk-V53BLX6Q.js";
 import {
   AsyncPipe,
   DOCUMENT,
@@ -46,7 +47,7 @@ import {
   NgTemplateOutlet,
   isPlatformBrowser,
   isPlatformServer
-} from "./chunk-W64MAQ4E.js";
+} from "./chunk-HBN7IAXY.js";
 import {
   APP_ID,
   ApplicationRef,
@@ -54,7 +55,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ContentChild,
   ContentChildren,
   DestroyRef,
   Directive,
@@ -171,7 +171,7 @@ import {
   ɵɵtextInterpolate1,
   ɵɵviewQuery,
   ɵɵviewQuerySignal
-} from "./chunk-XAF5YQQW.js";
+} from "./chunk-OZFKAHF2.js";
 import {
   BehaviorSubject,
   Observable,
@@ -197,7 +197,7 @@ import {
 import {
   __spreadProps,
   __spreadValues
-} from "./chunk-XWLXMCJQ.js";
+} from "./chunk-4MWRP73S.js";
 
 // node_modules/@popperjs/core/lib/enums.js
 var top = "top";
@@ -7444,7 +7444,7 @@ var AvatarComponent = class _AvatarComponent {
   constructor() {
     this.color = input();
     this.shape = input();
-    this.size = input("md");
+    this.size = input("");
     this.alt = input("");
     this.src = input();
     this.status = input();
@@ -10182,6 +10182,10 @@ var DropdownMenuDirective = class _DropdownMenuDirective {
         display: visible ? null : ""
       };
     });
+    this.dropdownItemsContent = contentChildren(forwardRef(() => DropdownItemDirective), {
+      descendants: true
+    });
+    this.items$ = toObservable(this.dropdownItemsContent);
   }
   #destroyRef;
   #dropdownService;
@@ -10209,7 +10213,7 @@ var DropdownMenuDirective = class _DropdownMenuDirective {
   }
   ngAfterContentInit() {
     this.focusKeyManagerInit();
-    this.dropdownItemsContent.changes.pipe(tap((change) => {
+    this.items$.pipe(tap((change) => {
       this.focusKeyManagerInit();
     }), takeUntilDestroyed(this.#destroyRef)).subscribe();
   }
@@ -10224,7 +10228,7 @@ var DropdownMenuDirective = class _DropdownMenuDirective {
     }), takeUntilDestroyed(this.#destroyRef)).subscribe();
   }
   focusKeyManagerInit() {
-    this.#focusKeyManager = new FocusKeyManager(this.dropdownItemsContent).withHomeAndEnd().withPageUpDown().withWrap().skipPredicate((dropdownItem) => dropdownItem.disabled === true);
+    this.#focusKeyManager = new FocusKeyManager(this.dropdownItemsContent()).withHomeAndEnd().withPageUpDown().withWrap().skipPredicate((dropdownItem) => dropdownItem.disabled === true);
   }
   static {
     this.ɵfac = function DropdownMenuDirective_Factory(__ngFactoryType__) {
@@ -10237,11 +10241,10 @@ var DropdownMenuDirective = class _DropdownMenuDirective {
       selectors: [["", "cDropdownMenu", ""]],
       contentQueries: function DropdownMenuDirective_ContentQueries(rf, ctx, dirIndex) {
         if (rf & 1) {
-          ɵɵcontentQuery(dirIndex, DropdownItemDirective, 5);
+          ɵɵcontentQuerySignal(dirIndex, ctx.dropdownItemsContent, DropdownItemDirective, 5);
         }
         if (rf & 2) {
-          let _t;
-          ɵɵqueryRefresh(_t = ɵɵloadQuery()) && (ctx.dropdownItemsContent = _t);
+          ɵɵqueryAdvance();
         }
       },
       hostAttrs: [1, "dropdown-menu"],
@@ -10289,14 +10292,7 @@ var DropdownMenuDirective = class _DropdownMenuDirective {
         "(keyup)": "onKeyUp($event)"
       }
     }]
-  }], null, {
-    dropdownItemsContent: [{
-      type: ContentChildren,
-      args: [forwardRef(() => DropdownItemDirective), {
-        descendants: true
-      }]
-    }]
-  });
+  }], null, null);
 })();
 var DropdownToken = class {
 };
@@ -10406,13 +10402,20 @@ var DropdownToggleDirective = class _DropdownToggleDirective {
   }], null, null);
 })();
 var DropdownComponent = class _DropdownComponent {
-  constructor(document2, elementRef, renderer, ngZone, changeDetectorRef, dropdownService) {
-    this.document = document2;
-    this.elementRef = elementRef;
-    this.renderer = renderer;
-    this.ngZone = ngZone;
-    this.changeDetectorRef = changeDetectorRef;
-    this.dropdownService = dropdownService;
+  #destroyRef;
+  #document;
+  #elementRef;
+  #renderer;
+  #ngZone;
+  #changeDetectorRef;
+  constructor() {
+    this.#destroyRef = inject(DestroyRef);
+    this.#document = inject(DOCUMENT);
+    this.#elementRef = inject(ElementRef);
+    this.#renderer = inject(Renderer2);
+    this.#ngZone = inject(NgZone);
+    this.#changeDetectorRef = inject(ChangeDetectorRef);
+    this.dropdownService = inject(DropdownService);
     this.alignment = input();
     this.autoClose = input(true);
     this.direction = input();
@@ -10423,7 +10426,7 @@ var DropdownComponent = class _DropdownComponent {
     this.popperOptionsInput = input({}, {
       alias: "popperOptions"
     });
-    this.popperOptionsEffect = effect(() => {
+    this.#popperOptionsEffect = effect(() => {
       this.popperOptions = __spreadValues(__spreadValues({}, untracked(this.#popperOptions)), this.popperOptionsInput());
     });
     this.#popperOptions = signal({
@@ -10440,7 +10443,7 @@ var DropdownComponent = class _DropdownComponent {
       source: this.visibleInput,
       computation: (value) => value
     });
-    this.visibleEffect = effect(() => {
+    this.#visibleEffect = effect(() => {
       const visible = this.visible();
       this.activeTrap = visible;
       visible ? this.createPopperInstance() : this.destroyPopperInstance();
@@ -10451,6 +10454,11 @@ var DropdownComponent = class _DropdownComponent {
     this.dropdownContext = {
       $implicit: this.visible()
     };
+    this._toggler = contentChild(DropdownToggleDirective);
+    this._menu = contentChild(DropdownMenuDirective);
+    this._menuElementRef = contentChild(DropdownMenuDirective, {
+      read: ElementRef
+    });
     this.activeTrap = false;
     this.listeners = [];
     this.hostClasses = computed(() => {
@@ -10469,8 +10477,16 @@ var DropdownComponent = class _DropdownComponent {
         display: "contents"
       } : {};
     });
+    this.#togglerEffect = effect(() => {
+      const variant = this.variant();
+      const _toggler = this._toggler();
+      if (variant === "nav-item" && _toggler) {
+        this.#renderer.addClass(_toggler.elementRef.nativeElement, "nav-link");
+      }
+    });
     this.dropdownStateSubscribe();
   }
+  #popperOptionsEffect;
   set popperOptions(value) {
     this.#popperOptions.update((popperOptions) => __spreadValues(__spreadValues({}, popperOptions), value));
   }
@@ -10507,41 +10523,33 @@ var DropdownComponent = class _DropdownComponent {
     return this.#popperOptions();
   }
   #popperOptions;
+  #visibleEffect;
   onHostClick($event) {
     this.clickedTarget = $event.target;
   }
-  dropdownStateSubscribe(subscribe = true) {
-    if (subscribe) {
-      this.dropdownStateSubscription = this.dropdownService.dropdownState$.pipe(filter((state2) => {
-        return this === state2.dropdown;
-      })).subscribe((state2) => {
-        if ("visible" in state2) {
-          state2?.visible === "toggle" ? this.toggleDropdown() : this.visible.set(state2.visible);
-        }
-      });
-    } else {
-      this.dropdownStateSubscription?.unsubscribe();
-    }
+  dropdownStateSubscribe() {
+    this.dropdownService.dropdownState$.pipe(filter((state2) => {
+      return this === state2.dropdown;
+    }), takeUntilDestroyed(this.#destroyRef)).subscribe((state2) => {
+      if ("visible" in state2) {
+        state2?.visible === "toggle" ? this.toggleDropdown() : this.visible.set(state2.visible);
+      }
+    });
   }
   toggleDropdown() {
     this.visible.update((visible) => !visible);
   }
   onClick(event) {
-    if (!this._toggler?.elementRef.nativeElement.contains(event.target?.closest("[cDropdownToggle]"))) {
+    if (!this._toggler()?.elementRef.nativeElement.contains(event.target?.closest("[cDropdownToggle]"))) {
       this.toggleDropdown();
     }
   }
-  ngAfterContentInit() {
-    if (this.variant() === "nav-item") {
-      this.renderer.addClass(this._toggler.elementRef.nativeElement, "nav-link");
-    }
-  }
+  #togglerEffect;
   ngOnInit() {
     this.setVisibleState(this.visible());
   }
   ngOnDestroy() {
     this.clearListeners();
-    this.dropdownStateSubscribe(false);
     this.destroyPopperInstance();
   }
   setVisibleState(value) {
@@ -10552,17 +10560,19 @@ var DropdownComponent = class _DropdownComponent {
   }
   // todo: turn off popper in navbar-nav
   createPopperInstance() {
-    if (this._toggler && this._menu) {
-      this.ngZone.runOutsideAngular(() => {
-        this._menu.elementRef.nativeElement.style.visibility = "hidden";
-        this._menu.elementRef.nativeElement.style.display = "block";
+    const _toggler = this._toggler();
+    const _menu = this._menu();
+    if (_toggler && _menu) {
+      this.#ngZone.runOutsideAngular(() => {
+        _menu.elementRef.nativeElement.style.visibility = "hidden";
+        _menu.elementRef.nativeElement.style.display = "block";
         if (this.popper()) {
-          this.popperInstance = createPopper3(this._toggler.elementRef.nativeElement, this._menu.elementRef.nativeElement, __spreadValues({}, this.popperOptions));
+          this.popperInstance = createPopper3(_toggler.elementRef.nativeElement, _menu.elementRef.nativeElement, __spreadValues({}, this.popperOptions));
         }
-        this.ngZone.run(() => {
+        this.#ngZone.run(() => {
           this.setListeners();
-          this.changeDetectorRef.markForCheck();
-          this.changeDetectorRef.detectChanges();
+          this.#changeDetectorRef.markForCheck();
+          this.#changeDetectorRef.detectChanges();
         });
       });
     }
@@ -10571,15 +10581,15 @@ var DropdownComponent = class _DropdownComponent {
     this.clearListeners();
     this.popperInstance?.destroy();
     this.popperInstance = void 0;
-    this.changeDetectorRef.markForCheck();
+    this.#changeDetectorRef.markForCheck();
   }
   setListeners() {
-    this.listeners.push(this.renderer.listen(this.document, "click", (event) => {
+    this.listeners.push(this.#renderer.listen(this.#document, "click", (event) => {
       const target = event.target;
-      if (this._menuElementRef?.nativeElement.contains(event.target)) {
+      if (this._menuElementRef()?.nativeElement.contains(event.target)) {
         this.clickedTarget = target;
       }
-      if (this._toggler?.elementRef.nativeElement.contains(event.target)) {
+      if (this._toggler()?.elementRef.nativeElement.contains(event.target)) {
         return;
       }
       const autoClose = this.autoClose();
@@ -10596,15 +10606,15 @@ var DropdownComponent = class _DropdownComponent {
         return;
       }
     }));
-    this.listeners.push(this.renderer.listen(this.elementRef.nativeElement, "keyup", (event) => {
+    this.listeners.push(this.#renderer.listen(this.#elementRef.nativeElement, "keyup", (event) => {
       if (event.key === "Escape" && this.autoClose() !== false) {
         event.stopPropagation();
         this.setVisibleState(false);
         return;
       }
     }));
-    this.listeners.push(this.renderer.listen(this.document, "keyup", (event) => {
-      if (event.key === "Tab" && this.autoClose() !== false && !this.elementRef.nativeElement.contains(event.target)) {
+    this.listeners.push(this.#renderer.listen(this.#document, "keyup", (event) => {
+      if (event.key === "Tab" && this.autoClose() !== false && !this.#elementRef.nativeElement.contains(event.target)) {
         this.setVisibleState(false);
         return;
       }
@@ -10619,7 +10629,7 @@ var DropdownComponent = class _DropdownComponent {
   }
   static {
     this.ɵfac = function DropdownComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _DropdownComponent)(ɵɵdirectiveInject(DOCUMENT), ɵɵdirectiveInject(ElementRef), ɵɵdirectiveInject(Renderer2), ɵɵdirectiveInject(NgZone), ɵɵdirectiveInject(ChangeDetectorRef), ɵɵdirectiveInject(DropdownService));
+      return new (__ngFactoryType__ || _DropdownComponent)();
     };
   }
   static {
@@ -10628,15 +10638,12 @@ var DropdownComponent = class _DropdownComponent {
       selectors: [["c-dropdown"]],
       contentQueries: function DropdownComponent_ContentQueries(rf, ctx, dirIndex) {
         if (rf & 1) {
-          ɵɵcontentQuery(dirIndex, DropdownToggleDirective, 5);
-          ɵɵcontentQuery(dirIndex, DropdownMenuDirective, 5);
-          ɵɵcontentQuery(dirIndex, DropdownMenuDirective, 5, ElementRef);
+          ɵɵcontentQuerySignal(dirIndex, ctx._toggler, DropdownToggleDirective, 5);
+          ɵɵcontentQuerySignal(dirIndex, ctx._menu, DropdownMenuDirective, 5);
+          ɵɵcontentQuerySignal(dirIndex, ctx._menuElementRef, DropdownMenuDirective, 5, ElementRef);
         }
         if (rf & 2) {
-          let _t;
-          ɵɵqueryRefresh(_t = ɵɵloadQuery()) && (ctx._toggler = _t.first);
-          ɵɵqueryRefresh(_t = ɵɵloadQuery()) && (ctx._menu = _t.first);
-          ɵɵqueryRefresh(_t = ɵɵloadQuery()) && (ctx._menuElementRef = _t.first);
+          ɵɵqueryAdvance(3);
         }
       },
       hostVars: 4,
@@ -10701,38 +10708,7 @@ var DropdownComponent = class _DropdownComponent {
       },
       styles: [":host-context(.dropdown,.dropup):not(.btn-group){display:block}:host-context(.dropstart,.dropend):not(.btn-group){display:inline-flex}:host-context(html:not([dir=rtl])) :host-context(.input-group) :host:first-child::ng-deep :first-child{border-top-right-radius:0;border-bottom-right-radius:0}:host-context(html:not([dir=rtl])) :host-context(.input-group) :host:first-child::ng-deep :not(:first-child):not(.dropdown-menu){margin-left:-1px;border-top-left-radius:0;border-bottom-left-radius:0}:host-context(html:not([dir=rtl])) :host-context(.input-group) :host:first-child::ng-deep :not(:first-child):not(.dropdown-menu):not(:only-of-type){border-top-right-radius:0;border-bottom-right-radius:0}:host-context(html:not([dir=rtl])) :host-context(.input-group) :host:last-child::ng-deep :first-child{border-top-left-radius:0;border-bottom-left-radius:0}:host-context(html:not([dir=rtl])) :host-context(.input-group) :host:last-child::ng-deep :first-child:not(:only-of-type){border-top-right-radius:0;border-bottom-right-radius:0}:host-context(html:not([dir=rtl])) :host-context(.input-group) :host:last-child::ng-deep :not(:first-child):not(.dropdown-menu){margin-left:-1px;border-top-left-radius:0;border-bottom-left-radius:0}:host-context([dir=rtl] .input-group) :host{direction:rtl}:host-context([dir=rtl] .input-group) :host:first-child::ng-deep :first-child{border-top-left-radius:0;border-bottom-left-radius:0}:host-context([dir=rtl] .input-group) :host:first-child::ng-deep :not(:first-child):not(.dropdown-menu){margin-right:-1px;border-top-right-radius:0;border-bottom-right-radius:0}:host-context([dir=rtl] .input-group) :host:first-child::ng-deep :not(:first-child):not(.dropdown-menu):not(:only-of-type){border-top-left-radius:0;border-bottom-left-radius:0}:host-context([dir=rtl] .input-group) :host:last-child::ng-deep :first-child{border-top-right-radius:0;border-bottom-right-radius:0}:host-context([dir=rtl] .input-group) :host:last-child::ng-deep :first-child:not(:only-of-type){border-top-left-radius:0;border-bottom-left-radius:0}:host-context([dir=rtl] .input-group) :host:last-child::ng-deep :not(:first-child):not(.dropdown-menu){margin-right:-1px;border-top-right-radius:0;border-bottom-right-radius:0}\n"]
     }]
-  }], () => [{
-    type: Document,
-    decorators: [{
-      type: Inject,
-      args: [DOCUMENT]
-    }]
-  }, {
-    type: ElementRef
-  }, {
-    type: Renderer2
-  }, {
-    type: NgZone
-  }, {
-    type: ChangeDetectorRef
-  }, {
-    type: DropdownService
-  }], {
-    _toggler: [{
-      type: ContentChild,
-      args: [DropdownToggleDirective]
-    }],
-    _menu: [{
-      type: ContentChild,
-      args: [DropdownMenuDirective]
-    }],
-    _menuElementRef: [{
-      type: ContentChild,
-      args: [DropdownMenuDirective, {
-        read: ElementRef
-      }]
-    }]
-  });
+  }], () => [], null);
 })();
 var DropdownItemDirective = class _DropdownItemDirective {
   constructor() {
@@ -10747,9 +10723,17 @@ var DropdownItemDirective = class _DropdownItemDirective {
       transform: booleanAttribute,
       alias: "disabled"
     });
-    this.disabledEffect = linkedSignal({
+    this.#disabled = linkedSignal({
       source: this.disabledInput,
       computation: (value) => value
+    });
+    this.role = input("list-item");
+    this.tabIndexInput = input("0", {
+      alias: "tabIndex"
+    });
+    this.tabIndex = linkedSignal({
+      source: this.tabIndexInput,
+      computation: (value) => this.disabled ? "-1" : value
     });
     this.ariaCurrent = computed(() => {
       return this.active() ? "true" : null;
@@ -10761,21 +10745,15 @@ var DropdownItemDirective = class _DropdownItemDirective {
         disabled: this.disabled
       };
     });
-    this.tabIndexInput = input(null, {
-      alias: "tabIndex"
-    });
-    this.tabIndex = linkedSignal({
-      source: this.tabIndexInput,
-      computation: (value) => this.disabled ? "-1" : value
-    });
   }
   #elementRef;
   #dropdownService;
+  #disabled;
   set disabled(value) {
-    this.disabledEffect.set(value);
+    this.#disabled.set(value);
   }
   get disabled() {
-    return this.disabledEffect();
+    return this.#disabled();
   }
   focus(origin) {
     this.#elementRef?.nativeElement?.focus();
@@ -10809,7 +10787,7 @@ var DropdownItemDirective = class _DropdownItemDirective {
       type: _DropdownItemDirective,
       selectors: [["", "cDropdownItem", ""]],
       hostAttrs: [1, "dropdown-item"],
-      hostVars: 5,
+      hostVars: 6,
       hostBindings: function DropdownItemDirective_HostBindings(rf, ctx) {
         if (rf & 1) {
           ɵɵlistener("click", function DropdownItemDirective_click_HostBindingHandler($event) {
@@ -10819,6 +10797,7 @@ var DropdownItemDirective = class _DropdownItemDirective {
           });
         }
         if (rf & 2) {
+          ɵɵhostProperty("role", ctx.role());
           ɵɵattribute("tabindex", ctx.tabIndex())("aria-current", ctx.ariaCurrent())("aria-disabled", ctx.disabled || null);
           ɵɵclassMap(ctx.hostClasses());
         }
@@ -10827,6 +10806,7 @@ var DropdownItemDirective = class _DropdownItemDirective {
         active: [1, "active"],
         autoClose: [1, "autoClose"],
         disabledInput: [1, "disabled", "disabledInput"],
+        role: [1, "role"],
         tabIndexInput: [1, "tabIndex", "tabIndexInput"]
       },
       exportAs: ["cDropdownItem"]
@@ -10845,6 +10825,7 @@ var DropdownItemDirective = class _DropdownItemDirective {
         "[attr.tabindex]": "tabIndex()",
         "[attr.aria-current]": "ariaCurrent()",
         "[attr.aria-disabled]": "disabled || null",
+        "[role]": "role()",
         "(click)": "onClick($event)",
         "(keyup)": "onKeyUp($event)"
       }
@@ -11380,7 +11361,6 @@ var FormCheckComponent = class _FormCheckComponent {
       transform: booleanAttribute
     });
     this.formCheckLabel = contentChild(FormCheckLabelDirective);
-    this.formCheckClass = computed(() => !!this.formCheckLabel());
     this.hostClasses = computed(() => {
       const sizing = this.sizing();
       const isSwitch = this.switch();
@@ -11458,18 +11438,17 @@ var FormCheckInputDirective = class _FormCheckInputDirective {
       transform: booleanAttribute,
       alias: "indeterminate"
     });
+    this.#indeterminate = linkedSignal(this.indeterminateInput);
     this.#indeterminateEffect = effect(() => {
-      const indeterminate = this.indeterminateInput();
-      if (untracked(this.#indeterminate) !== indeterminate) {
+      if (this.type() === "checkbox") {
+        const indeterminate = this.#indeterminate();
         const htmlInputElement = this.#hostElement.nativeElement;
         if (indeterminate) {
           this.#renderer.setProperty(htmlInputElement, "checked", false);
         }
         this.#renderer.setProperty(htmlInputElement, "indeterminate", indeterminate);
-        this.#indeterminate.set(indeterminate);
       }
     });
-    this.#indeterminate = signal(false);
     this.valid = input();
     this.hostClasses = computed(() => {
       const valid = this.valid();
@@ -11479,26 +11458,14 @@ var FormCheckInputDirective = class _FormCheckInputDirective {
         "is-invalid": valid === false
       };
     });
-    this.checkedInput = input(false, {
-      transform: booleanAttribute,
-      alias: "checked"
-    });
-    this.#checkedEffect = effect(() => {
-      const checked = this.checkedInput();
-      const htmlInputElement = this.#hostElement?.nativeElement;
-      if (htmlInputElement) {
-        this.#renderer.setProperty(htmlInputElement, "checked", checked);
-      }
-    });
   }
   #renderer;
   #hostElement;
+  #indeterminate;
   #indeterminateEffect;
   get indeterminate() {
     return this.#indeterminate();
   }
-  #indeterminate;
-  #checkedEffect;
   get checked() {
     return this.#hostElement?.nativeElement?.checked;
   }
@@ -11522,8 +11489,7 @@ var FormCheckInputDirective = class _FormCheckInputDirective {
       inputs: {
         type: [1, "type"],
         indeterminateInput: [1, "indeterminate", "indeterminateInput"],
-        valid: [1, "valid"],
-        checkedInput: [1, "checked", "checkedInput"]
+        valid: [1, "valid"]
       }
     });
   }
@@ -13758,6 +13724,7 @@ var ModalComponent = class _ModalComponent {
     setTimeout(() => {
       if (event.toState === "hidden") {
         this.#renderer.setStyle(this.#hostElement.nativeElement, "display", "none");
+        this.#backdropService.resetScrollbar();
       }
     });
     this.show = this.visible;
@@ -18292,7 +18259,7 @@ var TabsListComponent = class _TabsListComponent {
   #focusKeyManager;
   #tabsEffect;
   #tabsServiceEffect;
-  onKeydown($event) {
+  onKeyDown($event) {
     if (["ArrowLeft", "ArrowRight"].includes($event.key)) {
       this.#focusKeyManager.onKeydown($event);
       return;
@@ -18323,7 +18290,7 @@ var TabsListComponent = class _TabsListComponent {
       hostBindings: function TabsListComponent_HostBindings(rf, ctx) {
         if (rf & 1) {
           ɵɵlistener("keydown", function TabsListComponent_keydown_HostBindingHandler($event) {
-            return ctx.onKeydown($event);
+            return ctx.onKeyDown($event);
           });
         }
         if (rf & 2) {
@@ -18356,19 +18323,14 @@ var TabsListComponent = class _TabsListComponent {
     args: [{
       exportAs: "cTabsList",
       selector: "c-tabs-list",
-      imports: [],
       template: "<ng-content />",
       host: {
         "[attr.role]": "role()",
-        "[class]": "hostClasses()"
+        "[class]": "hostClasses()",
+        "(keydown)": "onKeyDown($event)"
       }
     }]
-  }], null, {
-    onKeydown: [{
-      type: HostListener,
-      args: ["keydown", ["$event"]]
-    }]
-  });
+  }], null, null);
 })();
 var TabsContentComponent = class _TabsContentComponent {
   static {
@@ -18416,6 +18378,7 @@ var TabPanelComponent = class _TabPanelComponent {
     });
     this.id = input();
     this.itemKey = input.required();
+    this.role = input("tabpanel");
     this.tabindex = input(0, {
       transform: numberAttribute
     });
@@ -18440,12 +18403,6 @@ var TabPanelComponent = class _TabPanelComponent {
       invisible: this.tabsService.activeItem()?.disabled
     }));
   }
-  get animationDisabled() {
-    return !this.transition();
-  }
-  get animateType() {
-    return this.visible() ? "show" : "hide";
-  }
   onAnimationDone($event) {
     this.show.set(this.visible());
   }
@@ -18458,8 +18415,7 @@ var TabPanelComponent = class _TabPanelComponent {
     this.ɵcmp = ɵɵdefineComponent({
       type: _TabPanelComponent,
       selectors: [["c-tab-panel"]],
-      hostAttrs: ["role", "tabpanel"],
-      hostVars: 7,
+      hostVars: 8,
       hostBindings: function TabPanelComponent_HostBindings(rf, ctx) {
         if (rf & 1) {
           ɵɵsyntheticHostListener("@fadeInOut.done", function TabPanelComponent_animation_fadeInOut_done_HostBindingHandler($event) {
@@ -18468,8 +18424,8 @@ var TabPanelComponent = class _TabPanelComponent {
         }
         if (rf & 2) {
           ɵɵhostProperty("tabindex", ctx.visible() ? ctx.tabindex() : -1)("id", ctx.propId());
-          ɵɵsyntheticHostProperty("@.disabled", ctx.animationDisabled)("@fadeInOut", ctx.animateType);
-          ɵɵattribute("aria-labelledby", ctx.attrAriaLabelledBy());
+          ɵɵsyntheticHostProperty("@.disabled", !ctx.transition())("@fadeInOut", ctx.visible() ? "show" : "hide");
+          ɵɵattribute("aria-labelledby", ctx.attrAriaLabelledBy())("role", ctx.role());
           ɵɵclassMap(ctx.hostClasses());
         }
       },
@@ -18477,6 +18433,7 @@ var TabPanelComponent = class _TabPanelComponent {
         ariaLabelledBy: [1, "aria-labelledby", "ariaLabelledBy"],
         id: [1, "id"],
         itemKey: [1, "itemKey"],
+        role: [1, "role"],
         tabindex: [1, "tabindex"],
         transition: [1, "transition"]
       },
@@ -18520,7 +18477,10 @@ var TabPanelComponent = class _TabPanelComponent {
         "[tabindex]": "visible() ? tabindex(): -1",
         "[attr.aria-labelledby]": "attrAriaLabelledBy()",
         "[id]": "propId()",
-        role: "tabpanel"
+        "[attr.role]": "role()",
+        "[@.disabled]": "!transition()",
+        "[@fadeInOut]": 'visible() ? "show" : "hide"',
+        "(@fadeInOut.done)": "onAnimationDone($event)"
       },
       animations: [trigger("fadeInOut", [state("show", style({
         opacity: 1
@@ -18532,20 +18492,7 @@ var TabPanelComponent = class _TabPanelComponent {
         optional: true
       }), animate("150ms linear")])])]
     }]
-  }], null, {
-    animationDisabled: [{
-      type: HostBinding,
-      args: ["@.disabled"]
-    }],
-    animateType: [{
-      type: HostBinding,
-      args: ["@fadeInOut"]
-    }],
-    onAnimationDone: [{
-      type: HostListener,
-      args: ["@fadeInOut.done", ["$event"]]
-    }]
-  });
+  }], null, null);
 })();
 var Tabs2Module = class _Tabs2Module {
   static {

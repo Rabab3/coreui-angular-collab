@@ -5,10 +5,7 @@ export const navItems: INavData[] = [
     name: '🏠 Accueil',
     url: '/dashboard',
     iconComponent: { name: 'cil-home' },
-    badge: {
-      color: 'info',
-      text: 'NEW'
-    }
+    
   },
   {
     name: '📚 Articles',
@@ -16,14 +13,22 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-book' },
     children: [
       {
-        name: 'Mes contributions',
-        url: '/articles/mes-contributions',
-        attributes: { role: 'contributeur' }
+        name: '📄 Liste des articles',
+        url: '/articles/liste'
       },
+      {
+        name: '⭐ Favoris',
+        url: '/articles/favoris'
+      },
+        {
+          name: '📝 Mes contributions',
+          url: '/articles/mes-contributions',
+          attributes: { role: ['admin', 'contributeur', 'moderateur'] }
+        },
       {
         name: '➕ Ajouter un article',
         url: '/articles/ajouter',
-        attributes: { role: 'contributeur' } // ou autre condition plus 
+        attributes: { role: 'contributeur' }
       }
     ]
   },
@@ -62,11 +67,11 @@ export const navItems: INavData[] = [
     attributes: { role: 'moderateur' }, // ou admin
     children: [
       {
-        name: 'Articles à valider',
+        name: '✅ Articles à valider',
         url: '/moderation/a-valider'
       },
       {
-        name: 'Retournés pour correction',
+        name: '❌ Retournés pour correction',
         url: '/moderation/retournes'
       }
     ]
@@ -78,11 +83,11 @@ export const navItems: INavData[] = [
     attributes: { role: 'admin' },
     children: [
       {
-        name: 'Gérer les utilisateurs',
+        name: '👤 Gérer les utilisateurs',
         url: '/admin/utilisateurs/gerer'
       },
       {
-        name: 'Gérer les rôles',
+        name: '🔄 Gérer les rôles',
         url: '/admin/utilisateurs/roles'
       }
     ]
@@ -93,11 +98,11 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-settings' },
     children: [
       {
-        name: 'Mon profil',
+        name: '👤 Mon profil',
         url: '/parametres/profil'
       },
       {
-        name: 'Déconnexion',
+        name: '🔓 Déconnexion',
         url: '/logout'
       }
     ]

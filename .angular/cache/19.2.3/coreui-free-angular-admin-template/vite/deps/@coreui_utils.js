@@ -1,4 +1,4 @@
-import "./chunk-XWLXMCJQ.js";
+import "./chunk-4MWRP73S.js";
 
 // node_modules/@coreui/utils/dist/esm/deepObjectsMerge.js
 var deepObjectsMerge = function(target, source) {
