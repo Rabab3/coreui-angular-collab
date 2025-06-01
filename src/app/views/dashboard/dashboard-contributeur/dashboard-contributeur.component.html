@@ -1,0 +1,12 @@
+<div class="contributeur-dashboard animate-slide">
+  <h2>Bienvenue Contributeur ✍️</h2>
+  <p>Total d’articles soumis : {{ totalArticles }}</p>
+  <p>Articles publiés : {{ articlesPublies }}</p>
+
+  <h3>Top 3 des articles les plus lus</h3>
+  <ul>
+    <li *ngFor="let art of topArticles">
+      📌 {{ art.titre }} — {{ art.vues }} vues
+    </li>
+  </ul>
+</div>

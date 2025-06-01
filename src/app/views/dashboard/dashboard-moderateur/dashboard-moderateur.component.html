@@ -1,0 +1,25 @@
+<div class="moderateur-dashboard">
+  <h2>🛡️ Tableau de bord Modérateur</h2>
+
+  <section class="retournes">
+    <h4>Articles retournés pour correction</h4>
+    <ul>
+      <li *ngFor="let article of articlesRetournes">
+        <strong>{{ article.titre }}</strong> – <em>{{ article.auteur }}</em> ({{ article.date }})
+      </li>
+    </ul>
+  </section>
+
+  <section class="timeline">
+    <h4>Activité récente</h4>
+    <ul>
+      <li *ngFor="let item of timeline">
+        <strong>{{ item.auteur }}</strong> {{ item.action }} – <em>{{ item.date }}</em>
+      </li>
+    </ul>
+  </section>
+
+  <section class="stats">
+    <p>{{ tauxRetour }}% des articles ont été retournés pour correction</p>
+  </section>
+</div>

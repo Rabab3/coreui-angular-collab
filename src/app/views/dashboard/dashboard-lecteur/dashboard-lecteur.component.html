@@ -1,0 +1,25 @@
+<div class="lecteur-dashboard">
+  <h2>Bienvenue Lecteur 📖</h2>
+
+  <h3>🆕 Articles récents</h3>
+  <ul class="liste">
+    <li *ngFor="let article of articlesRecents">
+      {{ article.titre }} <em>({{ article.date }})</em>
+    </li>
+  </ul>
+
+  <h3>📚 Thématiques populaires</h3>
+  <div class="tags">
+    <span *ngFor="let theme of thematiques">{{ theme }}</span>
+  </div>
+
+  <h3>🔥 Les plus lus cette semaine</h3>
+  <ul class="liste">
+    <li *ngFor="let article of topLus">
+      {{ article.titre }} — <strong>{{ article.vues }}</strong> vues
+    </li>
+  </ul>
+
+  <h3>💡 Citation du jour</h3>
+  <blockquote>{{ citation }}</blockquote>
+</div>

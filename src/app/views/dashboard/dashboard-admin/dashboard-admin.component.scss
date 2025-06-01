@@ -1,0 +1,45 @@
+.title {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.cards {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+}
+
+.card {
+  background-color: #e3f2fd;
+  padding: 20px;
+  border-radius: 8px;
+  width: 200px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.chart-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.activities {
+  background-color: #fff8dc;
+  padding: 20px;
+  border-left: 8px solid #ff9800;
+
+  li {
+    margin-bottom: 15px;
+
+    .titre {
+      margin-left: 10px;
+      font-weight: 500;
+    }
+
+    em {
+      margin-left: 20px;
+      font-style: italic;
+    }
+  }
+}

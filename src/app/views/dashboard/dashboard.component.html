@@ -1,0 +1,6 @@
+<div class="dashboard-container">
+  <app-dashboard-admin *ngIf="role === 'admin'"></app-dashboard-admin>
+  <app-dashboard-moderateur *ngIf="role === 'moderateur'"></app-dashboard-moderateur>
+  <app-dashboard-contributeur *ngIf="role === 'contributeur'"></app-dashboard-contributeur>
+  <app-dashboard-lecteur *ngIf="role === 'lecteur'"></app-dashboard-lecteur>
+</div>
