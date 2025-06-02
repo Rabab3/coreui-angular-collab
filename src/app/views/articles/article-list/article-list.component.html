@@ -4,7 +4,6 @@
   <!-- Filtres -->
   <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
     <input type="text" class="form-control w-50" placeholder="Rechercher par titre..." [(ngModel)]="searchText">
-
     <select class="form-select w-auto" [(ngModel)]="selectedCategory">
       <option value="">Toutes les catégories</option>
       <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
@@ -21,7 +20,22 @@
           <p class="card-text">{{ article.description | slice:0:100 }}...</p>
         </div>
         <div class="card-footer text-end bg-white border-top-0">
-          <button class="btn btn-outline-danger btn-sm me-2" (click)="ajouterAuxFavoris(article)">❤️</button>
+          <div class="position-relative d-inline-block favori-btn-wrapper">
+            <button
+              class="btn btn-sm me-2"
+              [ngClass]="{
+                'btn-outline-warning': !estFavori(article),
+                'btn-warning': estFavori(article)
+              }"
+              (click)="toggleFavori(article)"
+            >⭐</button>
+
+            <div class="favori-tooltip">Favoris</div>
+
+            <div class="favori-popup" *ngIf="popupFavoriVisible && favoriArticleTitre === article.titre">
+              ⭐ Favori {{ estFavori(article) ? 'ajouté' : 'retiré' }} !
+            </div>
+          </div>
           <button class="btn btn-outline-primary btn-sm" (click)="ouvrirPopup(article)">Lire</button>
         </div>
       </div>

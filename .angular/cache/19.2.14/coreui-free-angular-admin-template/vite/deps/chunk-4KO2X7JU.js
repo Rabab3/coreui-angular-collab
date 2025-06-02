@@ -4599,6 +4599,7 @@ export {
   ReplaySubject,
   AsyncAction,
   AsyncScheduler,
+  asyncScheduler,
   EMPTY,
   popResultSelector,
   popScheduler,
@@ -4727,4 +4728,4 @@ export {
   partition,
   race
 };
-//# sourceMappingURL=chunk-MXDOIL62.js.map
+//# sourceMappingURL=chunk-4KO2X7JU.js.map

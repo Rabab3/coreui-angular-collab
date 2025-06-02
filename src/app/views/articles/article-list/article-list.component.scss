@@ -1,57 +1,78 @@
-.container {
-  background-color: #f8f9fa;
-  padding: 2rem;
-  border-radius: 8px;
+body[data-coreui-theme='dark'] {
+  background-color: #121212 !important;
+  color: #ffffff !important;
 }
 
-.card {
-  border: none;
-  transition: transform 0.2s ease-in-out;
+body[data-coreui-theme='dark'] .container {
+  background-color: #1e1e2f !important;
+  color: #ffffff !important;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+body[data-coreui-theme='dark'] .card {
+  background-color: #2a2a3b !important;
+  color: #ffffff !important;
 }
 
-.card-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #2c3e50;
+body[data-coreui-theme='dark'] .card-title,
+body[data-coreui-theme='dark'] .card-text,
+body[data-coreui-theme='dark'] h2 {
+  color: #ffffff !important;
 }
 
-.card-footer {
-  background-color: transparent;
+body[data-coreui-theme='dark'] .form-control,
+body[data-coreui-theme='dark'] .form-select {
+  background-color: #2a2a3b !important;
+  color: #ffffff !important;
+  border: 1px solid #777 !important;
 }
 
-.modal {
-  background-color: rgba(0, 0, 0, 0.4);
+body[data-coreui-theme='dark'] .modal-content {
+  background-color: #2a2a3b !important;
+  color: #ffffff !important;
 }
 
-.modal-content {
-  border-radius: 10px;
+body[data-coreui-theme='dark'] .btn-close {
+  filter: invert(1);
 }
 
-.modal-title {
-  font-size: 1.3rem;
-  font-weight: 600;
+/* Tooltip au survol */
+.favori-tooltip {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  background-color: #444;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 1000;
 }
 
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.3rem;
+.favori-btn-wrapper:hover .favori-tooltip {
+  opacity: 1;
 }
 
-input.form-control,
-select.form-select {
-  min-width: 200px;
+/* Pop-up animé au clic */
+.favori-popup {
+  position: absolute;
+  top: -35px;
+  left: 0;
+  background-color: #ff4081;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  animation: fade-fav 1.5s ease-in-out;
+  white-space: nowrap;
+  z-index: 999;
 }
 
-@media (max-width: 768px) {
-  .col-md-4 {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
+@keyframes fade-fav {
+  0% { opacity: 0; transform: translateY(-10px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
 }
- 

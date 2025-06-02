@@ -22,12 +22,12 @@ export const navItems: INavData[] = [
       {
         name: '📝 Mes contributions',
         url: '/articles/mes-contributions',
-         attributes: { role: ['admin', 'contributeur', 'moderateur'] }
+         attributes: { role: ['admin','contributeur', 'moderateur'] }
       },
       {
         name: '➕ Ajouter un article',
         url: '/articles/ajouter',
-         attributes: { role: ['admin', 'contributeur', 'moderateur'] }
+         attributes: { role: ['contributeur', 'moderateur'] }
       }
     ]
   },
@@ -36,7 +36,7 @@ export const navItems: INavData[] = [
     name: '🛠️ Modération',
     url: '/moderation',
     iconComponent: { name: 'cil-task' },
-    attributes: { role: ['moderateur', 'admin'] },
+    attributes: { role: ['moderateur'] },
     children: [
       {
         name: '📥 À valider',

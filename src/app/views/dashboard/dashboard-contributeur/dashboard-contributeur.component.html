@@ -1,12 +1,16 @@
-<div class="contributeur-dashboard animate-slide">
-  <h2>Bienvenue Contributeur ✍️</h2>
-  <p>Total d’articles soumis : {{ totalArticles }}</p>
-  <p>Articles publiés : {{ articlesPublies }}</p>
+<h2 class="title">Bienvenue Contributeur</h2>
 
-  <h3>Top 3 des articles les plus lus</h3>
-  <ul>
-    <li *ngFor="let art of topArticles">
-      📌 {{ art.titre }} — {{ art.vues }} vues
-    </li>
-  </ul>
+<div class="cards">
+  <div class="card" *ngFor="let stat of stats">
+    <h3>{{ stat.label }}</h3>
+    <p>{{ stat.value }}</p>
+  </div>
 </div>
+
+<h2 class="title">Top 3 de vos articles</h2>
+<ul class="articles">
+  <li *ngFor="let article of topArticles">
+    <strong>{{ article.titre }}</strong>
+    <span>{{ article.vues }} vues</span>
+  </li>
+</ul>

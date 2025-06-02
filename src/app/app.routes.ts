@@ -30,7 +30,8 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./views/articles/mes-contributions/mes-contributions.component').then(m => m.MesContributionsComponent),
         data: { title: 'Mes contributions' }
-      },
+      }
+,
       {
         path: 'articles/liste',
         loadComponent: () =>

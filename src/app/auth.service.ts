@@ -1,6 +1,7 @@
   import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { API_BASE_URL } from './app.config';
+export const API_BASE_URL = 'http://localhost:8080/api';
+
 import { Observable } from 'rxjs';
 
 @Injectable({

@@ -6,14 +6,18 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard-contributeur.component.html',
-  styleUrl: './dashboard-contributeur.component.scss'
+  styleUrls: ['./dashboard-contributeur.component.scss']
 })
 export class DashboardContributeurComponent {
-  totalArticles = 12;
-  articlesPublies = 8;
+  stats = [
+    { label: 'Articles soumis', value: 10 },
+    { label: 'Articles publiés', value: 6 },
+    { label: 'Articles en attente', value: 4 }
+  ];
+
   topArticles = [
-    { titre: 'Sécurité informatique', vues: 150 },
-    { titre: 'Gestion RH', vues: 120 },
-    { titre: 'Maintenance réseau', vues: 100 }
+    { titre: 'Les bonnes pratiques Angular', vues: 120 },
+    { titre: 'Comprendre Spring Boot', vues: 95 },
+    { titre: 'PostgreSQL pour les devs', vues: 80 }
   ];
 }

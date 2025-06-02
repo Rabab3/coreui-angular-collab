@@ -1,25 +1,19 @@
-<div class="moderateur-dashboard">
-  <h2>🛡️ Tableau de bord Modérateur</h2>
+<h2 class="title">Bienvenue Modérateur</h2>
 
-  <section class="retournes">
-    <h4>Articles retournés pour correction</h4>
-    <ul>
-      <li *ngFor="let article of articlesRetournes">
-        <strong>{{ article.titre }}</strong> – <em>{{ article.auteur }}</em> ({{ article.date }})
-      </li>
-    </ul>
-  </section>
-
-  <section class="timeline">
-    <h4>Activité récente</h4>
-    <ul>
-      <li *ngFor="let item of timeline">
-        <strong>{{ item.auteur }}</strong> {{ item.action }} – <em>{{ item.date }}</em>
-      </li>
-    </ul>
-  </section>
-
-  <section class="stats">
-    <p>{{ tauxRetour }}% des articles ont été retournés pour correction</p>
-  </section>
+<div class="cards">
+  <div class="card" *ngFor="let stat of stats">
+    <h3>{{ stat.label }}</h3>
+    <p>{{ stat.value }}</p>
+  </div>
 </div>
+
+<h2 class="title">Activité de modération</h2>
+<ul class="timeline">
+  <li *ngFor="let event of timeline">
+    <span class="action">{{ event.action }}</span>
+    <span class="details">
+      "{{ event.article }}" par <strong>{{ event.auteur }}</strong>
+    </span>
+    <span class="date">{{ event.date }}</span>
+  </li>
+</ul>

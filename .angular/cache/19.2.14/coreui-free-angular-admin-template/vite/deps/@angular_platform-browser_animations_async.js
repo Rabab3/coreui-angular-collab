@@ -1,10 +1,10 @@
 import {
   DomRendererFactory2
-} from "./chunk-XGC3AQMB.js";
-import "./chunk-C5XD5EQB.js";
+} from "./chunk-WBSLBB7O.js";
+import "./chunk-6DHFQXEI.js";
 import {
   DOCUMENT
-} from "./chunk-ZWWWSZQR.js";
+} from "./chunk-NXUC4KZA.js";
 import {
   ANIMATION_MODULE_TYPE,
   ChangeDetectionScheduler,
@@ -20,8 +20,8 @@ import {
   setClassMetadata,
   ɵɵdefineInjectable,
   ɵɵinvalidFactory
-} from "./chunk-6H6LLFDM.js";
-import "./chunk-MXDOIL62.js";
+} from "./chunk-NWLR3VMJ.js";
+import "./chunk-4KO2X7JU.js";
 import "./chunk-4MWRP73S.js";
 
 // node_modules/@angular/platform-browser/fesm2022/animations/async.mjs
@@ -58,7 +58,7 @@ var AsyncAnimationRendererFactory = class _AsyncAnimationRendererFactory {
    * @internal
    */
   loadImpl() {
-    const loadFn = () => this.moduleImpl ?? import("./browser-FOCQJOU3.js").then((m) => m);
+    const loadFn = () => this.moduleImpl ?? import("./browser-PVAZK4BR.js").then((m) => m);
     let moduleImplPromise;
     if (this.loadingSchedulerFn) {
       moduleImplPromise = this.loadingSchedulerFn(loadFn);

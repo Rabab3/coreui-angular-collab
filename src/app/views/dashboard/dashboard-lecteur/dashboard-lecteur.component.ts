@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,21 +8,20 @@ import { CommonModule } from '@angular/common';
   templateUrl: './dashboard-lecteur.component.html',
   styleUrls: ['./dashboard-lecteur.component.scss']
 })
-export class DashboardLecteurComponent implements OnInit {
+export class DashboardLecteurComponent {
   articlesRecents = [
-    { titre: 'L’innovation RH', date: '31 mai 2025' },
-    { titre: 'Sécurité numérique', date: '30 mai 2025' },
-    { titre: 'Bonnes pratiques internes', date: '29 mai 2025' }
+    'Guide de la sécurité numérique',
+    'Introduction à PostgreSQL',
+    'Bonnes pratiques Git'
   ];
 
-  thematiques = ['RH', 'Sécurité', 'Technique', 'Métiers'];
-
-  topLus = [
-    { titre: 'Optimiser la communication interne', vues: 143 },
-    { titre: 'Cyber sécurité pour débutants', vues: 121 }
+  articlesPopulaires = [
+    { titre: 'Maîtriser Angular', vues: 120 },
+    { titre: 'Gestion de projet Agile', vues: 110 },
+    { titre: 'Sécurité des données', vues: 105 }
   ];
 
-  citation = '« La connaissance est le début de l’action. » – Confucius';
+  thematiques = ['Technique', 'Métiers', 'Sécurité', 'RH'];
 
-  ngOnInit(): void {}
+  citationDuJour = '“Le savoir ne vaut que s’il est partagé.” – Anonyme';
 }

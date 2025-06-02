@@ -14,6 +14,8 @@ export class ArticleListComponent {
   searchText = '';
   selectedCategory = '';
   popupVisible = false;
+  popupFavoriVisible = false;
+  favoriArticleTitre = '';
   articleSelectionne: any = null;
 
   categories = ['RH', 'TECHNIQUE', 'SÉCURITÉ', 'METEOR'];
@@ -36,15 +38,6 @@ export class ArticleListComponent {
       contenu: 'Contenu complet de l’article sécurité...',
       statut: 'Publié',
       date: new Date('2024-03-15')
-    },
-    {
-      titre: 'Architecture Angular moderne',
-      auteur: 'Admin',
-      categorie: 'TECHNIQUE',
-      description: 'Bonnes pratiques pour structurer vos projets Angular.',
-      contenu: 'Contenu complet de l’article Angular...',
-      statut: 'En attente',
-      date: new Date('2024-03-01')
     }
   ];
 
@@ -68,10 +61,29 @@ export class ArticleListComponent {
     document.body.classList.remove('modal-open');
   }
 
-  ajouterAuxFavoris(article: any) {
+  estFavori(article: any): boolean {
     const favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
-    favoris.push(article);
+    return favoris.some((a: any) => a.titre === article.titre);
+  }
+
+  toggleFavori(article: any): void {
+    let favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
+    const index = favoris.findIndex((a: any) => a.titre === article.titre);
+
+    if (index > -1) {
+      favoris.splice(index, 1); // retirer
+    } else {
+      favoris.push(article); // ajouter
+    }
+
     localStorage.setItem('favoris', JSON.stringify(favoris));
-    alert('Article ajouté aux favoris !');
+
+    this.favoriArticleTitre = article.titre;
+    this.popupFavoriVisible = true;
+
+    setTimeout(() => {
+      this.popupFavoriVisible = false;
+      this.favoriArticleTitre = '';
+    }, 1500);
   }
 }

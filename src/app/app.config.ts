@@ -8,15 +8,17 @@ import {
   withViewTransitions,
   withHashLocation
 } from '@angular/router';
-
+import { NgxEditorModule } from 'ngx-editor';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
+
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { Title } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
-
-export const API_BASE_URL = 'http://localhost:8080/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -35,13 +37,15 @@ export const appConfig: ApplicationConfig = {
     ),
     importProvidersFrom(
       HttpClientModule,
+      CommonModule,
+      FormsModule,
+      ReactiveFormsModule,
+      NgxEditorModule,
       SidebarModule,
       DropdownModule
     ),
     IconSetService,
     provideAnimationsAsync(),
-
-    // Fixe le titre de la page
     {
       provide: Title,
       useFactory: () => {
