@@ -12,9 +12,6 @@ import {
   useAnimation
 } from "./chunk-WCRERABP.js";
 import {
-  IconDirective
-} from "./chunk-FJBNKP37.js";
-import {
   Platform,
   _bindEventWithOptions,
   _getEventTarget,
@@ -37,6 +34,9 @@ import {
   RouterLinkActive,
   RouterModule
 } from "./chunk-K4XNVRMJ.js";
+import {
+  IconDirective
+} from "./chunk-FJBNKP37.js";
 import "./chunk-2I26XJ42.js";
 import "./chunk-P3FYZGHX.js";
 import "./chunk-WBSLBB7O.js";

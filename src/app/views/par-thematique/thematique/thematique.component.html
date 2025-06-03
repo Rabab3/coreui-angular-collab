@@ -1,1 +1,8 @@
-<p>thematique works!</p>
+<div class="theme-page" *ngIf="theme">
+  <h2>📁 Thématique : {{ theme.nom }}</h2>
+  <p>{{ theme.description }}</p>
+</div>
+
+<div class="theme-page" *ngIf="!theme">
+  <h2 style="color: crimson">❌ Thématique introuvable</h2>
+</div>

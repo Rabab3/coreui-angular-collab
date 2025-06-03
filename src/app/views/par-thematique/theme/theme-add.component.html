@@ -1,0 +1,18 @@
+<div class="theme-add-container">
+  <h2>➕ Ajouter une thématique</h2>
+  <form [formGroup]="themeForm" (ngSubmit)="onSubmit()">
+    <label>Nom :</label>
+    <input formControlName="nom" placeholder="Ex : Sécurité 🔐" />
+
+    <label>Description :</label>
+    <textarea formControlName="description" placeholder="Brève description..."></textarea>
+
+    <label>Icône (emoji facultatif) :</label>
+    <input formControlName="icone" placeholder="Ex : 🛠️" />
+
+    <div class="actions">
+      <button type="submit" class="submit" [disabled]="!themeForm.valid">✅ Enregistrer</button>
+      <button type="button" class="cancel" (click)="annuler()">❌ Annuler</button>
+    </div>
+  </form>
+</div>

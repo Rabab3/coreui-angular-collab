@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
 import { DefaultLayoutComponent } from './layout/default-layout/default-layout.component';
+import { ThematiqueComponent } from './views/par-thematique/thematique/thematique.component';
 
 export const routes: Routes = [
-  // Layout principal (pages avec sidebar + header)
+  // 🌐 Layout principal (avec sidebar + header)
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -18,11 +19,10 @@ export const routes: Routes = [
           import('./views/dashboard/dashboard.component').then(m => m.DashboardComponent),
         data: { title: 'Dashboard' }
       },
-      
-        {
-  path: 'articles/ajouter',
-  loadComponent: () =>
-    import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent),
+      {
+        path: 'articles/ajouter',
+        loadComponent: () =>
+          import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent),
         data: { title: 'Ajouter un article' }
       },
       {
@@ -30,8 +30,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./views/articles/mes-contributions/mes-contributions.component').then(m => m.MesContributionsComponent),
         data: { title: 'Mes contributions' }
-      }
-,
+      },
       {
         path: 'articles/liste',
         loadComponent: () =>
@@ -62,12 +61,28 @@ export const routes: Routes = [
           import('./views/utilisateurs/utilisateurs.component').then(m => m.UtilisateursComponent),
         data: { title: 'Utilisateurs' }
       },
+
+      // ✅ D'abord la route pour l'admin : Ajouter une thématique
       {
-        path: 'thematiques',
+        path: 'thematiques/ajouter',
         loadComponent: () =>
-          import('./views/par-thematique/thematique/thematique.component').then(m => m.ThematiqueComponent),
-        data: { title: 'Thématiques' }
+          import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent),
+        data: { title: 'Ajouter une thématique' }
       },
+
+      // ✅ Ensuite la route dynamique : thématique par ID
+      {
+        path: 'thematiques/:id',
+        component: ThematiqueComponent,
+        data: { title: 'Thématique' }
+      },{
+  path: 'thematiques/gerer',
+  loadComponent: () =>
+    import('./views/par-thematique/theme/theme-manage.component').then(m => m.ThemeManageComponent),
+  data: { title: 'Gérer les thématiques' }
+}
+,
+
       {
         path: 'roles',
         loadComponent: () =>
@@ -83,7 +98,7 @@ export const routes: Routes = [
     ]
   },
 
-  // Pages sans layout
+  // 🌐 Pages sans layout (login, register, erreurs)
   {
     path: 'login',
     loadComponent: () =>
@@ -109,7 +124,7 @@ export const routes: Routes = [
     data: { title: 'Page 500' }
   },
 
-  // Redirection inconnue
+  // 🔁 Redirection si route inconnue
   {
     path: '**',
     redirectTo: '404'

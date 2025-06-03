@@ -49,33 +49,6 @@ export const navItems: INavData[] = [
     ]
   },
 
-  {
-    name: '🏷️ Thématiques',
-    iconComponent: { name: 'cil-tags' },
-    children: [
-      {
-        name: '🧩 Métier',
-        url: '/thematiques/metier'
-      },
-      {
-        name: '💻 Technique',
-        url: '/thematiques/technique'
-      },
-      {
-        name: '🔐 Sécurité',
-        url: '/thematiques/securite'
-      },
-      {
-        name: '👥 RH',
-        url: '/thematiques/rh'
-      },
-      {
-        name: '➕ Ajouter une thématique',
-        url: '/thematiques/ajouter',
-        attributes: { role: ['admin'] }
-      }
-    ]
-  },
 
   {
     name: '👥 Utilisateurs',

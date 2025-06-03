@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { INavData, SidebarModule } from '@coreui/angular';
 import { navItems } from './_nav';
-
 import { DefaultFooterComponent } from './default-footer/default-footer.component';
 import { DefaultHeaderComponent } from './default-header/default-header.component';
-
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { ThemeService } from 'src/app/services/theme.service';
+import { Thématique } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-default-layout',
@@ -24,11 +24,36 @@ export class DefaultLayoutComponent implements OnInit {
   public role: string | null = '';
   public filteredNavItems: INavData[] = [];
 
-  ngOnInit(): void {
-  this.role = localStorage.getItem('role') || 'admin';
-  this.filteredNavItems = this.filterNavItems(navItems);
-}
+  constructor(private themeService: ThemeService) {}
 
+  ngOnInit(): void {
+    this.role = localStorage.getItem('role') || 'admin';
+    this.generateMenu();
+  }
+
+  generateMenu() {
+    const themes = this.themeService.getThemes();
+
+    const dynamicThématiques: INavData = {
+      name: '🏷️ Thématiques',
+      iconComponent: { name: 'cil-tags' },
+      children: themes.map(theme => ({
+        name: `${theme.icone || '📁'} ${theme.nom}`,
+        url: `/thematiques/${theme.id}`
+      }))
+    };
+
+    if (this.role === 'admin') {
+      dynamicThématiques.children?.push({
+        name: '➕ Ajouter une thématique',
+        url: '/thematiques/ajouter',
+        attributes: { role: ['admin'] }
+      });
+    }
+
+    const filteredStatic = this.filterNavItems(navItems);
+    this.filteredNavItems = [...filteredStatic, dynamicThématiques];
+  }
 
   filterNavItems(items: INavData[]): INavData[] {
     return items
