@@ -1,0 +1,9 @@
+<div class="article-details" *ngIf="article">
+  <h2>{{ article.titre }}</h2>
+  <p class="date">🕒 {{ article.date }}</p>
+  <div class="contenu">{{ article.contenu }}</div>
+</div>
+
+<div *ngIf="!article">
+  <p style="color: crimson">❌ Article introuvable.</p>
+</div>

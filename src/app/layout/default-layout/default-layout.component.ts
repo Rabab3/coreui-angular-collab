@@ -1,39 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { INavData, SidebarModule } from '@coreui/angular';
 import { navItems } from './_nav';
 import { DefaultFooterComponent } from './default-footer/default-footer.component';
 import { DefaultHeaderComponent } from './default-header/default-header.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { ThemeService } from 'src/app/services/theme.service';
-import { Thématique } from 'src/app/services/theme.service';
+import { ThemeService, Thématique } from 'src/app/services/theme.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-default-layout',
   standalone: true,
+  templateUrl: './default-layout.component.html',
   imports: [
     RouterOutlet,
     SidebarModule,
     NgScrollbarModule,
     DefaultHeaderComponent,
     DefaultFooterComponent
-  ],
-  templateUrl: './default-layout.component.html'
+  ]
 })
-export class DefaultLayoutComponent implements OnInit {
+export class DefaultLayoutComponent implements OnInit, OnDestroy {
   public role: string | null = '';
   public filteredNavItems: INavData[] = [];
+  private themeSub!: Subscription;
 
   constructor(private themeService: ThemeService) {}
 
   ngOnInit(): void {
-    this.role = localStorage.getItem('role') || 'admin';
-    this.generateMenu();
+    this.role = localStorage.getItem('role') || '';
+
+    // 🟢 Souscrire aux changements dynamiques
+    this.themeSub = this.themeService.themes$.subscribe((themes: Thématique[]) => {
+      this.generateMenu(themes);
+    });
   }
 
-  generateMenu() {
-    const themes = this.themeService.getThemes();
-
+  generateMenu(themes: Thématique[]) {
     const dynamicThématiques: INavData = {
       name: '🏷️ Thématiques',
       iconComponent: { name: 'cil-tags' },
@@ -43,16 +46,28 @@ export class DefaultLayoutComponent implements OnInit {
       }))
     };
 
-    if (this.role === 'admin') {
-      dynamicThématiques.children?.push({
-        name: '➕ Ajouter une thématique',
-        url: '/thematiques/ajouter',
-        attributes: { role: ['admin'] }
-      });
+    // ➕ Ajouter & Gérer une thématique (modérateur uniquement)
+    if (this.role === 'moderateur') {
+      dynamicThématiques.children?.push(
+        {
+          name: '➕ Ajouter une thématique',
+          url: '/thematiques/ajouter',
+          attributes: { role: ['moderateur'] }
+        },
+        {
+          name: '📂 Gérer les thématiques',
+          url: '/thematiques/gerer',
+          attributes: { role: ['moderateur'] }
+        }
+      );
     }
 
     const filteredStatic = this.filterNavItems(navItems);
-    this.filteredNavItems = [...filteredStatic, dynamicThématiques];
+    this.filteredNavItems = [...filteredStatic];
+
+    if (['moderateur', 'contributeur', 'lecteur'].includes(this.role || '')) {
+      this.filteredNavItems.push(dynamicThématiques);
+    }
   }
 
   filterNavItems(items: INavData[]): INavData[] {
@@ -70,5 +85,9 @@ export class DefaultLayoutComponent implements OnInit {
     if (!requiredRoles) return true;
     if (Array.isArray(requiredRoles)) return requiredRoles.includes(this.role);
     return requiredRoles === this.role;
+  }
+
+  ngOnDestroy(): void {
+    this.themeSub?.unsubscribe(); // 🔁 Bonnes pratiques
   }
 }

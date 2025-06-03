@@ -3,130 +3,61 @@ import { DefaultLayoutComponent } from './layout/default-layout/default-layout.c
 import { ThematiqueComponent } from './views/par-thematique/thematique/thematique.component';
 
 export const routes: Routes = [
-  // 🌐 Layout principal (avec sidebar + header)
   {
     path: '',
     component: DefaultLayoutComponent,
     children: [
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./views/dashboard/dashboard.component').then(m => m.DashboardComponent),
-        data: { title: 'Dashboard' }
-      },
-      {
-        path: 'articles/ajouter',
-        loadComponent: () =>
-          import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent),
-        data: { title: 'Ajouter un article' }
-      },
-      {
-        path: 'articles/mes-contributions',
-        loadComponent: () =>
-          import('./views/articles/mes-contributions/mes-contributions.component').then(m => m.MesContributionsComponent),
-        data: { title: 'Mes contributions' }
-      },
-      {
-        path: 'articles/liste',
-        loadComponent: () =>
-          import('./views/articles/article-list/article-list.component').then(m => m.ArticleListComponent),
-        data: { title: 'Liste des articles' }
-      },
-      {
-        path: 'articles/favoris',
-        loadComponent: () =>
-          import('./views/articles/favoris-list/favoris-list.component').then(m => m.FavorisListComponent),
-        data: { title: 'Favoris' }
-      },
-      {
-        path: 'moderation/liste-a-valider',
-        loadComponent: () =>
-          import('./views/a-valider/a-valider.component').then(m => m.AValiderComponent),
-        data: { title: 'Articles à valider' }
-      },
-      {
-        path: 'moderation/a-corriger',
-        loadComponent: () =>
-          import('./views/a-corriger/a-corriger.component').then(m => m.ACorrigerComponent),
-        data: { title: 'Articles à corriger' }
-      },
-      {
-        path: 'utilisateurs',
-        loadComponent: () =>
-          import('./views/utilisateurs/utilisateurs.component').then(m => m.UtilisateursComponent),
-        data: { title: 'Utilisateurs' }
-      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
-      // ✅ D'abord la route pour l'admin : Ajouter une thématique
-      {
-        path: 'thematiques/ajouter',
-        loadComponent: () =>
-          import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent),
-        data: { title: 'Ajouter une thématique' }
-      },
+      { path: 'dashboard', loadComponent: () => import('./views/dashboard/dashboard.component').then(m => m.DashboardComponent) },
 
-      // ✅ Ensuite la route dynamique : thématique par ID
-      {
-        path: 'thematiques/:id',
-        component: ThematiqueComponent,
-        data: { title: 'Thématique' }
-      },{
-  path: 'thematiques/gerer',
-  loadComponent: () =>
-    import('./views/par-thematique/theme/theme-manage.component').then(m => m.ThemeManageComponent),
-  data: { title: 'Gérer les thématiques' }
-}
-,
+      { path: 'articles/ajouter', loadComponent: () => import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent) },
 
-      {
-        path: 'roles',
-        loadComponent: () =>
-          import('./views/roles/roles.component').then(m => m.RolesComponent),
-        data: { title: 'Rôles' }
-      },
-      {
-        path: 'parametres/profil',
-        loadComponent: () =>
-          import('./views/pages/profil/profil.component').then(m => m.ProfilComponent),
-        data: { title: 'Mon Profil' }
-      }
+      { path: 'articles/mes-contributions', loadComponent: () => import('./views/articles/mes-contributions/mes-contributions.component').then(m => m.MesContributionsComponent) },
+
+      { path: 'articles/liste', loadComponent: () => import('./views/articles/article-list/article-list.component').then(m => m.ArticleListComponent) },
+
+      { path: 'articles/favoris', loadComponent: () => import('./views/articles/favoris-list/favoris-list.component').then(m => m.FavorisListComponent) },
+
+      { path: 'moderation/liste-a-valider', loadComponent: () => import('./views/a-valider/a-valider.component').then(m => m.AValiderComponent) },
+
+      { path: 'moderation/a-corriger', loadComponent: () => import('./views/a-corriger/a-corriger.component').then(m => m.ACorrigerComponent) },
+
+      { path: 'utilisateurs', loadComponent: () => import('./views/utilisateurs/utilisateurs.component').then(m => m.UtilisateursComponent) },
+
+      { path: 'thematiques/ajouter', loadComponent: () => import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent) },
+
+      { path: 'thematiques/ajouter', loadComponent: () => import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent),
+      data: { title: 'Ajouter une thématique' } },
+
+      { path: 'thematiques/gerer', loadComponent: () => import('./views/par-thematique/theme/theme-manage.component').then(m => m.ThemeManageComponent), data: { title: 'Gérer les thématiques' } },
+
+      { path: 'thematiques/:id', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { title: 'Articles par thématique' } },
+      
+      { path: 'articles/details/:id', loadComponent: () => import('./views/articles/article-details/article-details.component').then(m => m.ArticleDetailsComponent), data: { title: 'Détails de l\'article' } },
+      
+      { path: 'roles', loadComponent: () => import('./views/roles/roles.component').then(m => m.RolesComponent) },
+
+      { path: 'parametres/profil', loadComponent: () => import('./views/pages/profil/profil.component').then(m => m.ProfilComponent) }
     ]
   },
 
-  // 🌐 Pages sans layout (login, register, erreurs)
   {
     path: 'login',
-    loadComponent: () =>
-      import('./views/pages/login/login.component').then(m => m.LoginComponent),
-    data: { title: 'Login Page' }
+    loadComponent: () => import('./views/pages/login/login.component').then(m => m.LoginComponent)
   },
   {
     path: 'register',
-    loadComponent: () =>
-      import('./views/pages/register/register.component').then(m => m.RegisterComponent),
-    data: { title: 'Register Page' }
+    loadComponent: () => import('./views/pages/register/register.component').then(m => m.RegisterComponent)
   },
   {
     path: '404',
-    loadComponent: () =>
-      import('./views/pages/page404/page404.component').then(m => m.Page404Component),
-    data: { title: 'Page 404' }
+    loadComponent: () => import('./views/pages/page404/page404.component').then(m => m.Page404Component)
   },
   {
     path: '500',
-    loadComponent: () =>
-      import('./views/pages/page500/page500.component').then(m => m.Page500Component),
-    data: { title: 'Page 500' }
+    loadComponent: () => import('./views/pages/page500/page500.component').then(m => m.Page500Component)
   },
 
-  // 🔁 Redirection si route inconnue
-  {
-    path: '**',
-    redirectTo: '404'
-  }
+  { path: '**', redirectTo: '404' }
 ];

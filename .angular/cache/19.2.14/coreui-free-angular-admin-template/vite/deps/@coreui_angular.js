@@ -1,16 +1,6 @@
 import {
-  animate,
-  animateChild,
-  animation,
-  group,
-  query,
-  sequence,
-  state,
-  style,
-  transition,
-  trigger,
-  useAnimation
-} from "./chunk-WCRERABP.js";
+  IconDirective
+} from "./chunk-XGKWK5ZQ.js";
 import {
   Platform,
   _bindEventWithOptions,
@@ -21,11 +11,26 @@ import {
   coerceElement,
   coerceNumberProperty,
   normalizePassiveListenerOptions
-} from "./chunk-ARKNSEFN.js";
+} from "./chunk-ZERZEN5E.js";
+import {
+  AnimationBuilder
+} from "./chunk-UB6AM6F3.js";
+import {
+  animate,
+  animateChild,
+  animation,
+  group,
+  query,
+  state,
+  style,
+  transition,
+  trigger,
+  useAnimation
+} from "./chunk-SZJPLAKF.js";
 import {
   takeUntilDestroyed,
   toObservable
-} from "./chunk-MD4LN24G.js";
+} from "./chunk-JVVYU7CX.js";
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -33,26 +38,22 @@ import {
   RouterLink,
   RouterLinkActive,
   RouterModule
-} from "./chunk-K4XNVRMJ.js";
-import {
-  IconDirective
-} from "./chunk-FJBNKP37.js";
-import "./chunk-2I26XJ42.js";
-import "./chunk-P3FYZGHX.js";
-import "./chunk-WBSLBB7O.js";
+} from "./chunk-FVV5KLMN.js";
+import "./chunk-RWMWVF5H.js";
+import "./chunk-NKM73PB6.js";
+import "./chunk-6ACEO7KO.js";
 import {
   AsyncPipe,
   NgClass,
   NgStyle,
   NgTemplateOutlet
-} from "./chunk-6DHFQXEI.js";
+} from "./chunk-LJRMVWU3.js";
 import {
   DOCUMENT,
   isPlatformBrowser,
   isPlatformServer
-} from "./chunk-NXUC4KZA.js";
+} from "./chunk-SOO5Y25R.js";
 import {
-  ANIMATION_MODULE_TYPE,
   APP_ID,
   ApplicationRef,
   CSP_NONCE,
@@ -80,7 +81,6 @@ import {
   QueryList,
   Renderer2,
   RendererFactory2,
-  RuntimeError,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
@@ -94,13 +94,10 @@ import {
   createComponent,
   effect,
   forwardRef,
-  fromEvent,
   inject,
   input,
-  isObservable,
   isSignal,
   linkedSignal,
-  merge,
   model,
   numberAttribute,
   output,
@@ -140,7 +137,6 @@ import {
   ɵɵgetCurrentView,
   ɵɵgetInheritedFactory,
   ɵɵhostProperty,
-  ɵɵinject,
   ɵɵlistener,
   ɵɵloadQuery,
   ɵɵnamespaceSVG,
@@ -177,7 +173,13 @@ import {
   ɵɵtextInterpolate1,
   ɵɵviewQuery,
   ɵɵviewQuerySignal
-} from "./chunk-NWLR3VMJ.js";
+} from "./chunk-LB7E77GG.js";
+import "./chunk-PEBH6BBU.js";
+import {
+  fromEvent,
+  isObservable,
+  merge
+} from "./chunk-WPM5VTLQ.js";
 import {
   BehaviorSubject,
   Observable,
@@ -199,176 +201,11 @@ import {
   tap,
   withLatestFrom,
   zipWith
-} from "./chunk-4KO2X7JU.js";
+} from "./chunk-4S3KYZTJ.js";
 import {
   __spreadProps,
   __spreadValues
 } from "./chunk-4MWRP73S.js";
-
-// node_modules/@angular/animations/fesm2022/animations.mjs
-var AnimationBuilder = class _AnimationBuilder {
-  static ɵfac = function AnimationBuilder_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _AnimationBuilder)();
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: _AnimationBuilder,
-    factory: () => (() => inject(BrowserAnimationBuilder))(),
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AnimationBuilder, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root",
-      useFactory: () => inject(BrowserAnimationBuilder)
-    }]
-  }], null, null);
-})();
-var AnimationFactory = class {
-};
-var BrowserAnimationBuilder = class _BrowserAnimationBuilder extends AnimationBuilder {
-  animationModuleType = inject(ANIMATION_MODULE_TYPE, {
-    optional: true
-  });
-  _nextAnimationId = 0;
-  _renderer;
-  constructor(rootRenderer, doc) {
-    super();
-    const typeData = {
-      id: "0",
-      encapsulation: ViewEncapsulation.None,
-      styles: [],
-      data: {
-        animation: []
-      }
-    };
-    this._renderer = rootRenderer.createRenderer(doc.body, typeData);
-    if (this.animationModuleType === null && !isAnimationRenderer(this._renderer)) {
-      throw new RuntimeError(3600, (typeof ngDevMode === "undefined" || ngDevMode) && "Angular detected that the `AnimationBuilder` was injected, but animation support was not enabled. Please make sure that you enable animations in your application by calling `provideAnimations()` or `provideAnimationsAsync()` function.");
-    }
-  }
-  build(animation2) {
-    const id = this._nextAnimationId;
-    this._nextAnimationId++;
-    const entry = Array.isArray(animation2) ? sequence(animation2) : animation2;
-    issueAnimationCommand(this._renderer, null, id, "register", [entry]);
-    return new BrowserAnimationFactory(id, this._renderer);
-  }
-  static ɵfac = function BrowserAnimationBuilder_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _BrowserAnimationBuilder)(ɵɵinject(RendererFactory2), ɵɵinject(DOCUMENT));
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: _BrowserAnimationBuilder,
-    factory: _BrowserAnimationBuilder.ɵfac,
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(BrowserAnimationBuilder, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [{
-    type: RendererFactory2
-  }, {
-    type: Document,
-    decorators: [{
-      type: Inject,
-      args: [DOCUMENT]
-    }]
-  }], null);
-})();
-var BrowserAnimationFactory = class extends AnimationFactory {
-  _id;
-  _renderer;
-  constructor(_id, _renderer) {
-    super();
-    this._id = _id;
-    this._renderer = _renderer;
-  }
-  create(element, options) {
-    return new RendererAnimationPlayer(this._id, element, options || {}, this._renderer);
-  }
-};
-var RendererAnimationPlayer = class {
-  id;
-  element;
-  _renderer;
-  parentPlayer = null;
-  _started = false;
-  constructor(id, element, options, _renderer) {
-    this.id = id;
-    this.element = element;
-    this._renderer = _renderer;
-    this._command("create", options);
-  }
-  _listen(eventName, callback) {
-    return this._renderer.listen(this.element, `@@${this.id}:${eventName}`, callback);
-  }
-  _command(command, ...args) {
-    issueAnimationCommand(this._renderer, this.element, this.id, command, args);
-  }
-  onDone(fn2) {
-    this._listen("done", fn2);
-  }
-  onStart(fn2) {
-    this._listen("start", fn2);
-  }
-  onDestroy(fn2) {
-    this._listen("destroy", fn2);
-  }
-  init() {
-    this._command("init");
-  }
-  hasStarted() {
-    return this._started;
-  }
-  play() {
-    this._command("play");
-    this._started = true;
-  }
-  pause() {
-    this._command("pause");
-  }
-  restart() {
-    this._command("restart");
-  }
-  finish() {
-    this._command("finish");
-  }
-  destroy() {
-    this._command("destroy");
-  }
-  reset() {
-    this._command("reset");
-    this._started = false;
-  }
-  setPosition(p) {
-    this._command("setPosition", p);
-  }
-  getPosition() {
-    return unwrapAnimationRenderer(this._renderer)?.engine?.players[this.id]?.getPosition() ?? 0;
-  }
-  totalTime = 0;
-};
-function issueAnimationCommand(renderer, element, id, command, args) {
-  renderer.setProperty(element, `@@${id}:${command}`, args);
-}
-function unwrapAnimationRenderer(renderer) {
-  const type = renderer.ɵtype;
-  if (type === 0) {
-    return renderer;
-  } else if (type === 1) {
-    return renderer.animationRenderer;
-  }
-  return null;
-}
-function isAnimationRenderer(renderer) {
-  const type = renderer.ɵtype;
-  return type === 0 || type === 1;
-}
 
 // node_modules/@popperjs/core/lib/enums.js
 var top = "top";
@@ -20682,13 +20519,4 @@ export {
   WidgetStatEComponent,
   WidgetStatFComponent
 };
-/*! Bundled license information:
-
-@angular/animations/fesm2022/animations.mjs:
-  (**
-   * @license Angular v19.2.14
-   * (c) 2010-2025 Google LLC. https://angular.io/
-   * License: MIT
-   *)
-*/
 //# sourceMappingURL=@coreui_angular.js.map

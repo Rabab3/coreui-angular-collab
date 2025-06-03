@@ -19,7 +19,7 @@ import { IconSetService } from '@coreui/icons-angular';
 import { Title } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
-
+import { ToastrModule } from 'ngx-toastr';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(
@@ -42,7 +42,8 @@ export const appConfig: ApplicationConfig = {
       ReactiveFormsModule,
       NgxEditorModule,
       SidebarModule,
-      DropdownModule
+      DropdownModule,
+       ToastrModule.forRoot()
     ),
     IconSetService,
     provideAnimationsAsync(),

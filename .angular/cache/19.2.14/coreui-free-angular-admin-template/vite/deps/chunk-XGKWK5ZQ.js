@@ -1,9 +1,9 @@
 import {
   DomSanitizer
-} from "./chunk-2I26XJ42.js";
+} from "./chunk-RWMWVF5H.js";
 import {
   NgClass
-} from "./chunk-6DHFQXEI.js";
+} from "./chunk-LJRMVWU3.js";
 import {
   Component,
   Directive,
@@ -37,7 +37,7 @@ import {
   ɵɵsanitizeHtml,
   ɵɵtemplate,
   ɵɵviewQuerySignal
-} from "./chunk-NWLR3VMJ.js";
+} from "./chunk-LB7E77GG.js";
 
 // node_modules/@coreui/icons-angular/fesm2022/coreui-icons-angular.mjs
 var _c0 = ["svgElement"];
@@ -522,4 +522,4 @@ export {
   IconComponent,
   IconModule
 };
-//# sourceMappingURL=chunk-FJBNKP37.js.map
+//# sourceMappingURL=chunk-XGKWK5ZQ.js.map

@@ -1,7 +1,7 @@
 <div class="theme-manage">
   <h2>📁 Gérer les thématiques</h2>
 
-  <table *ngIf="themes.length > 0">
+  <table *ngIf="themes.length > 0" class="styled-table">
     <thead>
       <tr>
         <th>Nom</th>
@@ -11,18 +11,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let theme of themes">
+      <tr *ngFor="let theme of themes" [@fadeOut]>
         <td>{{ theme.nom }}</td>
         <td>{{ theme.description }}</td>
         <td>{{ theme.icone }}</td>
         <td>
-          <button (click)="supprimerTheme(theme.id)">🗑️ Supprimer</button>
+          <button class="btn-delete" (click)="supprimerTheme(theme.id)">🗑️ Supprimer</button>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <div *ngIf="themes.length === 0">
+  <div *ngIf="themes.length === 0" class="empty-message">
     <p>Aucune thématique enregistrée.</p>
   </div>
 </div>

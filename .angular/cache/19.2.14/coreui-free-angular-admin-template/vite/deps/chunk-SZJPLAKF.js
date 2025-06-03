@@ -60,6 +60,12 @@ function state(name, styles, options) {
     options
   };
 }
+function keyframes(steps) {
+  return {
+    type: AnimationMetadataType.Keyframes,
+    steps
+  };
+}
 function transition(stateChangeExpr, steps, options = null) {
   return {
     type: AnimationMetadataType.Transition,
@@ -94,6 +100,13 @@ function query(selector, animation2, options = null) {
     selector,
     animation: animation2,
     options
+  };
+}
+function stagger(timings, animation2) {
+  return {
+    type: AnimationMetadataType.Stagger,
+    timings,
+    animation: animation2
   };
 }
 var NoopAnimationPlayer = class {
@@ -328,11 +341,13 @@ export {
   sequence,
   style,
   state,
+  keyframes,
   transition,
   animation,
   animateChild,
   useAnimation,
   query,
+  stagger,
   NoopAnimationPlayer,
   AnimationGroupPlayer,
   ɵPRE_STYLE
@@ -346,4 +361,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-WCRERABP.js.map
+//# sourceMappingURL=chunk-SZJPLAKF.js.map
