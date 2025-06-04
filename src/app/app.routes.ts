@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { DefaultLayoutComponent } from './layout/default-layout/default-layout.component';
-import { ThematiqueComponent } from './views/par-thematique/thematique/thematique.component';
 
 export const routes: Routes = [
   {
@@ -21,10 +20,7 @@ export const routes: Routes = [
 
       { path: 'utilisateurs', loadComponent: () => import('./views/utilisateurs/utilisateurs.component').then(m => m.UtilisateursComponent) },
 
-      { path: 'thematiques/ajouter', loadComponent: () => import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent) },
-
-      { path: 'thematiques/ajouter', loadComponent: () => import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent),
-      data: { title: 'Ajouter une thématique' } },
+      { path: 'thematiques/ajouter', loadComponent: () => import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent), data: { title: 'Ajouter une thématique' } },
 
       { path: 'thematiques/gerer', loadComponent: () => import('./views/par-thematique/theme/theme-manage.component').then(m => m.ThemeManageComponent), data: { title: 'Gérer les thématiques' } },
 
@@ -34,30 +30,21 @@ export const routes: Routes = [
       
       { path: 'roles', loadComponent: () => import('./views/roles/roles.component').then(m => m.RolesComponent) },
 
-      { path: 'moderation/avalider', loadComponent: () => import('./moderation/avalider/avalider.component').then(m => m.AvaliderComponent), },
+      { path: 'moderation/avalider', loadComponent: () => import('./moderation/avalider/avalider.component').then(m => m.AvaliderComponent) },
 
-      { path: 'moderation/acorriger', loadComponent: () => import('./moderation/acorriger/acorriger.component').then(m => m.AcorrigerComponent), },
+      { path: 'moderation/acorriger', loadComponent: () => import('./moderation/acorriger/acorriger.component').then(m => m.AcorrigerComponent) },
 
-      { path: 'parametres/profil', loadComponent: () => import('./views/pages/profil/profil.component').then(m => m.ProfilComponent) }
+      { path: 'parametres/profil', loadComponent: () => import('./views/pages/profil/profil.component').then(m => m.ProfilComponent) },
+
+      { path: 'logout', loadComponent: () => import('./views/pages/logout/logout.component').then(m => m.LogoutComponent) }
+
+
     ]
   },
 
-  {
-    path: 'login',
-    loadComponent: () => import('./views/pages/login/login.component').then(m => m.LoginComponent)
-  },
-  {
-    path: 'register',
-    loadComponent: () => import('./views/pages/register/register.component').then(m => m.RegisterComponent)
-  },
-  {
-    path: '404',
-    loadComponent: () => import('./views/pages/page404/page404.component').then(m => m.Page404Component)
-  },
-  {
-    path: '500',
-    loadComponent: () => import('./views/pages/page500/page500.component').then(m => m.Page500Component)
-  },
-
+  { path: 'login', loadComponent: () => import('./views/pages/login/login.component').then(m => m.LoginComponent) },
+  { path: 'register', loadComponent: () => import('./views/pages/register/register.component').then(m => m.RegisterComponent) },
+  { path: '404', loadComponent: () => import('./views/pages/page404/page404.component').then(m => m.Page404Component) },
+  { path: '500', loadComponent: () => import('./views/pages/page500/page500.component').then(m => m.Page500Component) },
   { path: '**', redirectTo: '404' }
 ];
