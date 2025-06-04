@@ -18,8 +18,11 @@ export class ArticleDetailsComponent implements OnInit {
     private articleService: ArticleService
   ) {}
 
-  ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.article = this.articleService.getArticleById(id);
-  }
+ ngOnInit(): void {
+  const id = +this.route.snapshot.paramMap.get('id')!;
+  this.articleService.getArticleById(id).subscribe(article => {
+    this.article = article;
+  });
+}
+
 }

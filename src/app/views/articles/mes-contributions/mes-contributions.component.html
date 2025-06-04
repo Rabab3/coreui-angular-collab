@@ -21,25 +21,34 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let article of filteredArticles">
-          <td>{{ article.titre }}</td>
-          <td *ngIf="role === 'moderateur'">{{ article.auteur }}</td>
-          <td>
-            <span [ngClass]="{
-              'badge bg-warning text-dark': article.statut === 'En attente',
-              'badge bg-success': article.statut === 'Publié',
-              'badge bg-secondary': article.statut === 'À corriger'
-            }">
-              {{ article.statut }}
-            </span>
-          </td>
-          <td>{{ article.date | date:'dd/MM/yyyy' }}</td>
-          <td *ngIf="role === 'moderateur'">
-            <button class="btn btn-success btn-sm me-1" (click)="changerStatut(article, 'Publié')">Valider</button>
-            <button class="btn btn-warning btn-sm me-1" (click)="changerStatut(article, 'À corriger')">Retourner</button>
-            <button class="btn btn-info btn-sm">Voir</button>
-          </td>
-        </tr>
+        <ng-container *ngFor="let article of filteredArticles">
+          <tr>
+            <td>{{ article.titre }}</td>
+            <td *ngIf="role === 'moderateur'">{{ article.auteur }}</td>
+            <td>
+              <span [ngClass]="{
+                'badge bg-warning text-dark': article.statut === 'En attente',
+                'badge bg-success': article.statut === 'Publié',
+                'badge bg-secondary': article.statut === 'À corriger'
+              }">
+                {{ article.statut }}
+              </span>
+            </td>
+            <td>{{ article.date | date:'dd/MM/yyyy' }}</td>
+            <td *ngIf="role === 'moderateur'">
+              <button class="btn btn-success btn-sm me-1" (click)="changerStatut(article, 'Publié')">Valider</button>
+              <button class="btn btn-warning btn-sm me-1" (click)="changerStatut(article, 'À corriger')">Retourner</button>
+              <button class="btn btn-info btn-sm">Voir</button>
+            </td>
+          </tr>
+
+          <!-- Affichage du commentaire de retour -->
+          <tr *ngIf="article.statut === 'À corriger' && article.retourCommentaire">
+            <td colspan="5" class="text-start bg-light text-danger">
+              <strong>🔁 Commentaire de retour :</strong> {{ article.retourCommentaire }}
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>

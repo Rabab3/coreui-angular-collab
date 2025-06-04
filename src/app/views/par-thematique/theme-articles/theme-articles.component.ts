@@ -22,19 +22,22 @@ export class ThemeArticlesComponent implements OnInit {
     private articleService: ArticleService,
     private router: Router
   ) {}
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = Number(params.get('id'));
-      this.themeId = id;
-      this.theme = this.themeService.getThemeById(this.themeId);
-      this.articles = this.articleService.getArticlesByTheme(this.themeId);
+ngOnInit(): void {
+  this.route.params.subscribe(params => {
+    const themeId = +params['id'];
+    this.articleService.getArticlesByTheme(themeId).subscribe(articles => {
+      this.articles = articles;
     });
+  });
+
   }
 
   toggleFavori(articleId: number): void {
     this.articleService.toggleFavori(articleId);
-    this.articles = this.articleService.getArticlesByTheme(this.themeId);
+    this.articleService.getArticlesByTheme(this.themeId).subscribe(data => {
+  this.articles = data;
+});
+
   }
 
   lireArticle(id: number) {

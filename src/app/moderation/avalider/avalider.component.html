@@ -1,0 +1,36 @@
+<div class="container">
+  <h2>📥 Articles à valider</h2>
+
+  <input
+    type="text"
+    [(ngModel)]="searchTerm"
+    placeholder="Rechercher un article..."
+    class="search-bar"
+  />
+
+  <div class="article-list">
+    <div class="article-card" *ngFor="let article of articlesFiltres">
+      <h3>{{ article.titre }}</h3>
+      <p><strong>Date :</strong> {{ article.date }}</p>
+      <p>{{ article.contenu | slice:0:100 }}...</p>
+
+      <div class="actions">
+        <button (click)="valider(article)">✔️ Valider</button>
+        <button (click)="openRetourModal(article)">🔁 Retourner</button>
+        <button (click)="voir(article)">👁️ Voir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale -->
+<div class="modal-backdrop" *ngIf="showModal">
+  <div class="modal-content">
+    <h3>💬 Commentaire de retour</h3>
+    <textarea [(ngModel)]="commentaireRetour" placeholder="Pourquoi retourner cet article ?"></textarea>
+    <div class="modal-actions">
+      <button (click)="closeModal()">Annuler</button>
+      <button (click)="retourner()">Envoyer</button>
+    </div>
+  </div>
+</div>

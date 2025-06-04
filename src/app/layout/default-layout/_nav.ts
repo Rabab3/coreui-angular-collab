@@ -2,14 +2,14 @@
 
   export const navItems: INavData[] = [
     {
-      name: '🏠 Accueil',
+      name: ' Accueil',
       url: '/dashboard',
       iconComponent: { name: 'cil-home' },
     },
 
     {
-      name: '📚 Articles',
-      iconComponent: { name: 'cil-book' },
+      name: ' Articles',
+      iconComponent: { name: 'cil-task' },
       children: [
         {
           name: '📄 Liste des articles',
@@ -35,25 +35,26 @@
     },
 
     {
-      name: '🛠️ Modération',
+      name: ' Modération',
       url: '/moderation',
       iconComponent: { name: 'cil-task' },
       attributes: { role: ['moderateur'] },
       children: [
         {
           name: '📥 À valider',
-          url: '/moderation/liste-a-valider'
+          url: '/moderation/avalider'
+
         },
         {
           name: '📝 À corriger',
-          url: '/moderation/a-corriger'
+          url:  '/moderation/acorriger'
         }
       ]
     },
 
 
     {
-      name: '👥 Utilisateurs',
+      name: 'Utilisateurs',
       iconComponent: { name: 'cil-people' },
       attributes: { role: ['admin'] },
       children: [
@@ -69,7 +70,7 @@
     },
 
     {
-      name: '⚙️ Paramètres',
+      name: ' Paramètres',
       iconComponent: { name: 'cil-settings' },
       children: [
         {

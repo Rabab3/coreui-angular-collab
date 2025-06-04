@@ -54,3 +54,9 @@ button:hover {
 .table-responsive {
   margin-top: 1rem;
 }
+
+.bg-light.text-danger {
+  font-style: italic;
+  padding-left: 1rem;
+  border-left: 4px solid red;
+}

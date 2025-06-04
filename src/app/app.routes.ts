@@ -19,10 +19,6 @@ export const routes: Routes = [
 
       { path: 'articles/favoris', loadComponent: () => import('./views/articles/favoris-list/favoris-list.component').then(m => m.FavorisListComponent) },
 
-      { path: 'moderation/liste-a-valider', loadComponent: () => import('./views/a-valider/a-valider.component').then(m => m.AValiderComponent) },
-
-      { path: 'moderation/a-corriger', loadComponent: () => import('./views/a-corriger/a-corriger.component').then(m => m.ACorrigerComponent) },
-
       { path: 'utilisateurs', loadComponent: () => import('./views/utilisateurs/utilisateurs.component').then(m => m.UtilisateursComponent) },
 
       { path: 'thematiques/ajouter', loadComponent: () => import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent) },
@@ -37,6 +33,10 @@ export const routes: Routes = [
       { path: 'articles/details/:id', loadComponent: () => import('./views/articles/article-details/article-details.component').then(m => m.ArticleDetailsComponent), data: { title: 'Détails de l\'article' } },
       
       { path: 'roles', loadComponent: () => import('./views/roles/roles.component').then(m => m.RolesComponent) },
+
+      { path: 'moderation/avalider', loadComponent: () => import('./moderation/avalider/avalider.component').then(m => m.AvaliderComponent), },
+
+      { path: 'moderation/acorriger', loadComponent: () => import('./moderation/acorriger/acorriger.component').then(m => m.AcorrigerComponent), },
 
       { path: 'parametres/profil', loadComponent: () => import('./views/pages/profil/profil.component').then(m => m.ProfilComponent) }
     ]

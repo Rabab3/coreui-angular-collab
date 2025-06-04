@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 export interface Article {
   id: number;
   titre: string;
   contenu: string;
   themeId: number;
+  auteur?: string;
   favori?: boolean;
   date?: string;
+  statut?: string;
+  retourCommentaire?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,27 +31,22 @@ export class ArticleService {
     if (data) {
       this.articles = JSON.parse(data);
     } else {
-      // Données par défaut si vide
+      // ✅ Article temporaire pour test de validation
       this.articles = [
         {
           id: 1,
-          titre: 'Introduction à la cybersécurité',
-          contenu: 'Contenu de cybersécurité...',
+          titre: 'Article Test à valider',
+          contenu: 'Ceci est un article simulé à valider.',
           themeId: 1,
-          favori: false,
-          date: '2025-06-01'
-        },
-        {
-          id: 2,
-          titre: 'Bonnes pratiques RH',
-          contenu: 'Contenu RH...',
-          themeId: 2,
-          favori: false,
-          date: '2025-06-02'
+          auteur: 'Testeur',
+          statut: 'En attente',
+          date: new Date().toISOString().split('T')[0],
+          favori: false
         }
       ];
       this.saveArticles();
     }
+
     this.articles$.next(this.articles);
   }
 
@@ -55,28 +54,43 @@ export class ArticleService {
     localStorage.setItem(this.storageKey, JSON.stringify(this.articles));
   }
 
-  getArticles() {
+  // 🔁 observable global
+  getArticles(): Observable<Article[]> {
     return this.articles$.asObservable();
   }
 
-  getArticlesByTheme(themeId: number): Article[] {
-    return this.articles.filter(article => article.themeId === themeId);
-  }
+  getArticlesByTheme(themeId: number): Observable<Article[]> {
+  const filtered = this.articles.filter(article => article.themeId === themeId);
+  return of(filtered);
+}
 
-  getArticleById(id: number): Article | undefined {
-    return this.articles.find(article => article.id === id);
-  }
+
+  getArticleById(id: number): Observable<Article | undefined> {
+  const article = this.articles.find(a => a.id === id);
+  return of(article);
+}
+
 
   addArticle(article: Article) {
     article.id = this.articles.length + 1;
     article.date = new Date().toISOString().split('T')[0];
     article.favori = false;
+    article.statut = 'En attente';
     this.articles.push(article);
     this.saveArticles();
     this.articles$.next(this.articles);
   }
 
-  // ✅ FAVORIS en localStorage
+  updateArticle(id: number, updatedFields: Partial<Article>) {
+    const index = this.articles.findIndex(a => a.id === id);
+    if (index !== -1) {
+      this.articles[index] = { ...this.articles[index], ...updatedFields };
+      this.saveArticles();
+      this.articles$.next(this.articles);
+    }
+  }
+
+  // ⭐ Favoris
   toggleFavori(articleId: number): void {
     let favoris = this.getFavorisIds();
     if (favoris.includes(articleId)) {

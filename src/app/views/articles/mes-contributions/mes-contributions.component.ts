@@ -15,10 +15,27 @@ import autoTable from 'jspdf-autotable';
 export class MesContributionsComponent {
   searchText: string = '';
   role: string = localStorage.getItem('role') || '';
+  
   articles = [
-    { titre: 'Sécurité API', auteur: 'Rabab', statut: 'En attente', date: new Date('2025-05-31') },
-    { titre: 'Système RH', auteur: 'Laila', statut: 'À corriger', date: new Date('2025-05-30') },
-    { titre: 'Angular Moderne', auteur: 'Admin', statut: 'Publié', date: new Date('2025-05-29') }
+    {
+      titre: 'Sécurité API',
+      auteur: 'Rabab',
+      statut: 'En attente',
+      date: new Date('2025-05-31')
+    },
+    {
+      titre: 'Système RH',
+      auteur: 'Laila',
+      statut: 'À corriger',
+      retourCommentaire: 'Merci de préciser les outils RH utilisés.',
+      date: new Date('2025-05-30')
+    },
+    {
+      titre: 'Angular Moderne',
+      auteur: 'Admin',
+      statut: 'Publié',
+      date: new Date('2025-05-29')
+    }
   ];
 
   get filteredArticles() {

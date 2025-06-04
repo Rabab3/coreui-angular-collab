@@ -38,7 +38,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
   generateMenu(themes: Thématique[]) {
     const dynamicThématiques: INavData = {
-      name: '🏷️ Thématiques',
+      name: ' Thématiques',
       iconComponent: { name: 'cil-tags' },
       children: themes.map(theme => ({
         name: `${theme.icone || '📁'} ${theme.nom}`,
