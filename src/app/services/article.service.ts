@@ -12,6 +12,7 @@ export interface Article {
   date?: string;
   statut?: string;
   retourCommentaire?: string;
+  dateRetour?: string;
 }
 
 @Injectable({ providedIn: 'root' })

@@ -1,1 +1,17 @@
-<p>acorriger works!</p>
+<div class="container mt-4">
+  <h2 class="text-center mb-4">📄 Articles à corriger</h2>
+
+  <input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" placeholder="Rechercher par titre ou commentaire..." />
+
+  <div *ngIf="articlesFiltres.length === 0" class="text-center text-muted">Aucun article à corriger.</div>
+
+  <div *ngFor="let article of articlesFiltres" class="card mb-3 shadow">
+    <div class="card-body">
+      <h5 class="card-title">{{ article.titre }}</h5>
+      <p><strong>Commentaire de retour :</strong> {{ article.retourCommentaire }}</p>
+      <p><strong>Date de retour :</strong> {{ article.dateRetour | date:'dd/MM/yyyy - HH:mm' }}</p>
+      <button class="btn btn-outline-info btn-sm" (click)="voirContenu(article)">Voir le contenu</button>
+    </div>
+  </div>
+</div>
+    

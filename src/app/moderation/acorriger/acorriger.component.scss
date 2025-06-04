@@ -1,0 +1,49 @@
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+input.form-control {
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.card {
+  border-radius: 0.75rem;
+  border: none;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.card-body p {
+  margin-bottom: 0.5rem;
+}
+
+.btn {
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: scale(1.03);
+}
