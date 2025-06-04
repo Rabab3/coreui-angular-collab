@@ -14,16 +14,16 @@
       <thead class="table-dark">
         <tr>
           <th>Titre</th>
-          <th *ngIf="role === 'admin'">Auteur</th>
+          <th *ngIf="role === 'moderateur'">Auteur</th>
           <th>Statut</th>
           <th>Date</th>
-          <th *ngIf="role === 'admin'">Actions</th>
+          <th *ngIf="role === 'moderateur'">Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let article of filteredArticles">
           <td>{{ article.titre }}</td>
-          <td *ngIf="role === 'admin'">{{ article.auteur }}</td>
+          <td *ngIf="role === 'moderateur'">{{ article.auteur }}</td>
           <td>
             <span [ngClass]="{
               'badge bg-warning text-dark': article.statut === 'En attente',
@@ -34,7 +34,7 @@
             </span>
           </td>
           <td>{{ article.date | date:'dd/MM/yyyy' }}</td>
-          <td *ngIf="role === 'admin'">
+          <td *ngIf="role === 'moderateur'">
             <button class="btn btn-success btn-sm me-1" (click)="changerStatut(article, 'Publié')">Valider</button>
             <button class="btn btn-warning btn-sm me-1" (click)="changerStatut(article, 'À corriger')">Retourner</button>
             <button class="btn btn-info btn-sm">Voir</button>
