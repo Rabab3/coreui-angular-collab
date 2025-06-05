@@ -1,7 +1,8 @@
 .profile-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 3rem;
+  padding: 1rem;
 }
 
 .profile-card {
@@ -10,62 +11,86 @@
   background-color: var(--cui-body-bg);
   color: var(--cui-body-color);
   border-radius: 16px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 2rem 3rem;
   width: 100%;
-  max-width: 900px;
-  gap: 2rem;
+  max-width: 1000px;
+  gap: 3rem;
+  align-items: center;
+}
+
+.profile-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .profile-left img {
   width: 160px;
   height: 160px;
-  object-fit: cover;
   border-radius: 50%;
+  object-fit: cover;
   border: 4px solid #dee2e6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-left input[type="file"] {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+  border: none;
 }
 
 .profile-right {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.7rem;
 }
 
 .profile-right h2 {
+  font-size: 2rem;
   margin-bottom: 1rem;
-  font-size: 1.8rem;
   color: var(--cui-emphasis-color, #343a40);
+  font-weight: 600;
 }
 
-.btn-deconnexion {
-  margin-top: 1.5rem;
-  align-self: flex-start;
-  background-color: #dc3545;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+.profile-right p {
+  font-size: 1.1rem;
+  margin: 0.3rem 0;
 }
 
-.btn-deconnexion:hover {
-  background-color: #c82333;
+.profile-right p strong {
+  color: var(--cui-emphasis-color, #343a40);
 }
 
 @media (max-width: 768px) {
   .profile-card {
     flex-direction: column;
-    align-items: center;
     text-align: center;
   }
 
   .profile-right {
     align-items: center;
   }
+}
+.custom-file-upload {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin-top: 0.8rem;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 
-  .btn-deconnexion {
-    align-self: center;
-  }
+.custom-file-upload:hover {
+  background-color: #0056b3;
+}
+
+.custom-file-upload input[type="file"] {
+  display: none;
 }

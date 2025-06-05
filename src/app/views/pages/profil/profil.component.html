@@ -1,18 +1,23 @@
 <div class="profile-wrapper">
   <div class="profile-card">
     <div class="profile-left">
-      <img src="assets/images/avatars/2.jpg" alt="Photo de profil">
+      <img [src]="photoUrl" alt="Photo de profil" />
+     <label class="custom-file-upload">
+  📷 Changer la photo
+  <input type="file" accept="image/*" (change)="onPhotoSelected($event)" />
+</label>
+
     </div>
+
     <div class="profile-right">
       <h2>Mon Profil</h2>
       <p><strong>Nom :</strong> {{ userData.nom }}</p>
       <p><strong>Prénom :</strong> {{ userData.prenom }}</p>
       <p><strong>Email :</strong> {{ userData.email }}</p>
+      <p><strong>Numéro :</strong> {{ userData.telephone }}</p>
       <p><strong>Date de naissance :</strong> {{ userData.dateNaissance }}</p>
       <p><strong>CIN :</strong> {{ userData.cin }}</p>
       <p><strong>Statut marital :</strong> {{ userData.statutMarital }}</p>
-
-     
     </div>
   </div>
 </div>

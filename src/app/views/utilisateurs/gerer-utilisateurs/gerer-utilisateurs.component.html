@@ -1,0 +1,90 @@
+<div class="users-wrapper">
+  <h2>👥 Gérer les utilisateurs</h2>
+
+  <div class="filters">
+    <input
+      type="text"
+      [(ngModel)]="recherche"
+      placeholder="🔍 Rechercher par nom ou prénom"
+      (input)="actualiserListe()"
+    />
+    <select [(ngModel)]="filtreRole" (change)="actualiserListe()">
+      <option value="">Tous les rôles</option>
+      <option value="admin">Admin</option>
+      <option value="moderateur">Modérateur</option>
+      <option value="contributeur">Contributeur</option>
+      <option value="lecteur">Lecteur</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Téléphone</th>
+        <th>Date naissance</th>
+        <th>CIN</th>
+        <th>Statut</th>
+        <th>Rôle</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of utilisateursFiltres">
+        <td>{{ user.nom }}</td>
+        <td>{{ user.prenom }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.telephone }}</td>
+        <td>{{ user.dateNaissance }}</td>
+        <td>{{ user.cin }}</td>
+        <td>{{ user.statutMarital }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+          <button class="edit" (click)="ouvrirModal(user)">✏️</button>
+          <button class="delete" (click)="supprimerUtilisateur(user.id)">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- MODALE -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <h3>✏️ Modifier l'utilisateur</h3>
+
+      <form (ngSubmit)="enregistrerModifications()">
+        <label>Nom :</label>
+        <input [(ngModel)]="utilisateurActuel.nom" name="nom" required />
+
+        <label>Prénom :</label>
+        <input [(ngModel)]="utilisateurActuel.prenom" name="prenom" required />
+
+        <label>Email :</label>
+        <input [(ngModel)]="utilisateurActuel.email" name="email" type="email" required />
+
+        <label>Téléphone :</label>
+        <input [(ngModel)]="utilisateurActuel.telephone" name="telephone" />
+
+        <label>Date de naissance :</label>
+        <input [(ngModel)]="utilisateurActuel.dateNaissance" name="dateNaissance" type="date" />
+
+        <label>CIN :</label>
+        <input [(ngModel)]="utilisateurActuel.cin" name="cin" />
+
+        <label>Statut marital :</label>
+        <select [(ngModel)]="utilisateurActuel.statutMarital" name="statutMarital">
+          <option value="Célibataire">Célibataire</option>
+          <option value="Marié">Marié</option>
+          <option value="Divorcé">Divorcé</option>
+        </select>
+
+        <div class="modal-actions">
+          <button type="submit" class="save">💾 Enregistrer</button>
+          <button type="button" (click)="fermerModal()">❌ Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
