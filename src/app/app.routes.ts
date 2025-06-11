@@ -37,8 +37,11 @@ export const routes: Routes = [
       { path: 'parametres/profil', loadComponent: () => import('./views/pages/profil/profil.component').then(m => m.ProfilComponent) },
 
       { path: 'logout', loadComponent: () => import('./views/pages/logout/logout.component').then(m => m.LogoutComponent) },
-      
-      { path: 'admin/utilisateurs/gerer', loadComponent: () => import('./views/utilisateurs/gerer-utilisateurs/gerer-utilisateurs.component') .then(m => m.GererUtilisateursComponent), data: { title: 'Gérer les utilisateurs' }}
+
+      { path: 'admin/utilisateurs/gerer', loadComponent: () => import('./views/utilisateurs/gerer-utilisateurs/gerer-utilisateurs.component') .then(m => m.GererUtilisateursComponent), data: { title: 'Gérer les utilisateurs' }},
+
+      { path: 'admin/utilisateurs/roles', loadComponent: () => import('./views/utilisateurs/user-role-management/user-role-management.component') .then(m => m.UserRoleManagementComponent), data: { title: 'Gérer les rôles' }
+    }
     ]
   },
 

@@ -1,0 +1,40 @@
+<div class="role-wrapper">
+  <h2>🛡️ Gérer les rôles</h2>
+
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="🔍 Rechercher par nom ou prénom"
+      [(ngModel)]="recherche"
+      (input)="filtrer()" />
+
+    <select [(ngModel)]="filtreRole" (change)="filtrer()">
+      <option value="">Tous les rôles</option>
+      <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Rôle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of utilisateursFiltres">
+        <td>{{ user.nom }}</td>
+        <td>{{ user.prenom }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <select [(ngModel)]="user.role" (change)="changerRole(user.id, user.role)">
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+    
