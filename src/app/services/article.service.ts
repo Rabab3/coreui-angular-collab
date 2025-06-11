@@ -1,119 +1,94 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 export interface Article {
   id: number;
   titre: string;
   contenu: string;
   themeId: number;
-  auteur?: string;
+  date: string;
   favori?: boolean;
-  date?: string;
   statut?: string;
   retourCommentaire?: string;
   dateRetour?: string;
+  modeSaisie?: string;     // 'texte' ou 'fichier'
+  categorie?: string;      // ex: "Développement Web"
+  tags?: string[];         // liste de hashtags
+  source?: string;         // lien facultatif
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ArticleService {
-  private storageKey = 'articles_local';
-  private favorisKey = 'favoris_articles';
-  private articles: Article[] = [];
-
-  private articles$ = new BehaviorSubject<Article[]>([]);
+  private articlesSubject: BehaviorSubject<Article[]>;
 
   constructor() {
-    this.loadArticles();
+    const savedArticles = localStorage.getItem('articles');
+    const initialArticles: Article[] = savedArticles ? JSON.parse(savedArticles) : [
+      {
+        id: 1,
+        titre: "Créer une authentification sécurisée avec JWT dans Angular et Spring Boot",
+        contenu: `Dans cet article, nous allons apprendre à mettre en place une authentification sécurisée basée sur JWT (JSON Web Token) en utilisant Angular pour le frontend et Spring Boot pour le backend.
+
+Étapes principales :
+- Création des endpoints d'authentification (login/register) dans Spring Boot
+- Génération et validation des tokens JWT côté backend
+- Intégration du service d’authentification dans Angular
+- Intercepteur HTTP pour ajouter automatiquement le token
+- Redirection conditionnelle selon les rôles (admin, utilisateur…)
+
+Ce guide vous permettra de construire une base solide pour vos applications sécurisées.`,
+        themeId: 1,
+        date: "2025-06-11",
+        favori: false,
+        statut: "Publié",
+        modeSaisie: "texte",
+        categorie: "dev Web",
+        tags: ["#angular", "#springboot", "#jwt", "#authentification", "#sécurité"],
+        source: "https://jwt.io/introduction"
+      }
+    ];
+    this.articlesSubject = new BehaviorSubject<Article[]>(initialArticles);
+    this.saveToLocalStorage(initialArticles);
   }
 
-  private loadArticles() {
-    const data = localStorage.getItem(this.storageKey);
-    if (data) {
-      this.articles = JSON.parse(data);
-    } else {
-      // ✅ Article temporaire pour test de validation
-      this.articles = [
-        {
-          id: 1,
-          titre: 'Article Test à valider',
-          contenu: 'Ceci est un article simulé à valider.',
-          themeId: 1,
-          auteur: 'Testeur',
-          statut: 'En attente',
-          date: new Date().toISOString().split('T')[0],
-          favori: false
-        }
-      ];
-      this.saveArticles();
-    }
-
-    this.articles$.next(this.articles);
+  private saveToLocalStorage(data: Article[]) {
+    localStorage.setItem('articles', JSON.stringify(data));
+    this.articlesSubject.next(data);
   }
 
-  private saveArticles() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.articles));
-  }
-
-  // 🔁 observable global
   getArticles(): Observable<Article[]> {
-    return this.articles$.asObservable();
+    return this.articlesSubject.asObservable();
   }
 
   getArticlesByTheme(themeId: number): Observable<Article[]> {
-  const filtered = this.articles.filter(article => article.themeId === themeId);
-  return of(filtered);
-}
-
+    const all = this.articlesSubject.value;
+    const filtered = all.filter(a => a.themeId === themeId);
+    return of(filtered);
+  }
 
   getArticleById(id: number): Observable<Article | undefined> {
-  const article = this.articles.find(a => a.id === id);
-  return of(article);
-}
-
-
-  addArticle(article: Article) {
-    article.id = this.articles.length + 1;
-    article.date = new Date().toISOString().split('T')[0];
-    article.favori = false;
-    article.statut = 'En attente';
-    this.articles.push(article);
-    this.saveArticles();
-    this.articles$.next(this.articles);
+    const article = this.articlesSubject.value.find(a => a.id === id);
+    return of(article);
   }
 
-  updateArticle(id: number, updatedFields: Partial<Article>) {
-    const index = this.articles.findIndex(a => a.id === id);
-    if (index !== -1) {
-      this.articles[index] = { ...this.articles[index], ...updatedFields };
-      this.saveArticles();
-      this.articles$.next(this.articles);
-    }
-  }
-
-  // ⭐ Favoris
   toggleFavori(articleId: number): void {
-    let favoris = this.getFavorisIds();
-    if (favoris.includes(articleId)) {
-      favoris = favoris.filter(id => id !== articleId);
-    } else {
-      favoris.push(articleId);
-    }
-    localStorage.setItem(this.favorisKey, JSON.stringify(favoris));
+    const articles = this.articlesSubject.value.map(a =>
+      a.id === articleId ? { ...a, favori: !a.favori } : a
+    );
+    this.saveToLocalStorage(articles);
   }
 
-  isFavori(articleId: number): boolean {
-    const favoris = this.getFavorisIds();
-    return favoris.includes(articleId);
+  addArticle(article: Article): void {
+    const articles = [...this.articlesSubject.value, article];
+    this.saveToLocalStorage(articles);
   }
 
-  getFavoris(): Article[] {
-    const favorisIds = this.getFavorisIds();
-    return this.articles.filter(article => favorisIds.includes(article.id));
-  }
-
-  private getFavorisIds(): number[] {
-    const data = localStorage.getItem(this.favorisKey);
-    return data ? JSON.parse(data) : [];
+  updateArticle(id: number, updates: Partial<Article>): void {
+    const articles = this.articlesSubject.value.map(a =>
+      a.id === id ? { ...a, ...updates } : a
+    );
+    this.saveToLocalStorage(articles);
   }
 }

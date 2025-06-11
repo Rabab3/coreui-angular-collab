@@ -2,6 +2,14 @@
   <h2>📚 Thématique : {{ theme.nom }}</h2>
   <p class="description">{{ theme.description }}</p>
 
+  <div class="toolbar">
+    <button *ngIf="role === 'modérateur' || role === 'contributeur'" (click)="ajouterArticle()">
+      ➕ Ajouter un article
+    </button>
+
+    <input type="text" placeholder="🔍 Rechercher un article" [(ngModel)]="searchTerm" (input)="filtrerArticles()" />
+  </div>
+
   <div class="articles-grid">
     <div class="article-card" *ngFor="let article of articles">
       <h3>{{ article.titre }}</h3>
