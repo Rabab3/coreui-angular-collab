@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2 class="text-center mb-4">📄 Articles à corriger</h2>
+  <h2 class="text-center mb-4">Articles à corriger</h2>
 
   <input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" placeholder="Rechercher par titre ou commentaire..." />
 
@@ -7,11 +7,48 @@
 
   <div *ngFor="let article of articlesFiltres" class="card mb-3 shadow">
     <div class="card-body">
-      <h5 class="card-title">{{ article.titre }}</h5>
+      <h5 class="card-title">🔐 {{ article.titre }}</h5>
       <p><strong>Commentaire de retour :</strong> {{ article.retourCommentaire }}</p>
       <p><strong>Date de retour :</strong> {{ article.dateRetour | date:'dd/MM/yyyy - HH:mm' }}</p>
       <button class="btn btn-outline-info btn-sm" (click)="voirContenu(article)">Voir le contenu</button>
     </div>
   </div>
 </div>
-    
+
+<!-- MODALE -->
+<div class="modal-backdrop" *ngIf="showModal">
+  <div class="modal-content apercu-modal">
+    <h3 class="apercu-title">🔎 {{ selectedArticle?.titre }}</h3>
+
+    <div class="meta">
+      <p>🕒 {{ selectedArticle?.date | date: 'yyyy-MM-dd' }}</p>
+      <p>✍️ <strong>Mode de saisie :</strong> {{ selectedArticle?.mode || 'Éditeur' }}</p>
+      <p>📂 <strong>Catégorie :</strong> {{ selectedArticle?.categorie || 'Non spécifiée' }}</p>
+
+      <ng-container *ngIf="selectedArticle?.tags?.length">
+        <p>🏷️ <strong>Tags :</strong></p>
+        <div class="tags">
+          <span *ngFor="let tag of selectedArticle?.tags">{{ tag }}</span>
+
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="selectedArticle?.source">
+        <p>🌐 <strong>Source :</strong></p>
+     <a [href]="selectedArticle?.source" target="_blank">{{ selectedArticle?.source }}</a>
+
+      </ng-container>
+    </div>
+
+    <hr />
+
+    <div class="apercu-content" [innerHTML]="formatContenu(selectedArticle?.contenu)"></div>
+
+
+
+    <div class="modal-actions">
+      <button (click)="fermerApercu()">Fermer</button>
+      <button *ngIf="role === 'contributeur'" (click)="corrigerEtRenvoyer()">✏️ Corriger et renvoyer</button>
+    </div>
+  </div>
+</div>

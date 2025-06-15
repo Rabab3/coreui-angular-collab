@@ -47,3 +47,90 @@ input.form-control:focus {
 .btn:hover {
   transform: scale(1.03);
 }
+
+/* Modale */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.apercu-modal {
+  background-color: #1d1d3f;
+  color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 90%;
+  // ou plus selon ton besoin
+
+  max-width: 750px;
+}
+.modal-content {
+  max-height: 90vh;      // limite en hauteur visible
+  overflow-y: auto;      // scroll si contenu dépasse
+  padding: 2rem;
+}
+
+.apercu-title {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.meta p {
+  margin-bottom: 0.5rem;
+}
+
+.tags span {
+  display: inline-block;
+  background-color: #444;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  margin-right: 0.3rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.apercu-content {
+  margin-top: 1rem;
+  line-height: 1.6;
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.modal-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background-color: #6c757d;
+  color: white;
+}
+
+.modal-actions button:last-child {
+  background-color: #0d6efd;
+  color: white;
+}
+.apercu-content {
+  line-height: 1.8;
+  white-space: normal;
+}
+

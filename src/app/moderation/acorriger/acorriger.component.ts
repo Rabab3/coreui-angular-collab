@@ -13,10 +13,17 @@ import { FormsModule } from '@angular/forms';
 export class AcorrigerComponent implements OnInit {
   articles: Article[] = [];
   searchTerm: string = '';
+  selectedArticle?: Article;
+  showModal = false;
+  role: string = localStorage.getItem('role') || '';
 
   constructor(private articleService: ArticleService) {}
 
   ngOnInit(): void {
+    this.refreshArticles();
+  }
+
+  refreshArticles() {
     this.articleService.getArticles().subscribe(data => {
       this.articles = data.filter(a => a.statut === 'À corriger');
     });
@@ -30,6 +37,35 @@ export class AcorrigerComponent implements OnInit {
   }
 
   voirContenu(article: Article) {
-    alert(`Contenu de l'article :\n\n${article.contenu}`);
+    this.selectedArticle = article;
+    this.showModal = true;
+  }
+
+  fermerApercu() {
+    this.selectedArticle = undefined;
+    this.showModal = false;
+  }
+
+  corrigerEtRenvoyer() {
+    if (this.selectedArticle) {
+      this.articleService.updateArticle(this.selectedArticle.id, {
+        statut: 'En attente',
+        retourCommentaire: undefined,
+        dateRetour: undefined
+      });
+      alert(`✏️ Article "${this.selectedArticle.titre}" renvoyé pour validation.`);
+      this.fermerApercu();
+      this.refreshArticles();
+    }
+  }
+get contenuFormate(): string {
+  return this.selectedArticle?.contenu?.replace(/\n/g, '<br>') || '';
+}
+formatContenu(contenu: string | undefined): string {
+  return contenu ? contenu.replace(/\n/g, '<br>') : '';
+}
+
+  hasTags(): boolean {
+    return !!this.selectedArticle?.tags?.length;
   }
 }
