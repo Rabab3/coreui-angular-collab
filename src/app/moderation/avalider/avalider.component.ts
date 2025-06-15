@@ -16,13 +16,12 @@ export class AvaliderComponent implements OnInit {
   selectedArticle?: Article;
   commentaireRetour: string = '';
   showModal = false;
+  showApercu = false;
 
   constructor(private articleService: ArticleService) {}
 
   ngOnInit(): void {
-    this.articleService.getArticles().subscribe(data => {
-      this.articles = data.filter(a => a.statut === 'En attente');
-    });
+    this.refreshArticles();
   }
 
   openRetourModal(article: Article) {
@@ -37,31 +36,41 @@ export class AvaliderComponent implements OnInit {
     this.commentaireRetour = '';
   }
 
-  valider(article: Article) {
-    this.articleService.updateArticle(article.id, { statut: 'Publié' });
-    alert(`✅ Article "${article.titre}" validé.`);
-  }
+ valider(article: Article) {
+  this.articleService.updateArticle(article.id, { statut: 'Publié' });
+  alert(`✅ Article "${article.titre}" validé.`);
+  this.refreshArticles();  // recharge la liste sans l’article validé
+}
 
-  retourner() {
+
+ retourner() {
   if (this.selectedArticle && this.commentaireRetour.trim()) {
     this.articleService.updateArticle(this.selectedArticle.id, {
       statut: 'À corriger',
-      retourCommentaire: this.commentaireRetour
+      retourCommentaire: this.commentaireRetour,
+      dateRetour: new Date().toISOString()
     });
     alert(`🔁 Article "${this.selectedArticle.titre}" retourné.`);
-    this.closeModal();
-    this.refreshArticles(); // recharge la liste
+    this.closeModal(); // 🔴 assure-toi que c’est bien ici
+    this.refreshArticles();
   }
-}
-refreshArticles() {
-  this.articleService.getArticles().subscribe(data => {
-    this.articles = data.filter(a => a.statut?.toLowerCase() === 'en attente');
-  });
 }
 
 
   voir(article: Article) {
-    alert(`📰 Aperçu de l'article :\n\n${article.contenu}`);
+    this.selectedArticle = article;
+    this.showApercu = true;
+  }
+
+  fermerApercu() {
+    this.showApercu = false;
+    this.selectedArticle = undefined;
+  }
+
+  refreshArticles() {
+    this.articleService.getArticles().subscribe(data => {
+      this.articles = data.filter(a => a.statut?.toLowerCase() === 'en attente');
+    });
   }
 
   get articlesFiltres(): Article[] {
@@ -69,5 +78,17 @@ refreshArticles() {
       a.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       a.contenu.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
+  }
+
+  hasTags(): boolean {
+    return !!this.selectedArticle?.tags && this.selectedArticle.tags.length > 0;
+  }
+formatContenu(contenu: string): string {
+  return contenu?.replace(/\n/g, '<br>') || '';
+}
+
+  nettoyerContenu(html: string, limit: number = 150): string {
+    const texte = html.replace(/<[^>]+>/g, '');
+    return texte.length > limit ? texte.substring(0, limit) + '...' : texte;
   }
 }

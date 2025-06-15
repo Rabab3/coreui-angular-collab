@@ -1205,7 +1205,7 @@ var NodeRange = class {
   }
 };
 var emptyAttrs = /* @__PURE__ */ Object.create(null);
-var Node = class _Node {
+var Node2 = class _Node {
   /**
   @internal
   */
@@ -1596,8 +1596,8 @@ var Node = class _Node {
     return schema2.nodeType(json.type).create(json.attrs, content, marks2);
   }
 };
-Node.prototype.text = void 0;
-var TextNode = class _TextNode extends Node {
+Node2.prototype.text = void 0;
+var TextNode = class _TextNode extends Node2 {
   /**
   @internal
   */
@@ -2163,7 +2163,7 @@ var NodeType = class _NodeType {
   */
   create(attrs = null, content, marks2) {
     if (this.isText) throw new Error("NodeType.create can't construct text nodes");
-    return new Node(this, this.computeAttrs(attrs), Fragment.from(content), Mark.setFrom(marks2));
+    return new Node2(this, this.computeAttrs(attrs), Fragment.from(content), Mark.setFrom(marks2));
   }
   /**
   Like [`create`](https://prosemirror.net/docs/ref/#model.NodeType.create), but check the given content
@@ -2173,7 +2173,7 @@ var NodeType = class _NodeType {
   createChecked(attrs = null, content, marks2) {
     content = Fragment.from(content);
     this.checkContent(content);
-    return new Node(this, this.computeAttrs(attrs), content, Mark.setFrom(marks2));
+    return new Node2(this, this.computeAttrs(attrs), content, Mark.setFrom(marks2));
   }
   /**
   Like [`create`](https://prosemirror.net/docs/ref/#model.NodeType.create), but see if it is
@@ -2194,7 +2194,7 @@ var NodeType = class _NodeType {
     let matched = this.contentMatch.matchFragment(content);
     let after = matched && matched.fillBefore(Fragment.empty, true);
     if (!after) return null;
-    return new Node(this, attrs, content.append(after), Mark.setFrom(marks2));
+    return new Node2(this, attrs, content.append(after), Mark.setFrom(marks2));
   }
   /**
   Returns true if the given fragment is valid content for this node
@@ -2380,7 +2380,7 @@ var Schema = class {
   bound.
   */
   nodeFromJSON(json) {
-    return Node.fromJSON(this, json);
+    return Node2.fromJSON(this, json);
   }
   /**
   Deserialize a mark from its JSON representation. This method is
@@ -4161,7 +4161,7 @@ var NodeRange2 = class {
   }
 };
 var emptyAttrs2 = /* @__PURE__ */ Object.create(null);
-var Node2 = class _Node {
+var Node3 = class _Node {
   /**
   @internal
   */
@@ -4565,7 +4565,7 @@ var Node2 = class _Node {
     return node;
   }
 };
-Node2.prototype.text = void 0;
+Node3.prototype.text = void 0;
 function wrapMarks2(marks2, str) {
   for (let i = marks2.length - 1; i >= 0; i--) str = marks2[i].type.name + "(" + str + ")";
   return str;
@@ -7646,7 +7646,7 @@ var EditorState = class _EditorState {
     let instance = new _EditorState($config);
     $config.fields.forEach((field) => {
       if (field.name == "doc") {
-        instance.doc = Node.fromJSON(config.schema, json.doc);
+        instance.doc = Node2.fromJSON(config.schema, json.doc);
       } else if (field.name == "selection") {
         instance.selection = Selection.fromJSON(instance.doc, json.selection);
       } else if (field.name == "storedMarks") {
@@ -7863,7 +7863,7 @@ function scrollRectIntoView(view, rect, startDOM) {
     let bounding = atTop ? windowRect(doc4) : clientRect(elt);
     let moveX = 0, moveY = 0;
     if (rect.top < bounding.top + getSide(scrollThreshold, "top")) moveY = -(bounding.top - rect.top + getSide(scrollMargin, "top"));
-    else if (rect.bottom > bounding.bottom - getSide(scrollThreshold, "bottom")) moveY = rect.bottom - bounding.bottom + getSide(scrollMargin, "bottom");
+    else if (rect.bottom > bounding.bottom - getSide(scrollThreshold, "bottom")) moveY = rect.bottom - rect.top > bounding.bottom - bounding.top ? rect.top + getSide(scrollMargin, "top") - bounding.top : rect.bottom - bounding.bottom + getSide(scrollMargin, "bottom");
     if (rect.left < bounding.left + getSide(scrollThreshold, "left")) moveX = -(bounding.left - rect.left + getSide(scrollMargin, "left"));
     else if (rect.right > bounding.right - getSide(scrollThreshold, "right")) moveX = rect.right - bounding.right + getSide(scrollMargin, "right");
     if (moveX || moveY) {
@@ -9725,6 +9725,7 @@ function nodeLen(node) {
   return node.nodeType == 3 ? node.nodeValue.length : node.childNodes.length;
 }
 function isIgnorable(dom) {
+  if (dom.contentEditable == "false") return true;
   let desc = dom.pmViewDesc;
   return desc && desc.size == 0 && (dom.nextSibling || dom.nodeName != "BR");
 }
@@ -9813,7 +9814,39 @@ function isBlockNode(dom) {
   let desc = dom.pmViewDesc;
   return desc && desc.node && desc.node.isBlock;
 }
+function textNodeAfter(node, offset2) {
+  while (node && offset2 == node.childNodes.length && !hasBlockDesc(node)) {
+    offset2 = domIndex(node) + 1;
+    node = node.parentNode;
+  }
+  while (node && offset2 < node.childNodes.length) {
+    node = node.childNodes[offset2];
+    if (node.nodeType == 3) return node;
+    offset2 = 0;
+  }
+}
+function textNodeBefore(node, offset2) {
+  while (node && !offset2 && !hasBlockDesc(node)) {
+    offset2 = domIndex(node);
+    node = node.parentNode;
+  }
+  while (node && offset2) {
+    node = node.childNodes[offset2 - 1];
+    if (node.nodeType == 3) return node;
+    offset2 = node.childNodes.length;
+  }
+}
 function setSelFocus(view, node, offset2) {
+  if (node.nodeType != 3) {
+    let before, after;
+    if (after = textNodeAfter(node, offset2)) {
+      node = after;
+      offset2 = 0;
+    } else if (before = textNodeBefore(node, offset2)) {
+      node = before;
+      offset2 = before.nodeValue.length;
+    }
+  }
   let sel = view.domSelection();
   if (selectionCollapsed(sel)) {
     let range = document.createRange();
@@ -10185,6 +10218,7 @@ var InputState = class {
     this.compositionNodes = [];
     this.compositionEndedAt = -2e8;
     this.compositionID = 1;
+    this.compositionPendingChanges = 0;
     this.domChangeCount = 0;
     this.eventHandlers = /* @__PURE__ */ Object.create(null);
     this.hideSelectionGuard = null;
@@ -10528,6 +10562,8 @@ editHandlers.compositionend = (view, event) => {
   if (view.composing) {
     view.input.composing = false;
     view.input.compositionEndedAt = event.timeStamp;
+    view.input.compositionPendingChanges = view.domObserver.pendingRecords().length ? view.input.compositionID : 0;
+    if (view.input.compositionPendingChanges) Promise.resolve().then(() => view.domObserver.flush());
     view.input.compositionID++;
     scheduleComposeEnd(view, 20);
   }
@@ -11428,16 +11464,17 @@ var DOMObserver = class {
       return true;
     }
   }
+  pendingRecords() {
+    if (this.observer) for (let mut of this.observer.takeRecords()) this.queue.push(mut);
+    return this.queue;
+  }
   flush() {
     let {
       view
     } = this;
     if (!view.docView || this.flushingSoon > -1) return;
-    let mutations = this.observer ? this.observer.takeRecords() : [];
-    if (this.queue.length) {
-      mutations = this.queue.concat(mutations);
-      this.queue.length = 0;
-    }
+    let mutations = this.pendingRecords();
+    if (mutations.length) this.queue = [];
     let sel = view.domSelectionRange();
     let newSel = !this.suppressingSelectionUpdates && !this.currentSelection.eq(sel) && hasFocusAndSelection(view) && !this.ignoreSelectionChange(sel);
     let from2 = -1, to = -1, typeOver = false, added = [];
@@ -11643,6 +11680,8 @@ function ruleFromNode(dom) {
 }
 var isInline = /^(a|abbr|acronym|b|bd[io]|big|br|button|cite|code|data(list)?|del|dfn|em|i|ins|kbd|label|map|mark|meter|output|q|ruby|s|samp|small|span|strong|su[bp]|time|u|tt|var)$/i;
 function readDOMChange(view, from2, to, typeOver, addedNodes) {
+  let compositionID = view.input.compositionPendingChanges || (view.composing ? view.input.compositionID : 0);
+  view.input.compositionPendingChanges = 0;
   if (from2 < 0) {
     let origin = view.input.lastSelectionTime > Date.now() - 50 ? view.input.lastSelectionOrigin : null;
     let newSel = selectionFromDOM(view, origin);
@@ -11651,7 +11690,7 @@ function readDOMChange(view, from2, to, typeOver, addedNodes) {
       let tr2 = view.state.tr.setSelection(newSel);
       if (origin == "pointer") tr2.setMeta("pointer", true);
       else if (origin == "key") tr2.scrollIntoView();
-      if (view.composing) tr2.setMeta("composition", view.input.compositionID);
+      if (compositionID) tr2.setMeta("composition", compositionID);
       view.dispatch(tr2);
     }
     return;
@@ -11689,7 +11728,7 @@ function readDOMChange(view, from2, to, typeOver, addedNodes) {
         let sel2 = resolveSelection(view, view.state.doc, parse.sel);
         if (sel2 && !sel2.eq(view.state.selection)) {
           let tr2 = view.state.tr.setSelection(sel2);
-          if (view.composing) tr2.setMeta("composition", view.input.compositionID);
+          if (compositionID) tr2.setMeta("composition", compositionID);
           view.dispatch(tr2);
         }
       }
@@ -11769,7 +11808,7 @@ function readDOMChange(view, from2, to, typeOver, addedNodes) {
     if (sel2 && !(chrome && android && view.composing && sel2.empty && (change.start != change.endB || view.input.lastAndroidDelete < Date.now() - 100) && (sel2.head == chFrom || sel2.head == tr.mapping.map(chTo) - 1) || ie && sel2.empty && sel2.head == chFrom)) tr.setSelection(sel2);
   }
   if (storedMarks) tr.ensureMarks(storedMarks);
-  if (view.composing) tr.setMeta("composition", view.input.compositionID);
+  if (compositionID) tr.setMeta("composition", compositionID);
   view.dispatch(tr.scrollIntoView());
 }
 function resolveSelection(view, doc4, parsedSel) {
@@ -13725,31 +13764,106 @@ var removeMark2 = (type) => {
   };
 };
 
-// node_modules/@floating-ui/core/dist/floating-ui.core.browser.mjs
-function getAlignment(placement) {
-  return placement.split("-")[1];
-}
-function getLengthFromAxis(axis) {
-  return axis === "y" ? "height" : "width";
+// node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
+var sides = ["top", "right", "bottom", "left"];
+var alignments = ["start", "end"];
+var placements = sides.reduce((acc, side) => acc.concat(side, side + "-" + alignments[0], side + "-" + alignments[1]), []);
+var min = Math.min;
+var max = Math.max;
+var round = Math.round;
+var createCoords = (v) => ({
+  x: v,
+  y: v
+});
+var oppositeSideMap = {
+  left: "right",
+  right: "left",
+  bottom: "top",
+  top: "bottom"
+};
+var oppositeAlignmentMap = {
+  start: "end",
+  end: "start"
+};
+function evaluate(value, param) {
+  return typeof value === "function" ? value(param) : value;
 }
 function getSide2(placement) {
   return placement.split("-")[0];
 }
-function getMainAxisFromPlacement(placement) {
-  return ["top", "bottom"].includes(getSide2(placement)) ? "x" : "y";
+function getAlignment(placement) {
+  return placement.split("-")[1];
 }
+function getOppositeAxis(axis) {
+  return axis === "x" ? "y" : "x";
+}
+function getAxisLength(axis) {
+  return axis === "y" ? "height" : "width";
+}
+function getSideAxis(placement) {
+  return ["top", "bottom"].includes(getSide2(placement)) ? "y" : "x";
+}
+function getAlignmentAxis(placement) {
+  return getOppositeAxis(getSideAxis(placement));
+}
+function getAlignmentSides(placement, rects, rtl) {
+  if (rtl === void 0) {
+    rtl = false;
+  }
+  const alignment = getAlignment(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const length = getAxisLength(alignmentAxis);
+  let mainAlignmentSide = alignmentAxis === "x" ? alignment === (rtl ? "end" : "start") ? "right" : "left" : alignment === "start" ? "bottom" : "top";
+  if (rects.reference[length] > rects.floating[length]) {
+    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
+  }
+  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide)];
+}
+function getOppositeAlignmentPlacement(placement) {
+  return placement.replace(/start|end/g, (alignment) => oppositeAlignmentMap[alignment]);
+}
+function getOppositePlacement(placement) {
+  return placement.replace(/left|right|bottom|top/g, (side) => oppositeSideMap[side]);
+}
+function expandPaddingObject(padding) {
+  return __spreadValues({
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
+  }, padding);
+}
+function getPaddingObject(padding) {
+  return typeof padding !== "number" ? expandPaddingObject(padding) : {
+    top: padding,
+    right: padding,
+    bottom: padding,
+    left: padding
+  };
+}
+function rectToClientRect(rect) {
+  return __spreadProps(__spreadValues({}, rect), {
+    top: rect.y,
+    left: rect.x,
+    right: rect.x + rect.width,
+    bottom: rect.y + rect.height
+  });
+}
+
+// node_modules/@floating-ui/core/dist/floating-ui.core.mjs
 function computeCoordsFromPlacement(_ref, placement, rtl) {
   let {
     reference,
     floating
   } = _ref;
+  const sideAxis = getSideAxis(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const alignLength = getAxisLength(alignmentAxis);
+  const side = getSide2(placement);
+  const isVertical = sideAxis === "y";
   const commonX = reference.x + reference.width / 2 - floating.width / 2;
   const commonY = reference.y + reference.height / 2 - floating.height / 2;
-  const mainAxis = getMainAxisFromPlacement(placement);
-  const length = getLengthFromAxis(mainAxis);
-  const commonAlign = reference[length] / 2 - floating[length] / 2;
-  const side = getSide2(placement);
-  const isVertical = mainAxis === "x";
+  const commonAlign = reference[alignLength] / 2 - floating[alignLength] / 2;
   let coords;
   switch (side) {
     case "top":
@@ -13784,10 +13898,10 @@ function computeCoordsFromPlacement(_ref, placement, rtl) {
   }
   switch (getAlignment(placement)) {
     case "start":
-      coords[mainAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
+      coords[alignmentAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
       break;
     case "end":
-      coords[mainAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
+      coords[alignmentAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
       break;
   }
   return coords;
@@ -13872,33 +13986,6 @@ var computePosition = (reference, floating, config) => __async(null, null, funct
     middlewareData
   };
 });
-function evaluate(value, param) {
-  return typeof value === "function" ? value(param) : value;
-}
-function expandPaddingObject(padding) {
-  return __spreadValues({
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0
-  }, padding);
-}
-function getSideObjectFromPadding(padding) {
-  return typeof padding !== "number" ? expandPaddingObject(padding) : {
-    top: padding,
-    right: padding,
-    bottom: padding,
-    left: padding
-  };
-}
-function rectToClientRect(rect) {
-  return __spreadProps(__spreadValues({}, rect), {
-    top: rect.y,
-    left: rect.x,
-    right: rect.x + rect.width,
-    bottom: rect.y + rect.height
-  });
-}
 function detectOverflow(state, options) {
   return __async(this, null, function* () {
     var _await$platform$isEle;
@@ -13920,7 +14007,7 @@ function detectOverflow(state, options) {
       altBoundary = false,
       padding = 0
     } = evaluate(options, state);
-    const paddingObject = getSideObjectFromPadding(padding);
+    const paddingObject = getPaddingObject(padding);
     const altContext = elementContext === "floating" ? "reference" : "floating";
     const element = elements[altBoundary ? altContext : elementContext];
     const clippingClientRect = rectToClientRect(yield platform2.getClippingRect({
@@ -13954,40 +14041,6 @@ function detectOverflow(state, options) {
     };
   });
 }
-var sides = ["top", "right", "bottom", "left"];
-var allPlacements = sides.reduce((acc, side) => acc.concat(side, side + "-start", side + "-end"), []);
-var oppositeSideMap = {
-  left: "right",
-  right: "left",
-  bottom: "top",
-  top: "bottom"
-};
-function getOppositePlacement(placement) {
-  return placement.replace(/left|right|bottom|top/g, (side) => oppositeSideMap[side]);
-}
-function getAlignmentSides(placement, rects, rtl) {
-  if (rtl === void 0) {
-    rtl = false;
-  }
-  const alignment = getAlignment(placement);
-  const mainAxis = getMainAxisFromPlacement(placement);
-  const length = getLengthFromAxis(mainAxis);
-  let mainAlignmentSide = mainAxis === "x" ? alignment === (rtl ? "end" : "start") ? "right" : "left" : alignment === "start" ? "bottom" : "top";
-  if (rects.reference[length] > rects.floating[length]) {
-    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
-  }
-  return {
-    main: mainAlignmentSide,
-    cross: getOppositePlacement(mainAlignmentSide)
-  };
-}
-var oppositeAlignmentMap = {
-  start: "end",
-  end: "start"
-};
-function getOppositeAlignmentPlacement(placement) {
-  return placement.replace(/start|end/g, (alignment) => oppositeAlignmentMap[alignment]);
-}
 function getPlacementList(alignment, autoAlignment, allowedPlacements) {
   const allowedPlacementsSortedByAlignment = alignment ? [...allowedPlacements.filter((placement) => getAlignment(placement) === alignment), ...allowedPlacements.filter((placement) => getAlignment(placement) !== alignment)] : allowedPlacements.filter((placement) => getSide2(placement) === placement);
   return allowedPlacementsSortedByAlignment.filter((placement) => {
@@ -14017,7 +14070,7 @@ var autoPlacement = function(options) {
         const _a2 = evaluate(options, state), {
           crossAxis = false,
           alignment,
-          allowedPlacements = allPlacements,
+          allowedPlacements = placements,
           autoAlignment = true
         } = _a2, detectOverflowOptions = __objRest(_a2, [
           "crossAxis",
@@ -14025,30 +14078,27 @@ var autoPlacement = function(options) {
           "allowedPlacements",
           "autoAlignment"
         ]);
-        const placements = alignment !== void 0 || allowedPlacements === allPlacements ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
+        const placements$1 = alignment !== void 0 || allowedPlacements === placements ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
         const overflow = yield detectOverflow(state, detectOverflowOptions);
         const currentIndex = ((_middlewareData$autoP = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP.index) || 0;
-        const currentPlacement = placements[currentIndex];
+        const currentPlacement = placements$1[currentIndex];
         if (currentPlacement == null) {
           return {};
         }
-        const {
-          main,
-          cross
-        } = getAlignmentSides(currentPlacement, rects, yield platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
+        const alignmentSides = getAlignmentSides(currentPlacement, rects, yield platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
         if (placement !== currentPlacement) {
           return {
             reset: {
-              placement: placements[0]
+              placement: placements$1[0]
             }
           };
         }
-        const currentOverflows = [overflow[getSide2(currentPlacement)], overflow[main], overflow[cross]];
+        const currentOverflows = [overflow[getSide2(currentPlacement)], overflow[alignmentSides[0]], overflow[alignmentSides[1]]];
         const allOverflows = [...((_middlewareData$autoP2 = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP2.overflows) || [], {
           placement: currentPlacement,
           overflows: currentOverflows
         }];
-        const nextPlacement = placements[currentIndex + 1];
+        const nextPlacement = placements$1[currentIndex + 1];
         if (nextPlacement) {
           return {
             data: {
@@ -14103,7 +14153,7 @@ function convertValueToCoords(state, options) {
     const rtl = yield platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating);
     const side = getSide2(placement);
     const alignment = getAlignment(placement);
-    const isVertical = getMainAxisFromPlacement(placement) === "x";
+    const isVertical = getSideAxis(placement) === "y";
     const mainAxisMulti = ["left", "top"].includes(side) ? -1 : 1;
     const crossAxisMulti = rtl && isVertical ? -1 : 1;
     const rawValue = evaluate(options, state);
@@ -14156,31 +14206,35 @@ var offset = function(options) {
   };
 };
 
-// node_modules/@floating-ui/dom/dist/floating-ui.dom.browser.mjs
-function getWindow(node) {
-  var _node$ownerDocument;
-  return (node == null ? void 0 : (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
-}
-function getComputedStyle$1(element) {
-  return getWindow(element).getComputedStyle(element);
-}
-function isNode(value) {
-  return value instanceof getWindow(value).Node;
-}
+// node_modules/@floating-ui/utils/dom/dist/floating-ui.utils.dom.mjs
 function getNodeName(node) {
   if (isNode(node)) {
     return (node.nodeName || "").toLowerCase();
   }
   return "#document";
 }
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null ? void 0 : (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+}
+function isNode(value) {
+  return value instanceof Node || value instanceof getWindow(value).Node;
+}
+function isElement(value) {
+  return value instanceof Element || value instanceof getWindow(value).Element;
+}
 function isHTMLElement(value) {
   return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
 }
-function isShadowRoot(node) {
+function isShadowRoot(value) {
   if (typeof ShadowRoot === "undefined") {
     return false;
   }
-  return node instanceof getWindow(node).ShadowRoot || node instanceof ShadowRoot;
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
 }
 function isOverflowElement(element) {
   const {
@@ -14188,33 +14242,93 @@ function isOverflowElement(element) {
     overflowX,
     overflowY,
     display
-  } = getComputedStyle$1(element);
+  } = getComputedStyle2(element);
   return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && !["inline", "contents"].includes(display);
 }
 function isTableElement(element) {
   return ["table", "td", "th"].includes(getNodeName(element));
 }
 function isContainingBlock(element) {
-  const safari2 = isSafari();
-  const css = getComputedStyle$1(element);
-  return css.transform !== "none" || css.perspective !== "none" || (css.containerType ? css.containerType !== "normal" : false) || !safari2 && (css.backdropFilter ? css.backdropFilter !== "none" : false) || !safari2 && (css.filter ? css.filter !== "none" : false) || ["transform", "perspective", "filter"].some((value) => (css.willChange || "").includes(value)) || ["paint", "layout", "strict", "content"].some((value) => (css.contain || "").includes(value));
+  const webkit2 = isWebKit();
+  const css = getComputedStyle2(element);
+  return css.transform !== "none" || css.perspective !== "none" || (css.containerType ? css.containerType !== "normal" : false) || !webkit2 && (css.backdropFilter ? css.backdropFilter !== "none" : false) || !webkit2 && (css.filter ? css.filter !== "none" : false) || ["transform", "perspective", "filter"].some((value) => (css.willChange || "").includes(value)) || ["paint", "layout", "strict", "content"].some((value) => (css.contain || "").includes(value));
 }
-function isSafari() {
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else {
+      currentNode = getParentNode(currentNode);
+    }
+  }
+  return null;
+}
+function isWebKit() {
   if (typeof CSS === "undefined" || !CSS.supports) return false;
   return CSS.supports("-webkit-backdrop-filter", "none");
 }
 function isLastTraversableNode(node) {
   return ["html", "body", "#document"].includes(getNodeName(node));
 }
-var min = Math.min;
-var max = Math.max;
-var round = Math.round;
-var createCoords = (v) => ({
-  x: v,
-  y: v
-});
+function getComputedStyle2(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.pageXOffset,
+    scrollTop: element.pageYOffset
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === "html") {
+    return node;
+  }
+  const result = (
+    // Step into the shadow DOM of the parent of a slotted node.
+    node.assignedSlot || // DOM Element detected.
+    node.parentNode || // ShadowRoot detected.
+    isShadowRoot(node) && node.host || // Fallback.
+    getDocumentElement(node)
+  );
+  return isShadowRoot(result) ? result.host : result;
+}
+function getNearestOverflowAncestor(node) {
+  const parentNode2 = getParentNode(node);
+  if (isLastTraversableNode(parentNode2)) {
+    return node.ownerDocument ? node.ownerDocument.body : node.body;
+  }
+  if (isHTMLElement(parentNode2) && isOverflowElement(parentNode2)) {
+    return parentNode2;
+  }
+  return getNearestOverflowAncestor(parentNode2);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], win.frameElement && traverseIframes ? getOverflowAncestors(win.frameElement) : []);
+  }
+  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+}
+
+// node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
 function getCssDimensions(element) {
-  const css = getComputedStyle$1(element);
+  const css = getComputedStyle2(element);
   let width = parseFloat(css.width) || 0;
   let height = parseFloat(css.height) || 0;
   const hasOffset = isHTMLElement(element);
@@ -14230,9 +14344,6 @@ function getCssDimensions(element) {
     height,
     $: shouldFallback
   };
-}
-function isElement(value) {
-  return value instanceof Element || value instanceof getWindow(value).Element;
 }
 function unwrapElement(element) {
   return !isElement(element) ? element.contextElement : element;
@@ -14264,7 +14375,7 @@ function getScale(element) {
 var noOffsets = createCoords(0);
 function getVisualOffsets(element) {
   const win = getWindow(element);
-  if (!isSafari() || !win.visualViewport) {
+  if (!isWebKit() || !win.visualViewport) {
     return noOffsets;
   }
   return {
@@ -14312,7 +14423,7 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
     while (currentIFrame && offsetParent && offsetWin !== win) {
       const iframeScale = getScale(currentIFrame);
       const iframeRect = currentIFrame.getBoundingClientRect();
-      const css = getComputedStyle(currentIFrame);
+      const css = getComputedStyle2(currentIFrame);
       const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) * iframeScale.x;
       const top = iframeRect.top + (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
       x *= iframeScale.x;
@@ -14330,22 +14441,6 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
     x,
     y
   });
-}
-function getNodeScroll(element) {
-  if (isElement(element)) {
-    return {
-      scrollLeft: element.scrollLeft,
-      scrollTop: element.scrollTop
-    };
-  }
-  return {
-    scrollLeft: element.pageXOffset,
-    scrollTop: element.pageYOffset
-  };
-}
-function getDocumentElement(node) {
-  var _ref;
-  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
 }
 function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
   let {
@@ -14396,7 +14491,7 @@ function getDocumentRect(element) {
   const height = max(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
   let x = -scroll.scrollLeft + getWindowScrollBarX(element);
   const y = -scroll.scrollTop;
-  if (getComputedStyle$1(body).direction === "rtl") {
+  if (getComputedStyle2(body).direction === "rtl") {
     x += max(html.clientWidth, body.clientWidth) - width;
   }
   return {
@@ -14405,42 +14500,6 @@ function getDocumentRect(element) {
     x,
     y
   };
-}
-function getParentNode(node) {
-  if (getNodeName(node) === "html") {
-    return node;
-  }
-  const result = (
-    // Step into the shadow DOM of the parent of a slotted node.
-    node.assignedSlot || // DOM Element detected.
-    node.parentNode || // ShadowRoot detected.
-    isShadowRoot(node) && node.host || // Fallback.
-    getDocumentElement(node)
-  );
-  return isShadowRoot(result) ? result.host : result;
-}
-function getNearestOverflowAncestor(node) {
-  const parentNode2 = getParentNode(node);
-  if (isLastTraversableNode(parentNode2)) {
-    return node.ownerDocument ? node.ownerDocument.body : node.body;
-  }
-  if (isHTMLElement(parentNode2) && isOverflowElement(parentNode2)) {
-    return parentNode2;
-  }
-  return getNearestOverflowAncestor(parentNode2);
-}
-function getOverflowAncestors(node, list) {
-  var _node$ownerDocument;
-  if (list === void 0) {
-    list = [];
-  }
-  const scrollableAncestor = getNearestOverflowAncestor(node);
-  const isBody = scrollableAncestor === ((_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.body);
-  const win = getWindow(scrollableAncestor);
-  if (isBody) {
-    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : []);
-  }
-  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor));
 }
 function getViewportRect(element, strategy) {
   const win = getWindow(element);
@@ -14453,7 +14512,7 @@ function getViewportRect(element, strategy) {
   if (visualViewport) {
     width = visualViewport.width;
     height = visualViewport.height;
-    const visualViewportBased = isSafari();
+    const visualViewportBased = isWebKit();
     if (!visualViewportBased || visualViewportBased && strategy === "fixed") {
       x = visualViewport.offsetLeft;
       y = visualViewport.offsetTop;
@@ -14504,7 +14563,7 @@ function hasFixedPositionAncestor(element, stopNode) {
   if (parentNode2 === stopNode || !isElement(parentNode2) || isLastTraversableNode(parentNode2)) {
     return false;
   }
-  return getComputedStyle$1(parentNode2).position === "fixed" || hasFixedPositionAncestor(parentNode2, stopNode);
+  return getComputedStyle2(parentNode2).position === "fixed" || hasFixedPositionAncestor(parentNode2, stopNode);
 }
 function getClippingElementAncestors(element, cache) {
   const cachedResult2 = cache.get(element);
@@ -14513,10 +14572,10 @@ function getClippingElementAncestors(element, cache) {
   }
   let result = getOverflowAncestors(element).filter((el) => isElement(el) && getNodeName(el) !== "body");
   let currentContainingBlockComputedStyle = null;
-  const elementIsFixed = getComputedStyle$1(element).position === "fixed";
+  const elementIsFixed = getComputedStyle2(element).position === "fixed";
   let currentNode = elementIsFixed ? getParentNode(element) : element;
   while (isElement(currentNode) && !isLastTraversableNode(currentNode)) {
-    const computedStyle = getComputedStyle$1(currentNode);
+    const computedStyle = getComputedStyle2(currentNode);
     const currentNodeIsContaining = isContainingBlock(currentNode);
     if (!currentNodeIsContaining && computedStyle.position === "fixed") {
       currentContainingBlockComputedStyle = null;
@@ -14574,7 +14633,7 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
     if (getNodeName(offsetParent) !== "body" || isOverflowElement(documentElement)) {
       scroll = getNodeScroll(offsetParent);
     }
-    if (isHTMLElement(offsetParent)) {
+    if (isOffsetParentAnElement) {
       const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
       offsets.x = offsetRect.x + offsetParent.clientLeft;
       offsets.y = offsetRect.y + offsetParent.clientTop;
@@ -14590,7 +14649,7 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
   };
 }
 function getTrueOffsetParent(element, polyfill) {
-  if (!isHTMLElement(element) || getComputedStyle$1(element).position === "fixed") {
+  if (!isHTMLElement(element) || getComputedStyle2(element).position === "fixed") {
     return null;
   }
   if (polyfill) {
@@ -14598,27 +14657,16 @@ function getTrueOffsetParent(element, polyfill) {
   }
   return element.offsetParent;
 }
-function getContainingBlock(element) {
-  let currentNode = getParentNode(element);
-  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
-    if (isContainingBlock(currentNode)) {
-      return currentNode;
-    } else {
-      currentNode = getParentNode(currentNode);
-    }
-  }
-  return null;
-}
 function getOffsetParent(element, polyfill) {
   const window2 = getWindow(element);
   if (!isHTMLElement(element)) {
     return window2;
   }
   let offsetParent = getTrueOffsetParent(element, polyfill);
-  while (offsetParent && isTableElement(offsetParent) && getComputedStyle$1(offsetParent).position === "static") {
+  while (offsetParent && isTableElement(offsetParent) && getComputedStyle2(offsetParent).position === "static") {
     offsetParent = getTrueOffsetParent(offsetParent, polyfill);
   }
-  if (offsetParent && (getNodeName(offsetParent) === "html" || getNodeName(offsetParent) === "body" && getComputedStyle$1(offsetParent).position === "static" && !isContainingBlock(offsetParent))) {
+  if (offsetParent && (getNodeName(offsetParent) === "html" || getNodeName(offsetParent) === "body" && getComputedStyle2(offsetParent).position === "static" && !isContainingBlock(offsetParent))) {
     return window2;
   }
   return offsetParent || getContainingBlock(element) || window2;
@@ -14642,7 +14690,7 @@ var getElementRects = function(_ref) {
   });
 };
 function isRTL(element) {
-  return getComputedStyle(element).direction === "rtl";
+  return getComputedStyle2(element).direction === "rtl";
 }
 var platform = {
   convertOffsetParentRelativeRectToViewportRelativeRect,

@@ -45,7 +45,7 @@
     "jspdf-autotable": "^5.0.2",
     "lodash-es": "^4.17.21",
     "ng2-charts": "^4.1.1",
-    "ngx-editor": "^16.0.0",
+    "ngx-editor": "^16.0.1",
     "ngx-scrollbar": "^13.0.3",
     "ngx-toastr": "^19.0.0",
     "package-name": "^0.1.0",

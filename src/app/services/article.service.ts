@@ -11,10 +11,12 @@ export interface Article {
   statut?: string;
   retourCommentaire?: string;
   dateRetour?: string;
-  modeSaisie?: string;     // 'texte' ou 'fichier'
-  categorie?: string;      // ex: "Développement Web"
-  tags?: string[];         // liste de hashtags
-  source?: string;         // lien facultatif
+  modeSaisie?: string;
+  categorie?: string;
+  tags?: string[];
+  source?: string;
+  visibilite?: string;
+  mode?: string;
 }
 
 @Injectable({
@@ -29,23 +31,14 @@ export class ArticleService {
       {
         id: 1,
         titre: "Créer une authentification sécurisée avec JWT dans Angular et Spring Boot",
-        contenu: `Dans cet article, nous allons apprendre à mettre en place une authentification sécurisée basée sur JWT (JSON Web Token) en utilisant Angular pour le frontend et Spring Boot pour le backend.
-
-Étapes principales :
-- Création des endpoints d'authentification (login/register) dans Spring Boot
-- Génération et validation des tokens JWT côté backend
-- Intégration du service d’authentification dans Angular
-- Intercepteur HTTP pour ajouter automatiquement le token
-- Redirection conditionnelle selon les rôles (admin, utilisateur…)
-
-Ce guide vous permettra de construire une base solide pour vos applications sécurisées.`,
+        contenu: `Dans cet article, nous allons apprendre à mettre en place une authentification sécurisée...`,
         themeId: 1,
         date: "2025-06-11",
         favori: false,
         statut: "Publié",
         modeSaisie: "texte",
         categorie: "dev Web",
-        tags: ["#angular", "#springboot", "#jwt", "#authentification", "#sécurité"],
+        tags: ["angular", "springboot", "jwt", "authentification", "sécurité"],
         source: "https://jwt.io/introduction"
       }
     ];
@@ -73,6 +66,10 @@ Ce guide vous permettra de construire une base solide pour vos applications séc
     return of(article);
   }
 
+  getArticleByIdSync(id: number): Article | undefined {
+    return this.articlesSubject.value.find(a => a.id === id);
+  }
+
   toggleFavori(articleId: number): void {
     const articles = this.articlesSubject.value.map(a =>
       a.id === articleId ? { ...a, favori: !a.favori } : a
@@ -85,10 +82,21 @@ Ce guide vous permettra de construire une base solide pour vos applications séc
     this.saveToLocalStorage(articles);
   }
 
-  updateArticle(id: number, updates: Partial<Article>): void {
+  updateArticle(id: number, updates: Partial<Article>): Observable<void> {
     const articles = this.articlesSubject.value.map(a =>
       a.id === id ? { ...a, ...updates } : a
     );
     this.saveToLocalStorage(articles);
+    return of(); // ⬅️ pour permettre le .subscribe()
+  }
+
+  supprimerArticle(id: number): Observable<void> {
+    const articles = this.articlesSubject.value.filter(a => a.id !== id);
+    this.saveToLocalStorage(articles);
+    return of();
+  }
+
+  getBrouillons(): Article[] {
+    return this.articlesSubject.value.filter(a => a.visibilite === 'brouillon');
   }
 }

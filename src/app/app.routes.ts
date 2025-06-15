@@ -10,6 +10,8 @@ export const routes: Routes = [
 
       { path: 'dashboard', loadComponent: () => import('./views/dashboard/dashboard.component').then(m => m.DashboardComponent) },
 
+      { path: 'articles/brouillons', loadComponent: () => import('./views/articles/brouillons/brouillons.component').then(m => m.BrouillonsComponent) },
+
       { path: 'articles/ajouter', loadComponent: () => import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent) },
 
       { path: 'articles/mes-contributions', loadComponent: () => import('./views/articles/mes-contributions/mes-contributions.component').then(m => m.MesContributionsComponent) },
@@ -40,7 +42,8 @@ export const routes: Routes = [
 
       { path: 'admin/utilisateurs/gerer', loadComponent: () => import('./views/utilisateurs/gerer-utilisateurs/gerer-utilisateurs.component') .then(m => m.GererUtilisateursComponent), data: { title: 'Gérer les utilisateurs' }},
 
-      { path: 'admin/utilisateurs/roles', loadComponent: () => import('./views/utilisateurs/user-role-management/user-role-management.component') .then(m => m.UserRoleManagementComponent), data: { title: 'Gérer les rôles' }
+      { path: 'admin/utilisateurs/roles', loadComponent: () => import('./views/utilisateurs/user-role-management/user-role-management.component') .then(m => m.UserRoleManagementComponent), data: { title: 'Gérer les rôles' },
+      
     }
     ]
   },

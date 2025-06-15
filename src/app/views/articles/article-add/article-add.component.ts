@@ -1,11 +1,13 @@
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Editor, NgxEditorModule } from 'ngx-editor';
 import jsPDF from 'jspdf';
 import { saveAs } from 'file-saver';
 import * as docx from 'docx';
+import { ArticleService } from 'src/app/services/article.service';
 
 @Component({
   selector: 'app-article-add',
@@ -17,14 +19,21 @@ import * as docx from 'docx';
 export class ArticleAddComponent implements OnInit, OnDestroy {
   articleForm!: FormGroup;
   submitted = false;
-  categories = ['RH', 'TECHNIQUE', 'SÉCURITÉ', 'METIER'];
-  selectedFiles: File[] = [];
+  editor!: Editor;
   useTextEditor = true;
+  selectedFiles: File[] = [];
   showPreviewModal = false;
   today = new Date().toLocaleDateString('fr-FR');
-  editor!: Editor;
+  categories = ['RH', 'TECHNIQUE', 'SÉCURITÉ', 'METIER'];
+  isEditMode = false;
+  articleIdToEdit!: number;
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private articleService: ArticleService
+  ) {}
 
   ngOnInit(): void {
     this.editor = new Editor();
@@ -38,8 +47,16 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
       visibilite: ['public', Validators.required]
     });
 
-    // Supprimer le brouillon au rechargement
-    localStorage.removeItem('article_brouillon');
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.articleIdToEdit = +params['id'];
+        const article = this.articleService.getArticleByIdSync(this.articleIdToEdit);
+        if (article) {
+          this.articleForm.patchValue(article);
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -51,7 +68,7 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
   }
 
   toggleInputMode(mode: 'file' | 'text') {
-    this.useTextEditor = (mode === 'text');
+    this.useTextEditor = mode === 'text';
     this.selectedFiles = [];
     this.articleForm.patchValue({ fichiers: null, description: '' });
   }
@@ -77,7 +94,7 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
 
   stripHtmlAndPreserveLineBreaks(html: string): string {
     return html
-      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<br\s*\/?\>/gi, '\n')
       .replace(/<\/p>/gi, '\n')
       .replace(/<\/div>/gi, '\n')
       .replace(/<[^>]+>/g, '')
@@ -139,15 +156,36 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
     this.submitted = true;
     if (this.articleForm.invalid) return;
 
-    const article = {
-      ...this.articleForm.value,
-      fichiers: this.selectedFiles,
-      contenuTexte: this.useTextEditor ? this.articleForm.value.description : null,
-      statut: 'En attente',
-      date: new Date()
+    const formValue = this.articleForm.value;
+    const newArticle = {
+      id: this.isEditMode ? this.articleIdToEdit : Date.now(),
+      titre: formValue.titre,
+      contenu: formValue.description,
+      themeId: 1,
+      date: new Date().toISOString().split('T')[0],
+      favori: false,
+      statut: formValue.visibilite === 'brouillon' ? 'Brouillon' : 'En attente',
+      modeSaisie: this.useTextEditor ? 'texte' : 'fichier',
+      categorie: formValue.categorie,
+      tags: formValue.tags.split(' '),
+      source: formValue.source,
+      visibilite: formValue.visibilite
     };
 
-    localStorage.setItem('article_temp', JSON.stringify(article));
-    this.router.navigate(['/articles/mes-contributions']);
+    if (this.isEditMode) {
+      this.articleService.updateArticle(this.articleIdToEdit, newArticle);
+    } else {
+      this.articleService.addArticle(newArticle);
+    }
+
+    this.articleForm.reset();
+    this.submitted = false;
+    this.selectedFiles = [];
+
+    if (formValue.visibilite === 'brouillon') {
+      this.router.navigate(['/articles/brouillons']);
+    } else {
+      this.router.navigate(['/articles/mes-contributions']);
+    }
   }
 }

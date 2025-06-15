@@ -1,5 +1,5 @@
 <div class="container">
-  <h2>📥 Articles à valider</h2>
+  <h2> Articles à valider</h2>
 
   <input
     type="text"
@@ -11,8 +11,8 @@
   <div class="article-list">
     <div class="article-card" *ngFor="let article of articlesFiltres">
       <h3>{{ article.titre }}</h3>
-      <p><strong>Date :</strong> {{ article.date }}</p>
-      <p>{{ article.contenu | slice:0:100 }}...</p>
+      <p><strong>🕒 Date :</strong> {{ article.date | date:'yyyy-MM-dd' }}</p>
+      <p>{{ article.contenu }}</p>
 
       <div class="actions">
         <button (click)="valider(article)">✔️ Valider</button>
@@ -23,7 +23,7 @@
   </div>
 </div>
 
-<!-- Modale -->
+<!-- Modale Retour -->
 <div class="modal-backdrop" *ngIf="showModal">
   <div class="modal-content">
     <h3>💬 Commentaire de retour</h3>
@@ -34,3 +34,43 @@
     </div>
   </div>
 </div>
+
+<!-- Modale Aperçu -->
+<div class="modal-backdrop" *ngIf="showApercu">
+  <div class="modal-content apercu-modal">
+    <h3 class="apercu-title">🔐 {{ selectedArticle?.titre || 'Article' }}</h3>
+
+<div class="meta">
+  <p>🕒 {{ selectedArticle?.date | date: 'yyyy-MM-dd' }}</p>
+  <p>✍️ <strong>Mode de saisie :</strong> {{ selectedArticle?.mode || 'Éditeur' }}</p>
+  <p>📂 <strong>Catégorie :</strong> {{ selectedArticle?.categorie || 'Non spécifiée' }}</p>
+
+  <ng-container *ngIf="hasTags()">
+
+    <p>🏷️ <strong>Tags :</strong></p>
+    <div class="tags">
+     <span *ngFor="let tag of selectedArticle?.tags">{{ tag }}</span>
+
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="selectedArticle?.source">
+    <p>🌐 <strong>Source :</strong></p>
+    <a [href]="selectedArticle?.source" target="_blank">{{ selectedArticle?.source }}</a>
+  </ng-container>
+</div>
+
+
+    <hr />
+
+<div class="apercu-content" [innerHTML]="formatContenu(selectedArticle?.contenu || '')"></div>
+
+
+
+    <div class="modal-actions">
+      <button (click)="fermerApercu()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+

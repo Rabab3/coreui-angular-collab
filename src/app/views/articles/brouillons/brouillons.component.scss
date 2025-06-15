@@ -1,0 +1,40 @@
+.title {
+  font-weight: bold;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card {
+  position: relative;
+  padding-bottom: 3rem; // pour que le bouton ne chevauche pas le contenu
+}
+a {
+  text-decoration: none;
+  color: #007bff;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.text-preline {
+  white-space: pre-line;
+}
+
+
+.brouillon-card {
+  border: 1px solid #ccc;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tag {
+  background: #e1e1e1;
+  padding: 3px 8px;
+  margin-right: 5px;
+  border-radius: 5px;
+  font-size: 0.9em;
+}

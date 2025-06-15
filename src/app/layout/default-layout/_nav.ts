@@ -9,7 +9,8 @@
 
     {
       name: ' Articles',
-      iconComponent: { name: 'cil-task' },
+      iconComponent: { name: 'cil-pencil' },
+      // iconComponent: { name: 'cil-task' },
       children: [
         {
           name: '📄 Liste des articles',
@@ -30,7 +31,13 @@
           name: '➕ Ajouter un article',
           url: '/articles/ajouter',
           attributes: { role: ['contributeur', 'moderateur'] }
+        },
+        {
+          name: ' 📜 Brouillons',
+          url: '/articles/brouillons',
+          attributes: { role: ['contributeur', 'moderateur'] }
         }
+
       ]
     },
 

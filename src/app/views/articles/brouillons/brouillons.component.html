@@ -1,0 +1,36 @@
+
+
+<div class="container mt-4">
+  <h3><i class="bi bi-file-earmark-text"></i> 📜 Mes Brouillons</h3>
+
+  <div *ngFor="let article of brouillons" class="card shadow-sm p-3 mb-4 position-relative">
+    <h4 class="text-center text-primary">{{ article.titre }}</h4>
+
+    <p><strong>Catégorie:</strong> {{ article.categorie }}</p>
+    <p><strong>Contenu:</strong></p>
+<div [innerHTML]="article.contenu"></div>
+    <p><strong>Tags:</strong> <span *ngFor="let tag of article.tags">#{{ tag }} </span></p>
+    <p><strong>Source:</strong><ng-container *ngIf="article.source; else noSource">
+    <a [href]="article.source" target="_blank" rel="noopener noreferrer">
+      {{ article.source }}
+    </a>
+  </ng-container>
+  <ng-template #noSource>---</ng-template>
+</p>
+
+
+    <div class="d-flex justify-content-start mt-3">
+      <button class="btn btn-primary me-2" (click)="modifier(article.id)">✏️ Modifier</button>
+      <button class="btn btn-success me-2" (click)="publier(article.id)">✅ Publier</button>
+    </div>
+
+    <!-- Corbeille à droite en bas -->
+    <button 
+      class="btn btn-outline-danger position-absolute bottom-0 end-0 m-3"
+      (click)="supprimer(article.id)"
+    >
+      🗑️
+    </button>
+  </div>
+</div>
+
