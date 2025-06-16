@@ -30,7 +30,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.role = localStorage.getItem('role') || '';
 
-    // 🟢 Souscrire aux changements dynamiques
+    // Souscription aux thématiques dynamiques
     this.themeSub = this.themeService.themes$.subscribe((themes: Thématique[]) => {
       this.generateMenu(themes);
     });
@@ -38,15 +38,34 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
   generateMenu(themes: Thématique[]) {
     const dynamicThématiques: INavData = {
-      name: ' Thématiques',
+      name: 'Thématiques',
       iconComponent: { name: 'cil-tags' },
-      children: themes.map(theme => ({
-        name: `${theme.icone || '📁'} ${theme.nom}`,
-        url: `/thematiques/${theme.id}`
-      }))
+      children: [
+  {
+    name: '📌 Métiers',
+    url: '/thematiques/metier'
+  },
+  {
+    name: '⚙️ Technique',
+    url: '/thematiques/technique'
+  },
+  {
+    name: '🔐 Sécurité',
+    url: '/thematiques/securite'
+  },
+  {
+    name: '🧑‍💼 RH',
+    url: '/thematiques/rh'
+  },
+  ...themes.map(theme => ({
+    name: `${theme.icone || '📁'} ${theme.nom}`,
+    url: `/thematiques/${theme.id}`
+  }))
+]
+
     };
 
-    // ➕ Ajouter & Gérer une thématique (modérateur uniquement)
+    // Ajouter & Gérer une thématique (modérateur uniquement)
     if (this.role === 'moderateur') {
       dynamicThématiques.children?.push(
         {
@@ -88,6 +107,6 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.themeSub?.unsubscribe(); // 🔁 Bonnes pratiques
+    this.themeSub?.unsubscribe();
   }
 }

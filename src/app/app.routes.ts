@@ -42,9 +42,16 @@ export const routes: Routes = [
 
       { path: 'admin/utilisateurs/gerer', loadComponent: () => import('./views/utilisateurs/gerer-utilisateurs/gerer-utilisateurs.component') .then(m => m.GererUtilisateursComponent), data: { title: 'Gérer les utilisateurs' }},
 
-      { path: 'admin/utilisateurs/roles', loadComponent: () => import('./views/utilisateurs/user-role-management/user-role-management.component') .then(m => m.UserRoleManagementComponent), data: { title: 'Gérer les rôles' },
+      { path: 'admin/utilisateurs/roles',  loadComponent: () => import('./views/utilisateurs/user-role-management/user-role-management.component').then(m => m.UserRoleManagementComponent),  data: { title: 'Gérer les rôles' } },
       
-    }
+      { path: 'thematiques/metier', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { theme: 'metier', titre: '📌 Métiers' }},
+
+      { path: 'thematiques/technique', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { theme: 'technique', titre: '⚙️ Technique' }},
+
+      { path: 'thematiques/securite', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { theme: 'securite', titre: '🔐 Sécurité' } },
+
+      { path: 'thematiques/rh', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { theme: 'rh', titre: '👥 Ressources Humaines' } },
+    
     ]
   },
 
