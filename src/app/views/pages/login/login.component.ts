@@ -20,6 +20,9 @@ import { AuthService } from '../../../auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMsg = '';
+  showPassword = false;
+  loading = false;
+  btnActive = false;
 
   constructor(
     private fb: FormBuilder,
@@ -32,11 +35,18 @@ export class LoginComponent {
     });
   }
 
+  toggleShowPassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   onSubmit(): void {
     if (this.loginForm.valid) {
+      this.loading = true;  // Démarre le spinner
+      this.errorMsg = '';   // Reset l'erreur éventuelle
       const data = this.loginForm.value;
       this.authService.login(data).subscribe({
         next: (res) => {
+          this.loading = false;
           localStorage.setItem('token', res.accessToken);
           const role = res.role;
 
@@ -49,6 +59,7 @@ export class LoginComponent {
           }
         },
         error: () => {
+          this.loading = false;
           this.errorMsg = 'Nom d’utilisateur ou mot de passe incorrect';
         }
       });
