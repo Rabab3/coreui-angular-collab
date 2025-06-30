@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export const API_BASE_URL = 'http://localhost:8080/api';
 
 export interface Article {
   id: number;
@@ -8,95 +11,68 @@ export interface Article {
   themeId: number;
   date: string;
   favori?: boolean;
-  statut?: string;
+  statut?: 'EN_ATTENTE' | 'VALIDE' | 'A_CORRIGER' | 'BROUILLON';
   retourCommentaire?: string;
   dateRetour?: string;
   modeSaisie?: string;
   categorie?: string;
   tags?: string[];
   source?: string;
-  visibilite?: string;
+  visibilite?: 'public' | 'brouillon';
   mode?: string;
+  isDraft?: boolean;
+  auteur?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArticleService {
-  private articlesSubject: BehaviorSubject<Article[]>;
+  private baseUrl = `${API_BASE_URL}`;
 
-  constructor() {
-    const savedArticles = localStorage.getItem('articles');
-    const initialArticles: Article[] = savedArticles ? JSON.parse(savedArticles) : [
-      {
-        id: 1,
-        titre: "Créer une authentification sécurisée avec JWT dans Angular et Spring Boot",
-        contenu: `Dans cet article, nous allons apprendre à mettre en place une authentification sécurisée...`,
-        themeId: 1,
-        date: "2025-06-11",
-        favori: false,
-        statut: "Publié",
-        modeSaisie: "texte",
-        categorie: "dev Web",
-        tags: ["angular", "springboot", "jwt", "authentification", "sécurité"],
-        source: "https://jwt.io/introduction"
-      }
-    ];
-    this.articlesSubject = new BehaviorSubject<Article[]>(initialArticles);
-    this.saveToLocalStorage(initialArticles);
-  }
-
-  private saveToLocalStorage(data: Article[]) {
-    localStorage.setItem('articles', JSON.stringify(data));
-    this.articlesSubject.next(data);
-  }
+  constructor(private http: HttpClient) {}
 
   getArticles(): Observable<Article[]> {
-    return this.articlesSubject.asObservable();
+    return this.http.get<Article[]>(`${this.baseUrl}/contribute/articles`);
   }
 
-  getArticlesByTheme(themeId: number): Observable<Article[]> {
-    const all = this.articlesSubject.value;
-    const filtered = all.filter(a => a.themeId === themeId);
-    return of(filtered);
+  getArticleById(id: number): Observable<Article> {
+    return this.http.get<Article>(`${this.baseUrl}/contribute/articles/${id}`);
   }
 
-  getArticleById(id: number): Observable<Article | undefined> {
-    const article = this.articlesSubject.value.find(a => a.id === id);
-    return of(article);
-  }
-
-  getArticleByIdSync(id: number): Article | undefined {
-    return this.articlesSubject.value.find(a => a.id === id);
-  }
-
-  toggleFavori(articleId: number): void {
-    const articles = this.articlesSubject.value.map(a =>
-      a.id === articleId ? { ...a, favori: !a.favori } : a
-    );
-    this.saveToLocalStorage(articles);
-  }
-
-  addArticle(article: Article): void {
-    const articles = [...this.articlesSubject.value, article];
-    this.saveToLocalStorage(articles);
+  addArticle(article: Article): Observable<Article> {
+    return this.http.post<Article>(`${this.baseUrl}/contribute/articles`, article);
   }
 
   updateArticle(id: number, updates: Partial<Article>): Observable<void> {
-    const articles = this.articlesSubject.value.map(a =>
-      a.id === id ? { ...a, ...updates } : a
-    );
-    this.saveToLocalStorage(articles);
-    return of(); // ⬅️ pour permettre le .subscribe()
+    return this.http.put<void>(`${this.baseUrl}/contribute/articles/${id}`, updates);
   }
 
   supprimerArticle(id: number): Observable<void> {
-    const articles = this.articlesSubject.value.filter(a => a.id !== id);
-    this.saveToLocalStorage(articles);
-    return of();
+    return this.http.delete<void>(`${this.baseUrl}/contribute/articles/${id}`);
   }
 
-  getBrouillons(): Article[] {
-    return this.articlesSubject.value.filter(a => a.visibilite === 'brouillon');
+  toggleFavori(id: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/contribute/articles/${id}/favoris`, {});
+  }
+
+  getArticlesByTheme(themeId: number): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.baseUrl}/themes/${themeId}/articles`);
+  }
+
+  getMesArticles(): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.baseUrl}/contribute/articles`);
+  }
+
+  getDrafts(): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.baseUrl}/contribute/articles/drafts`);
+  }
+
+  getArticlesParStatut(statut: string): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.baseUrl}/moderation/articles?statut=${statut}`);
+  }
+
+  getArticlesEnAttente(): Observable<Article[]> {
+    return this.getArticlesParStatut('EN_ATTENTE');
   }
 }

@@ -21,10 +21,10 @@ export class ThemeArticlesComponent implements OnInit {
   searchTerm: string = '';
 
   constructor(
-    private route: ActivatedRoute,
-    private themeService: ThemeService,
-    private articleService: ArticleService,
-    private router: Router
+      private route: ActivatedRoute,
+      private themeService: ThemeService,
+      private articleService: ArticleService,
+      private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +35,8 @@ export class ThemeArticlesComponent implements OnInit {
       this.theme = this.themeService.getThemeById(this.themeId);
 
       this.articleService.getArticlesByTheme(this.themeId).subscribe(articles => {
-        this.allArticles = articles.filter(a => a.statut === 'Publié');
+        // ✅ Correction ici : on utilise 'VALIDE' au lieu de 'Publié'
+        this.allArticles = articles.filter(a => a.statut === 'VALIDE');
         this.articles = [...this.allArticles];
       });
     });
@@ -44,7 +45,7 @@ export class ThemeArticlesComponent implements OnInit {
   toggleFavori(articleId: number): void {
     this.articleService.toggleFavori(articleId);
     this.articleService.getArticlesByTheme(this.themeId).subscribe(data => {
-      this.articles = data.filter(a => a.statut === 'Publié');
+      this.articles = data.filter(a => a.statut === 'VALIDE');
     });
   }
 
@@ -59,7 +60,7 @@ export class ThemeArticlesComponent implements OnInit {
   filtrerArticles(): void {
     const term = this.searchTerm.toLowerCase();
     this.articles = this.allArticles.filter(a =>
-      a.titre.toLowerCase().includes(term)
+        a.titre.toLowerCase().includes(term)
     );
   }
 

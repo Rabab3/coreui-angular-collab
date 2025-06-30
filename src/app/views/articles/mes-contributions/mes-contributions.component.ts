@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ArticleService, Article } from 'src/app/services/article.service';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -12,36 +13,30 @@ import autoTable from 'jspdf-autotable';
   templateUrl: './mes-contributions.component.html',
   styleUrls: ['./mes-contributions.component.scss']
 })
-export class MesContributionsComponent {
+export class MesContributionsComponent implements OnInit {
   searchText: string = '';
   role: string = localStorage.getItem('role') || '';
-  
-  articles = [
-    {
-      titre: 'Sécurité API',
-      auteur: 'Rabab',
-      statut: 'En attente',
-      date: new Date('2025-05-31')
-    },
-    {
-      titre: 'Système RH',
-      auteur: 'Laila',
-      statut: 'À corriger',
-      retourCommentaire: 'Merci de préciser les outils RH utilisés.',
-      date: new Date('2025-05-30')
-    },
-    {
-      titre: 'Angular Moderne',
-      auteur: 'Admin',
-      statut: 'Publié',
-      date: new Date('2025-05-29')
-    }
-  ];
+  articles: Article[] = [];
+
+  constructor(private articleService: ArticleService) {}
+
+  ngOnInit(): void {
+    this.articleService.getArticles().subscribe({
+      next: (data) => {
+        console.log("📦 Articles reçus du backend :", data);  // ✅ Ajouté pour debug
+        this.articles = data;
+      },
+      error: (err) => {
+        console.error('❌ Erreur lors du chargement des articles', err);
+      }
+    });
+  }
+
 
   get filteredArticles() {
     return this.articles.filter(article =>
-      article.titre.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      article.auteur.toLowerCase().includes(this.searchText.toLowerCase())
+        article.titre.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        (article.source?.toLowerCase().includes(this.searchText.toLowerCase()) ?? false)
     );
   }
 
@@ -50,8 +45,8 @@ export class MesContributionsComponent {
     const head = [['Titre', 'Statut', 'Date']];
     const data = this.filteredArticles.map(a => [
       a.titre,
-      a.statut,
-      new Intl.DateTimeFormat('fr-FR').format(a.date)
+      this.getStatutLabel(a.statut),
+      new Intl.DateTimeFormat('fr-FR').format(new Date(a.date))
     ]);
     autoTable(doc, { head, body: data });
     doc.save('mes-contributions.pdf');
@@ -59,18 +54,28 @@ export class MesContributionsComponent {
 
   exportExcel(): void {
     const worksheet = XLSX.utils.json_to_sheet(
-      this.filteredArticles.map(a => ({
-        Titre: a.titre,
-        Statut: a.statut,
-        Date: new Intl.DateTimeFormat('fr-FR').format(a.date)
-      }))
+        this.filteredArticles.map(a => ({
+          Titre: a.titre,
+          Statut: this.getStatutLabel(a.statut),
+          Date: new Intl.DateTimeFormat('fr-FR').format(new Date(a.date))
+        }))
     );
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Contributions');
     XLSX.writeFile(workbook, 'mes-contributions.xlsx');
   }
 
-  changerStatut(article: any, nouveauStatut: string): void {
+  changerStatut(article: Article, nouveauStatut: 'EN_ATTENTE' | 'VALIDE' | 'A_CORRIGER' | 'BROUILLON'): void {
     article.statut = nouveauStatut;
+  }
+
+  getStatutLabel(statut: string | undefined): string {
+    switch (statut) {
+      case 'EN_ATTENTE': return 'En attente';
+      case 'VALIDE': return 'Publié';
+      case 'A_CORRIGER': return 'À corriger';
+      case 'BROUILLON': return 'Brouillon';
+      default: return statut || '';
+    }
   }
 }

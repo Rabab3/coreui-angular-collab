@@ -36,26 +36,26 @@ export class AvaliderComponent implements OnInit {
     this.commentaireRetour = '';
   }
 
- valider(article: Article) {
-  this.articleService.updateArticle(article.id, { statut: 'Publié' });
-  alert(`✅ Article "${article.titre}" validé.`);
-  this.refreshArticles();  // recharge la liste sans l’article validé
-}
-
-
- retourner() {
-  if (this.selectedArticle && this.commentaireRetour.trim()) {
-    this.articleService.updateArticle(this.selectedArticle.id, {
-      statut: 'À corriger',
-      retourCommentaire: this.commentaireRetour,
-      dateRetour: new Date().toISOString()
+  valider(article: Article) {
+    this.articleService.updateArticle(article.id, { statut: 'VALIDE' }).subscribe(() => {
+      alert(`✅ Article "${article.titre}" validé.`);
+      this.refreshArticles();
     });
-    alert(`🔁 Article "${this.selectedArticle.titre}" retourné.`);
-    this.closeModal(); // 🔴 assure-toi que c’est bien ici
-    this.refreshArticles();
   }
-}
 
+  retourner() {
+    if (this.selectedArticle && this.commentaireRetour.trim()) {
+      this.articleService.updateArticle(this.selectedArticle.id, {
+        statut: 'A_CORRIGER',
+        retourCommentaire: this.commentaireRetour,
+        dateRetour: new Date().toISOString()
+      }).subscribe(() => {
+        alert(`🔁 Article "${this.selectedArticle!.titre}" retourné.`);
+        this.closeModal();
+        this.refreshArticles();
+      });
+    }
+  }
 
   voir(article: Article) {
     this.selectedArticle = article;
@@ -67,25 +67,28 @@ export class AvaliderComponent implements OnInit {
     this.selectedArticle = undefined;
   }
 
+
   refreshArticles() {
-    this.articleService.getArticles().subscribe(data => {
-      this.articles = data.filter(a => a.statut?.toLowerCase() === 'en attente');
+    this.articleService.getArticlesParStatut('EN_ATTENTE').subscribe(data => {
+      this.articles = data;
     });
   }
 
+
   get articlesFiltres(): Article[] {
     return this.articles.filter(a =>
-      a.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      a.contenu.toLowerCase().includes(this.searchTerm.toLowerCase())
+        a.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        a.contenu.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
   hasTags(): boolean {
     return !!this.selectedArticle?.tags && this.selectedArticle.tags.length > 0;
   }
-formatContenu(contenu: string): string {
-  return contenu?.replace(/\n/g, '<br>') || '';
-}
+
+  formatContenu(contenu: string): string {
+    return contenu?.replace(/\n/g, '<br>') || '';
+  }
 
   nettoyerContenu(html: string, limit: number = 150): string {
     const texte = html.replace(/<[^>]+>/g, '');

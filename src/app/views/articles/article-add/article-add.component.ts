@@ -1,5 +1,5 @@
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Article } from 'src/app/services/article.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -27,12 +27,13 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
   categories = ['RH', 'TECHNIQUE', 'SÉCURITÉ', 'METIER'];
   isEditMode = false;
   articleIdToEdit!: number;
+  article!: Article;
 
   constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private articleService: ArticleService
+      private fb: FormBuilder,
+      private router: Router,
+      private route: ActivatedRoute,
+      private articleService: ArticleService
   ) {}
 
   ngOnInit(): void {
@@ -51,10 +52,18 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
       if (params['id']) {
         this.isEditMode = true;
         this.articleIdToEdit = +params['id'];
-        const article = this.articleService.getArticleByIdSync(this.articleIdToEdit);
-        if (article) {
-          this.articleForm.patchValue(article);
-        }
+
+        this.articleService.getArticleById(this.articleIdToEdit).subscribe((article: Article) => {
+          this.article = article;
+          this.articleForm.patchValue({
+            titre: article.titre,
+            description: article.contenu,
+            categorie: article.categorie,
+            tags: (article.tags || []).join(' '),
+            source: article.source,
+            visibilite: article.visibilite
+          });
+        });
       }
     });
   }
@@ -94,11 +103,11 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
 
   stripHtmlAndPreserveLineBreaks(html: string): string {
     return html
-      .replace(/<br\s*\/?\>/gi, '\n')
-      .replace(/<\/p>/gi, '\n')
-      .replace(/<\/div>/gi, '\n')
-      .replace(/<[^>]+>/g, '')
-      .replace(/\n{2,}/g, '\n');
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/p>/gi, '\n')
+        .replace(/<\/div>/gi, '\n')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\n{2,}/g, '\n');
   }
 
   exportAsPDF() {
@@ -157,35 +166,38 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
     if (this.articleForm.invalid) return;
 
     const formValue = this.articleForm.value;
-    const newArticle = {
-      id: this.isEditMode ? this.articleIdToEdit : Date.now(),
+    const isDraft = formValue.visibilite === 'brouillon';
+
+    const newArticle: Article = {
+      id: 0,
       titre: formValue.titre,
       contenu: formValue.description,
       themeId: 1,
       date: new Date().toISOString().split('T')[0],
       favori: false,
-      statut: formValue.visibilite === 'brouillon' ? 'Brouillon' : 'En attente',
+      statut: isDraft ? 'BROUILLON' : 'EN_ATTENTE',
       modeSaisie: this.useTextEditor ? 'texte' : 'fichier',
       categorie: formValue.categorie,
       tags: formValue.tags.split(' '),
       source: formValue.source,
-      visibilite: formValue.visibilite
+      visibilite: formValue.visibilite,
+      isDraft: isDraft
     };
 
-    if (this.isEditMode) {
-      this.articleService.updateArticle(this.articleIdToEdit, newArticle);
-    } else {
-      this.articleService.addArticle(newArticle);
-    }
-
-    this.articleForm.reset();
-    this.submitted = false;
-    this.selectedFiles = [];
-
-    if (formValue.visibilite === 'brouillon') {
-      this.router.navigate(['/articles/brouillons']);
-    } else {
-      this.router.navigate(['/articles/mes-contributions']);
-    }
+    this.articleService.addArticle(newArticle).subscribe({
+      next: () => {
+        this.articleForm.reset();
+        this.submitted = false;
+        this.selectedFiles = [];
+        if (isDraft) {
+          this.router.navigate(['/articles/brouillons']);
+        } else {
+          this.router.navigate(['/articles/mes-contributions']);
+        }
+      },
+      error: (err) => {
+        console.error("Erreur lors de l'ajout :", err);
+      }
+    });
   }
 }

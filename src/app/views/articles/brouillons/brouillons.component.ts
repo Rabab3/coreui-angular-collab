@@ -16,7 +16,9 @@ export class BrouillonsComponent implements OnInit {
   constructor(private articleService: ArticleService, private router: Router) {}
 
   ngOnInit(): void {
-    this.brouillons = this.articleService.getBrouillons();
+    this.articleService.getDrafts().subscribe(data => {
+      this.brouillons = data;
+    });
   }
 
   stripHtml(html: string): string {
@@ -29,17 +31,20 @@ export class BrouillonsComponent implements OnInit {
 
   publier(id: number): void {
     this.articleService.updateArticle(id, {
-      statut: 'En attente',
-      visibilite: 'public'
+      statut: 'EN_ATTENTE',
+      visibilite: 'public',
+      isDraft: false // ✅ très important
+    }).subscribe(() => {
+      this.ngOnInit(); // Recharge les brouillons
+      this.router.navigate(['/articles/mes-contributions']);
     });
-    this.brouillons = this.articleService.getBrouillons();
-    this.router.navigate(['/articles/mes-contributions']);
   }
 
   supprimer(id: number): void {
     if (confirm('Voulez-vous vraiment supprimer ce brouillon ?')) {
-      this.articleService.supprimerArticle(id);
-      this.brouillons = this.articleService.getBrouillons();
+      this.articleService.supprimerArticle(id).subscribe(() => {
+        this.ngOnInit(); // Recharge les brouillons
+      });
     }
   }
 }

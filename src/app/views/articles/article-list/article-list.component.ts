@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class ArticleListComponent {
   searchText = '';
   selectedCategory = '';
-  popupVisible = false;
+  popupVisible = false; 
   popupFavoriVisible = false;
   favoriArticleTitre = '';
   articleSelectionne: any = null;
