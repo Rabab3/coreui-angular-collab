@@ -38,10 +38,11 @@ export class AppComponent implements OnInit {
     }
 
     // ✅ Rediriger vers /dashboard si on est à la racine
-    const currentUrl = window.location.pathname + window.location.hash;
-    if (currentUrl === '/' || currentUrl === '/#' || currentUrl === '/#/') {
-      window.location.href = '/#/dashboard';
-    }
+//    const currentUrl = window.location.pathname + window.location.hash;
+// if (currentUrl === '/' || currentUrl === '/#' || currentUrl === '/#/') {
+//   window.location.href = '/#/dashboard';
+// }
+
   }
 
   ngOnInit(): void {

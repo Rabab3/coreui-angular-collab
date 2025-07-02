@@ -4,35 +4,24 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-gerer-utilisateurs',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './gerer-utilisateurs.component.html',
-  styleUrls: ['./gerer-utilisateurs.component.scss']
+  styleUrls: ['./gerer-utilisateurs.component.scss'],
+  imports: [CommonModule, FormsModule]
 })
 export class GererUtilisateursComponent implements OnInit {
   utilisateurs: any[] = [];
   utilisateursFiltres: any[] = [];
-  utilisateurActuel: any = null;
-  showModal = false;
-  showAjoutModal = false;
-  showPopupCredentials = false;
-  popupTitre = '';
-  popupUsername = '';
-  popupPassword = '';
-  recherche = '';
+  roles = ['admin', 'moderateur', 'contributeur', 'lecteur'];
   filtreRole = '';
-  showToast = false;
-  toastMsg = '';
+  recherche = '';
 
-  showDeleteConfirm = false;
-  userToDeleteId: number | null = null;
-
-  ajoutUser: any = {
-    nom: '', prenom: '', email: '', telephone: '', dateNaissance: '',
-    cin: '', statutMarital: 'Célibataire', role: 'contributeur'
-  };
+  // Pour la modal de reset mdp
+  afficherModalReset = false;
+  userASecuriser: any = null;
+  nouveauMdp = '';
 
   ngOnInit(): void {
+    // Données fictives, à remplacer par appel API/service backend
     this.utilisateurs = [
       {
         id: 1,
@@ -59,127 +48,45 @@ export class GererUtilisateursComponent implements OnInit {
         username: 'lailamdrk'
       }
     ];
-    this.actualiserListe();
+    this.filtrer();
   }
 
-  actualiserListe() {
-    this.utilisateursFiltres = this.utilisateurs.filter(user => {
-      const matchNomPrenom = `${user.nom} ${user.prenom}`.toLowerCase().includes(this.recherche.toLowerCase());
-      const matchRole = this.filtreRole ? user.role === this.filtreRole : true;
-      return matchNomPrenom && matchRole;
+  filtrer(): void {
+    this.utilisateursFiltres = this.utilisateurs.filter(u => {
+      const nomPrenom = `${u.nom} ${u.prenom}`.toLowerCase();
+      const rechercheMatch = nomPrenom.includes(this.recherche.toLowerCase());
+      const roleMatch = this.filtreRole ? u.role === this.filtreRole : true;
+      return rechercheMatch && roleMatch;
     });
   }
 
-  ouvrirModal(user: any) {
-    this.utilisateurActuel = { ...user };
-    this.showModal = true;
+  ouvrirModalAjout() {
+    // logiques pour afficher modal d’ajout utilisateur
   }
-  fermerModal() {
-    this.showModal = false;
+  ouvrirModalEdit(user: any) {
+    // logiques pour éditer un utilisateur
   }
-  enregistrerModifications() {
-    this.utilisateurs = this.utilisateurs.map(u =>
-      u.id === this.utilisateurActuel.id ? this.utilisateurActuel : u
-    );
-    this.fermerModal();
-    this.actualiserListe();
-    this.afficherToast("Utilisateur modifié avec succès !");
+  confirmerSuppression(user: any) {
+    // logiques pour confirmation suppression utilisateur
   }
 
-  // Popup moderne suppression
-  supprimerUtilisateur(id: number) {
-    this.userToDeleteId = id;
-    this.showDeleteConfirm = true;
+  ouvrirModalReset(user: any) {
+    this.userASecuriser = user;
+    this.afficherModalReset = true;
+    this.nouveauMdp = '';
   }
-  confirmerSuppression() {
-    if (this.userToDeleteId !== null) {
-      this.utilisateurs = this.utilisateurs.filter(u => u.id !== this.userToDeleteId);
-      this.actualiserListe();
-      this.afficherToast("Utilisateur supprimé !");
-    }
-    this.showDeleteConfirm = false;
-    this.userToDeleteId = null;
+  fermerModalReset() {
+    this.afficherModalReset = false;
+    this.userASecuriser = null;
+    this.nouveauMdp = '';
   }
-  annulerSuppression() {
-    this.showDeleteConfirm = false;
-    this.userToDeleteId = null;
+  genererNouveauMdp(user: any) {
+    // À remplacer par un vrai appel backend !
+    this.nouveauMdp = Math.random().toString(36).slice(-10);
+    // Ici tu peux faire un appel au backend
+    // this.userService.resetMdp(user.id).subscribe(...)
   }
-
-  // --- AJOUT UTILISATEUR
-  ouvrirAjoutUtilisateur() {
-    this.ajoutUser = {
-      nom: '', prenom: '', email: '', telephone: '', dateNaissance: '',
-      cin: '', statutMarital: 'Célibataire', role: 'contributeur'
-    };
-    this.showAjoutModal = true;
-  }
-  fermerAjoutUtilisateur() {
-    this.showAjoutModal = false;
-  }
-  confirmerAjoutUtilisateur() {
-    const username = this.genererUsername(this.ajoutUser.nom, this.ajoutUser.prenom);
-    const password = this.genererPassword();
-    const id = this.utilisateurs.length ? Math.max(...this.utilisateurs.map(u => u.id)) + 1 : 1;
-    const newUser = {
-      id,
-      ...this.ajoutUser,
-      username
-    };
-    this.utilisateurs.push(newUser);
-    this.fermerAjoutUtilisateur();
-    this.actualiserListe();
-    this.popupTitre = "Utilisateur ajouté avec succès !";
-    this.popupUsername = username;
-    this.popupPassword = password;
-    this.showPopupCredentials = true;
-    this.afficherToast("Utilisateur ajouté avec succès !");
-  }
-
-  // --- RÉINITIALISER MOT DE PASSE
-  ouvrirResetPassword(user: any) {
-    const username = user.username;
-    const newPass = this.genererPassword();
-    this.popupTitre = `Nouveau mot de passe pour ${user.nom} ${user.prenom}`;
-    this.popupUsername = username;
-    this.popupPassword = newPass;
-    this.showPopupCredentials = true;
-    this.afficherToast("Mot de passe réinitialisé !");
-  }
-
-  fermerPopupCredentials() {
-    this.showPopupCredentials = false;
-  }
-
-  copierValeur(val: string) {
-    navigator.clipboard.writeText(val);
-    this.afficherToast("Copié !");
-  }
-  copierTout() {
-    navigator.clipboard.writeText(
-      `Nom d'utilisateur : ${this.popupUsername}\nMot de passe : ${this.popupPassword}`
-    );
-    this.afficherToast("Tout copié !");
-  }
-
-  afficherToast(msg: string) {
-    this.toastMsg = msg;
-    this.showToast = true;
-    setTimeout(() => this.showToast = false, 2200);
-  }
-
-  genererUsername(nom: string, prenom: string): string {
-    const base = (prenom + nom).toLowerCase().replace(/[^a-z0-9]/gi, '');
-    const rand = Math.random() < 0.5
-      ? Math.floor(100 + Math.random() * 899).toString()
-      : '';
-    return base + rand;
-  }
-  genererPassword(): string {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*";
-    let pwd = "";
-    for (let i = 0; i < 8; i++) {
-      pwd += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return pwd;
+  copierMdp() {
+    navigator.clipboard.writeText(this.nouveauMdp);
   }
 }
