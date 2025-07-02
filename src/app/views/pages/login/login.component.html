@@ -28,6 +28,12 @@
           </button>
         </div>
       </div>
+
+      <!-- Lien Mot de passe oublié -->
+      <div class="forgot-password-link">
+        <a href="#" (click)="onForgotPassword($event)">Mot de passe oublié ?</a>
+      </div>
+
       <button 
         type="submit" 
         class="btn-space"
@@ -43,4 +49,19 @@
       <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
     </form>
   </div>
+
+  <!-- Popup moderne -->
+  <div class="custom-popup" *ngIf="showForgotPopup">
+  <div class="custom-popup-content">
+    <svg width="60" height="60" viewBox="0 0 48 48" fill="none">
+      <circle cx="24" cy="24" r="24" fill="#e9eaff"/>
+      <rect x="14" y="18" width="20" height="14" rx="3" fill="#5b46e9" opacity="0.15"/>
+      <rect x="14" y="18" width="20" height="14" rx="3" stroke="#5b46e9" stroke-width="2"/>
+      <path d="M16 20l8 7 8-7" stroke="#5b46e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p>Votre demande a été envoyée à l’administrateur.</p>
+    <button (click)="closeForgotPopup()">OK</button>
+  </div>
+</div>
+
 </div>

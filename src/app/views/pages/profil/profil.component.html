@@ -1,12 +1,23 @@
 <div class="profile-wrapper">
   <div class="profile-card">
     <div class="profile-left">
-      <img [src]="photoUrl" alt="Photo de profil" />
-     <label class="custom-file-upload">
-  📷 Changer la photo
-  <input type="file" accept="image/*" (change)="onPhotoSelected($event)" />
-</label>
-
+      <div class="avatar-container" [ngClass]="userData.role">
+        <img *ngIf="photoUrl" [src]="photoUrl" alt="Photo de profil" />
+        <div *ngIf="!photoUrl" class="initials-avatar">{{ initials }}</div>
+      </div>
+      <label class="custom-file-upload">
+        📷 Changer la photo
+        <input type="file" accept="image/*" (change)="onPhotoSelected($event)" />
+      </label>
+      <span class="role-badge" [ngClass]="userData.role">
+        <ng-container [ngSwitch]="userData.role">
+          <span *ngSwitchCase="'admin'">🛡️ Admin</span>
+          <span *ngSwitchCase="'moderateur'">🔵 Modérateur</span>
+          <span *ngSwitchCase="'contributeur'">🟢 Contributeur</span>
+          <span *ngSwitchCase="'lecteur'">🟠 Lecteur</span>
+          <span *ngSwitchDefault>👤</span>
+        </ng-container>
+      </span>
     </div>
 
     <div class="profile-right">
@@ -18,6 +29,7 @@
       <p><strong>Date de naissance :</strong> {{ userData.dateNaissance }}</p>
       <p><strong>CIN :</strong> {{ userData.cin }}</p>
       <p><strong>Statut marital :</strong> {{ userData.statutMarital }}</p>
+      <p><strong>Nom d'utilisateur :</strong> {{ userData.username }}</p>
     </div>
   </div>
 </div>

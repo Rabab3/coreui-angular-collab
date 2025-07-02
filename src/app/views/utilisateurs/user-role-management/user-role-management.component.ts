@@ -15,12 +15,13 @@ export class UserRoleManagementComponent implements OnInit {
   filtreRole = '';
   recherche = '';
   utilisateursFiltres: any[] = [];
+  showToast = false;
 
   ngOnInit(): void {
     this.utilisateurs = [
-      { id: 1, nom: 'Karim', prenom: 'Leïla', email: 'leila@example.com', role: 'contributeur' },
-      { id: 2, nom: 'Dupont', prenom: 'Jean', email: 'jean@example.com', role: 'moderateur' },
-      { id: 3, nom: 'Ali', prenom: 'Sara', email: 'sara@example.com', role: 'lecteur' }
+      { id: 1, nom: 'Mahrache', prenom: 'Rabab', email: 'Rabab.mahrache@example.com', role: 'contributeur' },
+      { id: 2, nom: 'Moudrik', prenom: 'Laila', email: 'laila.moudrik@example.com', role: 'moderateur' },
+
     ];
     this.filtrer();
   }
@@ -34,10 +35,13 @@ export class UserRoleManagementComponent implements OnInit {
   }
 
   changerRole(userId: number, nouveauRole: string) {
-    const utilisateur = this.utilisateurs.find(u => u.id === userId);
-    if (utilisateur) {
-      utilisateur.role = nouveauRole;
-      this.filtrer(); // MAJ vue filtrée
-    }
+  const utilisateur = this.utilisateurs.find(u => u.id === userId);
+  if (utilisateur) {
+    utilisateur.role = nouveauRole;
+    this.filtrer();
+    this.showToast = true;
+    setTimeout(() => this.showToast = false, 1900);
   }
 }
+
+  }
