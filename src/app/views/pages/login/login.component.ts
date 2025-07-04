@@ -41,7 +41,6 @@ export class LoginComponent {
 
   onForgotPassword(event: Event): void {
     event.preventDefault();
-    // Ici tu peux appeler un service pour notifier l'admin si tu veux
     this.showForgotPopup = true;
   }
 
@@ -50,36 +49,35 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-  if (this.loginForm.valid) {
-    this.loading = true;
-    this.errorMsg = '';
-    const data = this.loginForm.value;
-    this.authService.login(data).subscribe({
-      next: (res) => {
-        this.loading = false;
-        localStorage.setItem('token', res.accessToken);
-        localStorage.setItem('role', res.role); 
+    if (this.loginForm.valid) {
+      this.loading = true;
+      this.errorMsg = '';
+      const data = this.loginForm.value;
+      this.authService.login(data).subscribe({
+        next: (res) => {
+          this.loading = false;
+          localStorage.setItem('token', res.accessToken);
+          localStorage.setItem('role', res.role);
 
-        const role = res.role ? res.role.toLowerCase() : '';
+          const role = res.role ? res.role.toLowerCase() : '';
 
-        if (role === 'admin') {
-          this.router.navigate(['/dashboard']);
-        } else if (role === 'moderateur') {
-          this.router.navigate(['/moderation/avalider']);
-        } else if (role === 'contributeur') {
-          this.router.navigate(['/articles/mes-contributions']);
-        } else if (role === 'lecteur') {
-          this.router.navigate(['/articles/liste']);
-        } else {
-          this.router.navigate(['/']);
+          if (role === 'admin') {
+            this.router.navigate(['/dashboard']);
+          } else if (role === 'moderateur') {
+            this.router.navigate(['/moderation/avalider']);
+          } else if (role === 'contributeur') {
+            this.router.navigate(['/articles/mes-contributions']);
+          } else if (role === 'lecteur') {
+            this.router.navigate(['/articles/liste']);
+          } else {
+            this.router.navigate(['/']);
+          }
+        },
+        error: () => {
+          this.loading = false;
+          this.errorMsg = 'Nom d’utilisateur ou mot de passe incorrect';
         }
-      },
-      error: () => {
-        this.loading = false;
-        this.errorMsg = 'Nom d’utilisateur ou mot de passe incorrect';
-      }
-    });
+      });
+    }
   }
-}
-
 }
