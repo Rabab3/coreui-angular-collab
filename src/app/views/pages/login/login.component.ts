@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-
 import { AuthService } from '../../../auth.service';
 
 @Component({
@@ -23,6 +22,7 @@ export class LoginComponent {
   showPassword = false;
   loading = false;
   btnActive = false;
+  showForgotPopup = false; // Pour le popup
 
   constructor(
     private fb: FormBuilder,
@@ -39,23 +39,38 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
 
+  onForgotPassword(event: Event): void {
+    event.preventDefault();
+    this.showForgotPopup = true;
+  }
+
+  closeForgotPopup(): void {
+    this.showForgotPopup = false;
+  }
+
   onSubmit(): void {
     if (this.loginForm.valid) {
-      this.loading = true;  // Démarre le spinner
-      this.errorMsg = '';   // Reset l'erreur éventuelle
+      this.loading = true;
+      this.errorMsg = '';
       const data = this.loginForm.value;
       this.authService.login(data).subscribe({
         next: (res) => {
           this.loading = false;
           localStorage.setItem('token', res.accessToken);
-          const role = res.role;
+          localStorage.setItem('role', res.role);
 
-          if (role === 'ADMIN') {
+          const role = res.role ? res.role.toLowerCase() : '';
+
+          if (role === 'admin') {
             this.router.navigate(['/dashboard']);
-          } else if (role === 'MODERATEUR') {
-            this.router.navigate(['/moderation/liste-a-valider']);
-          } else {
+          } else if (role === 'moderateur') {
+            this.router.navigate(['/moderation/avalider']);
+          } else if (role === 'contributeur') {
+            this.router.navigate(['/articles/mes-contributions']);
+          } else if (role === 'lecteur') {
             this.router.navigate(['/articles/liste']);
+          } else {
+            this.router.navigate(['/']);
           }
         },
         error: () => {

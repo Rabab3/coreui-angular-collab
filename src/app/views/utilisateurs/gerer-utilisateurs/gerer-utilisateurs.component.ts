@@ -24,6 +24,9 @@ export class GererUtilisateursComponent implements OnInit {
   showToast = false;
   toastMsg = '';
 
+  showDeleteConfirm = false;
+  userToDeleteId: number | null = null;
+
   ajoutUser: any = {
     nom: '', prenom: '', email: '', telephone: '', dateNaissance: '',
     cin: '', statutMarital: 'Célibataire', role: 'contributeur'
@@ -33,27 +36,27 @@ export class GererUtilisateursComponent implements OnInit {
     this.utilisateurs = [
       {
         id: 1,
-        nom: 'Karim',
-        prenom: 'Leïla',
-        email: 'leila@example.com',
-        telephone: '0600000001',
-        dateNaissance: '1995-05-15',
-        cin: 'AB100100',
+        nom: 'Mahrache',
+        prenom: 'Rabab',
+        email: 'Rabab.mahrache@example.com',
+        telephone: '0603322111',
+        dateNaissance: '1996-03-22',
+        cin: 'AA445566',
         statutMarital: 'Célibataire',
         role: 'contributeur',
-        username: 'leilaKarim45'
+        username: 'rababmah2'
       },
       {
         id: 2,
-        nom: 'Dupont',
-        prenom: 'Jean',
-        email: 'jean@example.com',
-        telephone: '0600000002',
+        nom: 'Moudrik',
+        prenom: 'Laila',
+        email: 'laila.moudrik@example.com',
+        telephone: '0602211333',
         dateNaissance: '1990-01-01',
-        cin: 'AB200200',
-        statutMarital: 'Marié',
+        cin: 'BB778899',
+        statutMarital: 'Célibataire',
         role: 'moderateur',
-        username: 'jeanDupont82'
+        username: 'lailamdrk'
       }
     ];
     this.actualiserListe();
@@ -83,13 +86,23 @@ export class GererUtilisateursComponent implements OnInit {
     this.afficherToast("Utilisateur modifié avec succès !");
   }
 
+  // Popup moderne suppression
   supprimerUtilisateur(id: number) {
-    const confirmDelete = confirm('Supprimer cet utilisateur ?');
-    if (confirmDelete) {
-      this.utilisateurs = this.utilisateurs.filter(u => u.id !== id);
+    this.userToDeleteId = id;
+    this.showDeleteConfirm = true;
+  }
+  confirmerSuppression() {
+    if (this.userToDeleteId !== null) {
+      this.utilisateurs = this.utilisateurs.filter(u => u.id !== this.userToDeleteId);
       this.actualiserListe();
       this.afficherToast("Utilisateur supprimé !");
     }
+    this.showDeleteConfirm = false;
+    this.userToDeleteId = null;
+  }
+  annulerSuppression() {
+    this.showDeleteConfirm = false;
+    this.userToDeleteId = null;
   }
 
   // --- AJOUT UTILISATEUR
@@ -104,7 +117,6 @@ export class GererUtilisateursComponent implements OnInit {
     this.showAjoutModal = false;
   }
   confirmerAjoutUtilisateur() {
-    // Générer username/mot de passe
     const username = this.genererUsername(this.ajoutUser.nom, this.ajoutUser.prenom);
     const password = this.genererPassword();
     const id = this.utilisateurs.length ? Math.max(...this.utilisateurs.map(u => u.id)) + 1 : 1;

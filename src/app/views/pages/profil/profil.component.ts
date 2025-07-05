@@ -16,26 +16,35 @@ export class ProfilComponent implements OnInit {
     dateNaissance: '',
     cin: '',
     statutMarital: '',
-    telephone: ''
+    telephone: '',
+    username: '',
+    role: ''
   };
 
-  photoUrl: string = 'assets/images/avatars/2.jpg';
+  photoUrl: string = '';
+  initials: string = '';
 
   ngOnInit(): void {
+    // Simulation pour l'exemple (remplace par ce que tu veux récupérer du storage ou d'une API)
     this.userData = {
-      nom: localStorage.getItem('nom') || 'Dupont',
-      prenom: localStorage.getItem('prenom') || 'Jean',
-      email: localStorage.getItem('email') || 'jean.dupont@example.com',
-      dateNaissance: localStorage.getItem('dateNaissance') || '1990-01-01',
-      cin: localStorage.getItem('cin') || 'AB123456',
-      statutMarital: localStorage.getItem('statutMarital') || 'Célibataire',
-      telephone: localStorage.getItem('telephone') || '0600000000'
+      nom: localStorage.getItem('nom') || 'Bensaid',
+      prenom: localStorage.getItem('prenom') || 'Amine',
+      email: localStorage.getItem('email') || 'Amine.Bensaid@example.com',
+      dateNaissance: localStorage.getItem('dateNaissance') || '1990-11-15',
+      cin: localStorage.getItem('cin') || 'SA332216',
+      statutMarital: localStorage.getItem('statutMarital') || 'Marié',
+      telephone: localStorage.getItem('telephone') || '0689563464',
+      username: localStorage.getItem('username') || 'AmineMd90',
+      role: localStorage.getItem('role') || 'admin'
     };
 
-    const storedPhoto = localStorage.getItem('photoProfil');
-    if (storedPhoto) {
-      this.photoUrl = storedPhoto;
-    }
+    this.photoUrl = localStorage.getItem('photoProfil') || '';
+
+    // Initiales (si pas de photo)
+    this.initials = (
+      (this.userData.prenom ? this.userData.prenom[0] : '') +
+      (this.userData.nom ? this.userData.nom[0] : '')
+    ).toUpperCase();
   }
 
   onPhotoSelected(event: any): void {

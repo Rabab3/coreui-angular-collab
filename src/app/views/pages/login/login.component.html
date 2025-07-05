@@ -1,46 +1,71 @@
-<div class="login-page-center">
-  <div class="login-form">
-    <h2>Bienvenue</h2>
-    <p>Plateforme Web Collaborative — Base de Connaissances Interne</p>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label>Nom d’utilisateur</label>
-        <input type="text" formControlName="username" placeholder="Entrez votre nom d’utilisateur" />
+<div class="login-bg">
+  <div class="login-center">
+    <!-- Gauche : bloc blanc avec logo + texte -->
+    <div class="login-left">
+      <div class="welcome-card">
+       <img src="assets/LOGO.png" alt="ADD Logo" class="add-logo-big" />
+
+        <h2>Bienvenue sur la plateforme collaborative</h2>
+        <p>
+          Nouvelle gestion intelligente des connaissances internes.<br>
+          Connectez-vous pour accéder à toutes les fonctionnalités !
+        </p>
       </div>
-      <div class="form-group password-group">
-        <label>Mot de passe</label>
-        <div class="input-with-icon">
-          <input 
-            [type]="showPassword ? 'text' : 'password'" 
-            formControlName="password" 
-            placeholder="Entrez votre mot de passe"
-          />
-          <button type="button" class="eye-btn" (click)="toggleShowPassword()" tabindex="-1">
-            <!-- Eye SVG visible -->
-            <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
-              <path stroke="#0056b3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"/>
-              <circle cx="12" cy="12" r="3" stroke="#0056b3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <!-- Eye SVG crossed -->
-            <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
-              <path stroke="#0056b3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.24 21.24 0 0 1 5.06-5.94m3.34-1.53A10.94 10.94 0 0 1 12 5c7 0 11 7 11 7a21.09 21.09 0 0 1-4.48 5.52M15 12a3 3 0 0 1-3 3m0 0a3 3 0 0 1-3-3m3 3 7 7m-7-7-7-7"/>
-            </svg>
+    </div>
+    <!-- Droite : formulaire de connexion sans logo en haut -->
+    <div class="login-right">
+      <div class="login-form">
+        <h2>Portail Utilisateur</h2>
+        <p>Connexion à la base de connaissances</p>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label>Nom d’utilisateur</label>
+            <input type="text" formControlName="username" placeholder="Entrez votre nom d’utilisateur" />
+          </div>
+          <div class="form-group password-group">
+            <label>Mot de passe</label>
+            <div class="input-with-icon">
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Entrez votre mot de passe" />
+              <button type="button" class="eye-btn" (click)="toggleShowPassword()" tabindex="-1">
+                <!-- Eye SVG visible -->
+                <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
+                  <path stroke="#0056b3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"/>
+                  <circle cx="12" cy="12" r="3" stroke="#0056b3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <!-- Eye SVG crossed -->
+                <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
+                  <path stroke="#0056b3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.24 21.24 0 0 1 5.06-5.94m3.34-1.53A10.94 10.94 0 0 1 12 5c7 0 11 7 11 7a21.09 21.09 0 0 1-4.48 5.52M15 12a3 3 0 0 1-3 3m0 0a3 3 0 0 1-3-3m3 3 7 7m-7-7-7-7"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="forgot-password-link">
+            <a href="#" (click)="onForgotPassword($event)">Mot de passe oublié ?</a>
+          </div>
+          <button type="submit" class="btn-space" [disabled]="loginForm.invalid || loading"
+                  (mousedown)="btnActive=true" (mouseup)="btnActive=false" (mouseleave)="btnActive=false"
+                  [style.transform]="btnActive ? 'scale(0.98)' : 'none'">
+            <strong *ngIf="!loading">Se connecter</strong>
+            <span *ngIf="loading" class="spinner"></span>
+            <div id="container-stars"><div id="stars"></div></div>
+            <div id="glow"><div class="circle"></div><div class="circle"></div></div>
           </button>
+          <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
+        </form>
+      </div>
+      <!-- Popup moderne -->
+      <div class="custom-popup" *ngIf="showForgotPopup">
+        <div class="custom-popup-content">
+          <svg width="60" height="60" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="24" fill="#e9eaff"/>
+            <rect x="14" y="18" width="20" height="14" rx="3" fill="#5b46e9" opacity="0.15"/>
+            <rect x="14" y="18" width="20" height="14" rx="3" stroke="#5b46e9" stroke-width="2"/>
+            <path d="M16 20l8 7 8-7" stroke="#5b46e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p>Votre demande a été envoyée à l’administrateur.</p>
+          <button (click)="closeForgotPopup()">OK</button>
         </div>
       </div>
-      <button 
-        type="submit" 
-        class="btn-space"
-        [disabled]="loginForm.invalid || loading"
-        (mousedown)="btnActive=true" (mouseup)="btnActive=false" (mouseleave)="btnActive=false"
-        [style.transform]="btnActive ? 'scale(0.98)' : 'none'"
-      >
-        <strong *ngIf="!loading">Se connecter</strong>
-        <span *ngIf="loading" class="spinner"></span>
-        <div id="container-stars"><div id="stars"></div></div>
-        <div id="glow"><div class="circle"></div><div class="circle"></div></div>
-      </button>
-      <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
-    </form>
+    </div>
   </div>
 </div>

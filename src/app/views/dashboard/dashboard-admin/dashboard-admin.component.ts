@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartType, ChartOptions } from 'chart.js';
+// ... imports ...
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -11,18 +12,6 @@ import { ChartType, ChartOptions } from 'chart.js';
   styleUrls: ['./dashboard-admin.component.scss']
 })
 export class DashboardAdminComponent {
-  stats = [
-    { label: 'Articles totaux', value: 125 },
-    { label: 'Utilisateurs', value: 35 },
-    { label: 'Modérateurs', value: 5 },
-    { label: 'Contributeurs', value: 15 }
-  ];
-
-  activites = [
-    { auteur: 'Leïla', titre: 'Comment formater un PC', date: 'il y a 25h' },
-    { auteur: 'Rania', titre: 'Installer Ubuntu', date: 'il y a 48h' }
-  ];
-
   chartType: ChartType = 'doughnut';
 
   chartData = {
@@ -50,4 +39,19 @@ export class DashboardAdminComponent {
       }
     }
   };
+avatarColor(role: string): string {
+  switch (role) {
+    case 'admin': return 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)';
+    case 'moderateur': return 'linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%)';
+    case 'contributeur': return 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)';
+    case 'lecteur': return 'linear-gradient(135deg, #b224ef 0%, #7579ff 100%)';
+    default: return '#bbb';
+  }
+}
+
+  demandesReset = [
+    { nom: 'Marzak', prenom: 'karim', role: 'contributeur', date: 'il y a 30min' },
+    { nom: 'Antali', prenom: 'Souad', role: 'moderateur', date: 'il y a 1h' },
+    { nom: 'Chaibi', prenom: 'Hanane', role: 'lecteur', date: 'il y a 3h' }
+  ];
 }

@@ -117,7 +117,25 @@
     </div>
   </div>
 
-  <!-- MODALE AJOUT UTILISATEUR -->
+
+  <!-- POPUP MODERNE CONFIRMATION SUPPRESSION -->
+<div class="modal" *ngIf="showDeleteConfirm">
+  <div class="modal-content" style="max-width:410px;">
+    <h3 class="delete-title">Confirmer la suppression</h3>
+    <p class="delete-question">
+      Voulez-vous vraiment supprimer cet utilisateur&nbsp;?
+    </p>
+    <div class="delete-actions">
+      <button class="delete-confirm-btn" (click)="confirmerSuppression()">Supprimer</button>
+      <button class="delete-cancel-btn" (click)="annulerSuppression()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+ 
   <!-- MODALE AJOUT UTILISATEUR -->
 <div class="modal" *ngIf="showAjoutModal">
   <div class="modal-content">
@@ -194,3 +212,4 @@
   <!-- TOAST -->
   <div class="toast" *ngIf="showToast">{{ toastMsg }}</div>
 </div>
+

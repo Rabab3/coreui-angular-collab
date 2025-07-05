@@ -1,57 +1,37 @@
 import { Routes } from '@angular/router';
 import { DefaultLayoutComponent } from './layout/default-layout/default-layout.component';
+import { AuthGuard } from './app/auth.guard';
+
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: '',
     component: DefaultLayoutComponent,
+    // canActivate: [AuthGuard],   // protège toutes les routes enfants
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
       { path: 'dashboard', loadComponent: () => import('./views/dashboard/dashboard.component').then(m => m.DashboardComponent) },
-
       { path: 'articles/brouillons', loadComponent: () => import('./views/articles/brouillons/brouillons.component').then(m => m.BrouillonsComponent) },
-
       { path: 'articles/ajouter', loadComponent: () => import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent) },
-
       { path: 'articles/mes-contributions', loadComponent: () => import('./views/articles/mes-contributions/mes-contributions.component').then(m => m.MesContributionsComponent) },
-
       { path: 'articles/liste', loadComponent: () => import('./views/articles/article-list/article-list.component').then(m => m.ArticleListComponent) },
-
       { path: 'articles/favoris', loadComponent: () => import('./views/articles/favoris-list/favoris-list.component').then(m => m.FavorisListComponent) },
-
       { path: 'utilisateurs', loadComponent: () => import('./views/utilisateurs/utilisateurs.component').then(m => m.UtilisateursComponent) },
-
       { path: 'thematiques/ajouter', loadComponent: () => import('./views/par-thematique/theme/theme-add.component').then(m => m.ThemeAddComponent), data: { title: 'Ajouter une thématique' } },
-
       { path: 'thematiques/gerer', loadComponent: () => import('./views/par-thematique/theme/theme-manage.component').then(m => m.ThemeManageComponent), data: { title: 'Gérer les thématiques' } },
-
       { path: 'thematiques/:id', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { title: 'Articles par thématique' } },
-      
       { path: 'articles/details/:id', loadComponent: () => import('./views/articles/article-details/article-details.component').then(m => m.ArticleDetailsComponent), data: { title: 'Détails de l\'article' } },
-      
       { path: 'roles', loadComponent: () => import('./views/roles/roles.component').then(m => m.RolesComponent) },
-
       { path: 'moderation/avalider', loadComponent: () => import('./moderation/avalider/avalider.component').then(m => m.AvaliderComponent) },
-
       { path: 'moderation/acorriger', loadComponent: () => import('./moderation/acorriger/acorriger.component').then(m => m.AcorrigerComponent) },
-
       { path: 'parametres/profil', loadComponent: () => import('./views/pages/profil/profil.component').then(m => m.ProfilComponent) },
-
       { path: 'logout', loadComponent: () => import('./views/pages/logout/logout.component').then(m => m.LogoutComponent) },
-
       { path: 'admin/utilisateurs/gerer', loadComponent: () => import('./views/utilisateurs/gerer-utilisateurs/gerer-utilisateurs.component') .then(m => m.GererUtilisateursComponent), data: { title: 'Gérer les utilisateurs' }},
-
       { path: 'admin/utilisateurs/roles',  loadComponent: () => import('./views/utilisateurs/user-role-management/user-role-management.component').then(m => m.UserRoleManagementComponent),  data: { title: 'Gérer les rôles' } },
-      
       { path: 'thematiques/metier', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { theme: 'metier', titre: '📌 Métiers' }},
-
       { path: 'thematiques/technique', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { theme: 'technique', titre: '⚙️ Technique' }},
-
       { path: 'thematiques/securite', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { theme: 'securite', titre: '🔐 Sécurité' } },
-
       { path: 'thematiques/rh', loadComponent: () => import('./views/par-thematique/theme-articles/theme-articles.component').then(m => m.ThemeArticlesComponent), data: { theme: 'rh', titre: '👥 Ressources Humaines' } },
-    
     ]
   },
 
