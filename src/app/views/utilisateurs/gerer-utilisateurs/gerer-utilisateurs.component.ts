@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+
 @Component({
   selector: 'app-gerer-utilisateurs',
   standalone: true,
@@ -23,13 +24,12 @@ export class GererUtilisateursComponent implements OnInit {
   filtreRole = '';
   showToast = false;
   toastMsg = '';
-
   showDeleteConfirm = false;
   userToDeleteId: number | null = null;
 
   ajoutUser: any = {
     nom: '', prenom: '', email: '', telephone: '', dateNaissance: '',
-    cin: '', statutMarital: 'Célibataire', role: 'contributeur'
+    cin: '', statutMarital: 'Célibataire', role: 'contributeur', departement: ''
   };
 
   ngOnInit(): void {
@@ -44,7 +44,8 @@ export class GererUtilisateursComponent implements OnInit {
         cin: 'AA445566',
         statutMarital: 'Célibataire',
         role: 'contributeur',
-        username: 'rababmah2'
+        username: 'rababmah2',
+        departement: 'Développement SI'
       },
       {
         id: 2,
@@ -56,7 +57,8 @@ export class GererUtilisateursComponent implements OnInit {
         cin: 'BB778899',
         statutMarital: 'Célibataire',
         role: 'moderateur',
-        username: 'lailamdrk'
+        username: 'lailamdrk',
+        departement: 'Infrastructure Réseau'
       }
     ];
     this.actualiserListe();
@@ -74,9 +76,11 @@ export class GererUtilisateursComponent implements OnInit {
     this.utilisateurActuel = { ...user };
     this.showModal = true;
   }
+
   fermerModal() {
     this.showModal = false;
   }
+
   enregistrerModifications() {
     this.utilisateurs = this.utilisateurs.map(u =>
       u.id === this.utilisateurActuel.id ? this.utilisateurActuel : u
@@ -86,11 +90,11 @@ export class GererUtilisateursComponent implements OnInit {
     this.afficherToast("Utilisateur modifié avec succès !");
   }
 
-  // Popup moderne suppression
   supprimerUtilisateur(id: number) {
     this.userToDeleteId = id;
     this.showDeleteConfirm = true;
   }
+
   confirmerSuppression() {
     if (this.userToDeleteId !== null) {
       this.utilisateurs = this.utilisateurs.filter(u => u.id !== this.userToDeleteId);
@@ -100,22 +104,24 @@ export class GererUtilisateursComponent implements OnInit {
     this.showDeleteConfirm = false;
     this.userToDeleteId = null;
   }
+
   annulerSuppression() {
     this.showDeleteConfirm = false;
     this.userToDeleteId = null;
   }
 
-  // --- AJOUT UTILISATEUR
   ouvrirAjoutUtilisateur() {
     this.ajoutUser = {
       nom: '', prenom: '', email: '', telephone: '', dateNaissance: '',
-      cin: '', statutMarital: 'Célibataire', role: 'contributeur'
+      cin: '', statutMarital: 'Célibataire', role: 'contributeur', departement: ''
     };
     this.showAjoutModal = true;
   }
+
   fermerAjoutUtilisateur() {
     this.showAjoutModal = false;
   }
+
   confirmerAjoutUtilisateur() {
     const username = this.genererUsername(this.ajoutUser.nom, this.ajoutUser.prenom);
     const password = this.genererPassword();
@@ -135,7 +141,6 @@ export class GererUtilisateursComponent implements OnInit {
     this.afficherToast("Utilisateur ajouté avec succès !");
   }
 
-  // --- RÉINITIALISER MOT DE PASSE
   ouvrirResetPassword(user: any) {
     const username = user.username;
     const newPass = this.genererPassword();
@@ -154,6 +159,7 @@ export class GererUtilisateursComponent implements OnInit {
     navigator.clipboard.writeText(val);
     this.afficherToast("Copié !");
   }
+
   copierTout() {
     navigator.clipboard.writeText(
       `Nom d'utilisateur : ${this.popupUsername}\nMot de passe : ${this.popupPassword}`
@@ -174,6 +180,7 @@ export class GererUtilisateursComponent implements OnInit {
       : '';
     return base + rand;
   }
+
   genererPassword(): string {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*";
     let pwd = "";

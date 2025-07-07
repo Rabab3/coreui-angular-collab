@@ -1,153 +1,212 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
 .profile-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 3rem;
-  padding: 1rem;
+  padding: 3rem 1rem;
 }
 
 .profile-card {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
-  background-color: var(--cui-body-bg);
-  color: var(--cui-body-color);
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  padding: 2.5rem 3.5rem;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  padding: 3.5rem 4rem 3rem;
+  max-width: 1300px;
   width: 100%;
-  max-width: 980px;
   gap: 2.5rem;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
+}
+
+.profile-title {
+  position: absolute;
+  top: -2.3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.6rem 2.2rem;
+  font-size: 2.3rem;
+  font-weight: 700;
+  border-radius: 12px;
+  color: white;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .profile-left {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 220px;
+  min-width: 230px;
+  margin-top: 2.5rem;
 }
 
 .avatar-container {
-  width: 145px;
-  height: 145px;
+  margin-top: 0.5rem;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  margin-bottom: 1.2rem;
-  background: #f8f8f8;
-  box-shadow: 0 3px 20px #e4e4e7;
+  background: #f2f2f2;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  position: relative;
-  transition: box-shadow 0.2s;
-}
-
-.avatar-container.admin {
-  box-shadow: 0 0 0 4px #fa7070, 0 2px 20px #fa707055;
-}
-.avatar-container.moderateur {
-  box-shadow: 0 0 0 4px #90caf9, 0 2px 20px #90caf955;
-}
-.avatar-container.contributeur {
-  box-shadow: 0 0 0 4px #43a04777, 0 2px 20px #66bb6a33;
-}
-.avatar-container.lecteur {
-  box-shadow: 0 0 0 4px #ffb30099, 0 2px 20px #ffd74033;
 }
 
 .avatar-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
 }
 
 .initials-avatar {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #3498db, #9b59b6);
   width: 100%;
   height: 100%;
-  font-size: 3.1rem;
-  font-weight: 700;
-  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7b2ff2 0%, #f357a8 100%);
 }
 
 .custom-file-upload {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  margin-top: 0.8rem;
-  cursor: pointer;
-  background-color: #007bff;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 500;
+  margin-top: 1rem;
+  background: #007bff;
+  color: white;
+  padding: 0.5rem 1.1rem;
   border-radius: 8px;
-  transition: background-color 0.3s;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
-  input[type="file"] { display: none; }
-}
-.custom-file-upload:hover {
-  background-color: #0056b3;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+
+  input[type='file'] {
+    display: none;
+  }
 }
 
 .role-badge {
-  margin-top: 1.3rem;
-  padding: 0.37rem 1.1rem;
-  border-radius: 2rem;
-  font-size: 1.06rem;
-  font-weight: 600;
-  display: inline-block;
-  letter-spacing: .02em;
-  background: #e9e9f9;
-  color: #4c4c4c;
-}
-.role-badge.admin {
-  background: linear-gradient(90deg,#ff5858,#ffd6d6);
-  color: #b30000;
-  border: 1.5px solid #f93131;
-}
-.role-badge.moderateur {
-  background: linear-gradient(90deg,#dbeafe,#b9e5ff);
-  color: #2266bb;
-  border: 1.5px solid #6eb4f7;
-}
-.role-badge.contributeur {
-  background: linear-gradient(90deg,#e4faed,#bdf7e6);
-  color: #1c7c47;
-  border: 1.5px solid #31c48d;
-}
-.role-badge.lecteur {
-  background: linear-gradient(90deg,#fffbe0,#ffe0c1);
-  color: #b47400;
-  border: 1.5px solid #ffc857;
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  border: 1.5px solid;
+  background: #ffeaea;
+  color: #d10000;
+  border-color: #ff6666;
 }
 
 .profile-right {
   flex: 1;
+  margin-top: 2rem;
+}
+
+.profile-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem 2rem;
+}
+
+.info-block {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
 }
 
-.profile-right h2 {
-  font-size: 2.15rem;
-  margin-bottom: 1.3rem;
-  color: var(--cui-emphasis-color, #23272b);
-  font-weight: 700;
-}
-
-.profile-right p {
+.info-block label {
+  font-weight: 600;
   font-size: 1.1rem;
-  margin: 0.3rem 0;
+  margin-bottom: 0.3rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 4px;
+
+  i {
+    font-size: 1.25rem;
+    min-width: 24px;
+    color: #555;
+  }
 }
 
-.profile-right p strong {
-  color: var(--cui-emphasis-color, #23272b);
+.info-block span {
+  font-size: 1.2rem;
+  color: #222;
+  padding-left: 22px;
+}
+
+.info-block.full {
+  grid-column: 1 / -1;
+}
+
+/* Icône spécifiques colorées */
+.fa-user {
+  color: #1f78d1;
+}
+.fa-envelope {
+  color: #e67e22;
+}
+.fa-phone {
+  color: #2ecc71;
+}
+.fa-calendar {
+  color: #9b59b6;
+}
+.fa-id-card {
+  color: #e74c3c;
+}
+.fa-heart {
+  color: #c0392b;
+}
+.fa-building {
+  color: #34495e;
+}
+.fa-user-circle {
+  color: #2980b9;
 }
 
 @media (max-width: 900px) {
-  .profile-card { flex-direction: column; text-align: center; }
-  .profile-right { align-items: center; }
+  .profile-card {
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .profile-title {
+    font-size: 1.8rem;
+  }
+
+  .profile-info-grid {
+    grid-template-columns: 1fr;
+  }
 }
+.delete-photo-btn {
+  margin-top: 0.7rem;
+  background: #ff4d4d;
+  color: white;
+  padding: 0.4rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: #e60000;
+  }
+}
+
+.gradient-icon {
+  background: linear-gradient(135deg, #ff6ec4, #7873f5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+

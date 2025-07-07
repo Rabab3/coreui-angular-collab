@@ -1,14 +1,22 @@
 <div class="profile-wrapper">
   <div class="profile-card">
+    <h2 class="profile-title">Mon Profil</h2>
+
     <div class="profile-left">
       <div class="avatar-container" [ngClass]="userData.role">
         <img *ngIf="photoUrl" [src]="photoUrl" alt="Photo de profil" />
         <div *ngIf="!photoUrl" class="initials-avatar">{{ initials }}</div>
       </div>
+
       <label class="custom-file-upload">
         📷 Changer la photo
         <input type="file" accept="image/*" (change)="onPhotoSelected($event)" />
       </label>
+
+      <button *ngIf="photoUrl" class="delete-photo-btn" (click)="onDeletePhoto()">
+        🗑️ Supprimer la photo
+      </button>
+
       <span class="role-badge" [ngClass]="userData.role">
         <ng-container [ngSwitch]="userData.role">
           <span *ngSwitchCase="'admin'">🛡️ Admin</span>
@@ -21,15 +29,44 @@
     </div>
 
     <div class="profile-right">
-      <h2>Mon Profil</h2>
-      <p><strong>Nom :</strong> {{ userData.nom }}</p>
-      <p><strong>Prénom :</strong> {{ userData.prenom }}</p>
-      <p><strong>Email :</strong> {{ userData.email }}</p>
-      <p><strong>Numéro :</strong> {{ userData.telephone }}</p>
-      <p><strong>Date de naissance :</strong> {{ userData.dateNaissance }}</p>
-      <p><strong>CIN :</strong> {{ userData.cin }}</p>
-      <p><strong>Statut marital :</strong> {{ userData.statutMarital }}</p>
-      <p><strong>Nom d'utilisateur :</strong> {{ userData.username }}</p>
+      <div class="profile-info-grid">
+        <div class="info-block">
+          <label><i class="fa fa-user gradient-icon"></i> <strong>Nom :</strong></label>
+          <span>{{ userData.nom }}</span>
+        </div>
+        <div class="info-block">
+          <label><i class="fa fa-user gradient-icon"></i> <strong>Prénom :</strong></label>
+          <span>{{ userData.prenom }}</span>
+        </div>
+        <div class="info-block">
+          <label><i class="fa fa-envelope gradient-icon"></i> <strong>Email :</strong></label>
+          <span>{{ userData.email }}</span>
+        </div>
+        <div class="info-block">
+          <label><i class="fa fa-phone gradient-icon"></i> <strong>Numéro :</strong></label>
+          <span>{{ userData.telephone }}</span>
+        </div>
+        <div class="info-block">
+          <label><i class="fa fa-calendar gradient-icon"></i> <strong>Date de naissance :</strong></label>
+          <span>{{ userData.dateNaissance }}</span>
+        </div>
+        <div class="info-block">
+          <label><i class="fa fa-id-card gradient-icon"></i> <strong>CIN :</strong></label>
+          <span>{{ userData.cin }}</span>
+        </div>
+        <div class="info-block">
+          <label><i class="fa fa-heart gradient-icon"></i> <strong>Statut marital :</strong></label>
+          <span>{{ userData.statutMarital }}</span>
+        </div>
+        <div class="info-block">
+          <label><i class="fa fa-building gradient-icon"></i> <strong>Département :</strong></label>
+          <span>{{ userData.departement }}</span>
+        </div>
+        <div class="info-block full">
+          <label><i class="fa fa-user-circle gradient-icon"></i> <strong>Nom d'utilisateur :</strong></label>
+          <span>{{ userData.username }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
