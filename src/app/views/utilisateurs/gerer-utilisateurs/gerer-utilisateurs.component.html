@@ -107,14 +107,6 @@
          <label>Département :</label>
         <input [(ngModel)]="utilisateurActuel.departement" name="departement" required />
 
-        <label>Rôle :</label>
-        <select [(ngModel)]="utilisateurActuel.role" name="role" required>
-          <option value="admin">Admin</option>
-          <option value="moderateur">Modérateur</option>
-          <option value="contributeur">Contributeur</option>
-          <option value="lecteur">Lecteur</option>
-        </select>
-
         <div class="modal-actions">
           <button type="submit" class="save">💾 Enregistrer</button>
           <button type="button" (click)="fermerModal()">❌ Annuler</button>

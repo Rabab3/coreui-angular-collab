@@ -7,7 +7,42 @@
   </div>
 </div>
 
-<h2 class="title">Activité de modération</h2>
+<h2 class="title">Statistiques de modération</h2>
+
+<div class="charts">
+  <div class="chart-container">
+    <h4>Articles validés / jour</h4>
+    <canvas baseChart
+      [data]="validatedChartData"
+      [labels]="dates"
+      [options]="chartOptions"
+      [type]="'bar'">
+    </canvas>
+  </div>
+
+  <div class="chart-container">
+    <h4>Articles à valider</h4>
+    <canvas baseChart
+      [data]="pendingChartData"
+      [labels]="dates"
+      [options]="chartOptions"
+      [type]="'line'">
+    </canvas>
+  </div>
+
+  <div class="chart-container">
+    <h4>Vue globale de la modération</h4>
+    <canvas baseChart
+      [data]="globalChartData"
+      [labels]="dates"
+      [options]="chartOptions"
+      [type]="'bar'">
+    </canvas>
+  </div>
+</div>
+
+<!-- <h2 class="title">Activité de modération</h2>
+
 <ul class="timeline">
   <li *ngFor="let event of timeline">
     <span class="action">{{ event.action }}</span>
@@ -16,4 +51,4 @@
     </span>
     <span class="date">{{ event.date }}</span>
   </li>
-</ul>
+</ul> -->
