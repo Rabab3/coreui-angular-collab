@@ -3,12 +3,12 @@
   <p class="description">{{ theme.description }}</p>
 
   <div class="toolbar">
-    <button *ngIf="role === 'modérateur' || role === 'contributeur'" (click)="ajouterArticle()">
-      ➕ Ajouter un article
-    </button>
-
-    <input type="text" placeholder="🔍 Rechercher un article" [(ngModel)]="searchTerm" (input)="filtrerArticles()" />
-  </div>
+    <div class="actions-container">
+  <button (click)="ajouterArticle()">
+    <i class="fa fa-plus"></i> Ajouter un article
+  </button>
+  <input type="text" [(ngModel)]="searchTerm" (input)="filtrerArticles()" placeholder="🔍 Rechercher un article">
+</div>
 
   <div class="articles-grid">
     <div class="article-card" *ngFor="let article of articles">

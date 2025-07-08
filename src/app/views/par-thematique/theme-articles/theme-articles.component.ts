@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule]
 })
 export class ThemeArticlesComponent implements OnInit {
-  themeId!: number;
+  themeCode!: string;
   theme?: Thématique;
   articles: Article[] = [];
   allArticles: Article[] = [];
@@ -31,19 +31,21 @@ export class ThemeArticlesComponent implements OnInit {
     this.role = localStorage.getItem('role') || 'lecteur';
 
     this.route.params.subscribe(params => {
-      this.themeId = +params['id'];
-      this.theme = this.themeService.getThemeById(this.themeId);
+      this.themeCode = params['code'];
+      this.theme = this.themeService.getThemeByCode(this.themeCode);
 
-      this.articleService.getArticlesByTheme(this.themeId).subscribe(articles => {
-        this.allArticles = articles.filter(a => a.statut === 'Publié');
-        this.articles = [...this.allArticles];
-      });
+      if (this.theme) {
+        this.articleService.getArticlesByTheme(this.theme.id).subscribe(articles => {
+          this.allArticles = articles.filter(a => a.statut === 'Publié');
+          this.articles = [...this.allArticles];
+        });
+      }
     });
   }
 
   toggleFavori(articleId: number): void {
     this.articleService.toggleFavori(articleId);
-    this.articleService.getArticlesByTheme(this.themeId).subscribe(data => {
+    this.articleService.getArticlesByTheme(this.theme!.id).subscribe(data => {
       this.articles = data.filter(a => a.statut === 'Publié');
     });
   }
@@ -53,8 +55,9 @@ export class ThemeArticlesComponent implements OnInit {
   }
 
   ajouterArticle() {
-    this.router.navigate(['/articles/add']);
-  }
+  this.router.navigate(['/articles/ajouter']);
+}
+
 
   filtrerArticles(): void {
     const term = this.searchTerm.toLowerCase();
@@ -63,11 +66,8 @@ export class ThemeArticlesComponent implements OnInit {
     );
   }
 
-  isFavori(article: Article): boolean {
-    return article.favori === true;
-  }
-
   peutAjouter(): boolean {
     return this.role === 'contributeur' || this.role === 'moderateur';
   }
 }
+

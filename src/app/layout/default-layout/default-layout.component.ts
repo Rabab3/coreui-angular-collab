@@ -41,28 +41,31 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       name: 'Thématiques',
       iconComponent: { name: 'cil-tags' },
       children: [
-  {
-    name: '📌 Métiers',
-    url: '/thematiques/metier'
-  },
-  {
-    name: '⚙️ Technique',
-    url: '/thematiques/technique'
-  },
-  {
-    name: '🔐 Sécurité',
-    url: '/thematiques/securite'
-  },
-  {
-    name: '🧑‍💼 RH',
-    url: '/thematiques/rh'
-  },
-  ...themes.map(theme => ({
-    name: `${theme.icone || '📁'} ${theme.nom}`,
-    url: `/thematiques/${theme.id}`
-  }))
-]
-
+        // Thématiques fixes
+        {
+          name: '📌 Métiers',
+          url: '/thematiques/metier'
+        },
+        {
+          name: '⚙️ Technique',
+          url: '/thematiques/technique'
+        },
+        {
+          name: '🔐 Sécurité',
+          url: '/thematiques/securite'
+        },
+        {
+          name: '🧑‍💼 RH',
+          url: '/thematiques/rh'
+        },
+        // Thématiques dynamiques (exclure les fixes)
+        ...themes
+          .filter(theme => !['metier', 'technique', 'securite', 'rh'].includes(theme.code || ''))
+          .map(theme => ({
+            name: `${theme.icone || '📁'} ${theme.nom}`,
+            url: `/thematiques/${theme.id}`
+          }))
+      ]
     };
 
     // Ajouter & Gérer une thématique (modérateur uniquement)
