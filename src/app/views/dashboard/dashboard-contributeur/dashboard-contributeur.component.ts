@@ -16,8 +16,8 @@ export class DashboardContributeurComponent {
   ];
 
   topArticles = [
-    { titre: 'Les bonnes pratiques Angular', vues: 120 },
-    { titre: 'Comprendre Spring Boot', vues: 95 },
-    { titre: 'PostgreSQL pour les devs', vues: 80 }
+    { titre: 'Les bonnes pratiques Angular', vues: 120, icone: '' },
+    { titre: 'Comprendre Spring Boot', vues: 95, icone: '' },
+    { titre: 'PostgreSQL pour les devs', vues: 80, icone: '' }
   ];
 }

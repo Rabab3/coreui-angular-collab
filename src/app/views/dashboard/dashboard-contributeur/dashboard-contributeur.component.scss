@@ -13,7 +13,7 @@
 }
 
 .card {
-  background-color: #e8f0fe;
+  background: linear-gradient(to right, #e3f2fd, #cfe9ff);
   border-radius: 12px;
   padding: 20px;
   width: 250px;
@@ -31,7 +31,7 @@
     font-size: 22px;
     font-weight: bold;
     margin-top: 10px;
-    color: #007bff;
+    color: #1976d2;
   }
 
   &:hover {
@@ -39,29 +39,86 @@
   }
 }
 
-.articles {
-  margin: 0 auto;
-  padding: 0;
-  max-width: 600px;
-  list-style: none;
+.flip-card-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
 
-  li {
-    background: #fffbe6;
-    margin: 10px 0;
-    padding: 15px 20px;
-    border-left: 5px solid #f0ad4e;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 6px;
+.flip-card {
+  background-color: transparent;
+  width: 260px;
+  height: 170px;
+  perspective: 1000px;
+}
 
-    strong {
-      font-size: 16px;
-    }
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+}
 
-    span {
-      font-style: italic;
-      color: #555;
-    }
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  color: #fff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+}
+
+.flip-card-front {
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+
+  .icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 16px;
+    padding: 0 10px;
+  }
+}
+
+.flip-card-back {
+  background: linear-gradient(to right, #1d2671, #c33764);
+  transform: rotateY(180deg);
+
+  p {
+    margin: 6px 0;
+    font-size: 15px;
+  }
+}
+
+// ✨ Animation d’apparition
+.fade-in {
+  animation: fadeInUp 0.7s ease-in-out both;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

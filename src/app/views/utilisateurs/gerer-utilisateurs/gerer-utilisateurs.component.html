@@ -27,7 +27,6 @@
     <th>Téléphone</th>
     <th>Date naissance</th>
     <th>CIN</th>
-    <th>Statut</th>
     <th>Département</th> 
     <th>Rôle</th>
     <th>Actions</th>
@@ -42,8 +41,7 @@
     <td>{{ user.dateNaissance | date: 'dd/MM/yyyy' }}</td>
 
     <td>{{ user.cin }}</td>
-    <td>{{ user.statutMarital }}</td>
-    <td>{{ user.departement }}</td> <!-- AJOUTÉ -->
+    <td>{{ user.departement }}</td>
     <td>{{ user.role }}</td>
     <td>
           <!-- Modifier -->
@@ -97,12 +95,7 @@
         <label>CIN :</label>
         <input [(ngModel)]="utilisateurActuel.cin" name="cin" />
 
-        <label>Statut marital :</label>
-        <select [(ngModel)]="utilisateurActuel.statutMarital" name="statutMarital">
-          <option value="Célibataire">Célibataire</option>
-          <option value="Marié">Marié</option>
-          <option value="Divorcé">Divorcé</option>
-        </select>
+  
 
          <label>Département :</label>
         <input [(ngModel)]="utilisateurActuel.departement" name="departement" required />
@@ -138,7 +131,7 @@
 <div class="modal" *ngIf="showAjoutModal">
   <div class="modal-content">
     <div class="modal-header">
-      <span class="add-icon">+</span>
+      <!-- <span class="add-icon">+</span> -->
       <span class="modal-title">Ajouter un utilisateur</span>
       <button class="close-modal" (click)="fermerAjoutUtilisateur()">✖</button>
     </div>
@@ -160,13 +153,6 @@
 
       <label>CIN :</label>
       <input [(ngModel)]="ajoutUser.cin" name="cin" />
-
-      <label>Statut marital :</label>
-      <select [(ngModel)]="ajoutUser.statutMarital" name="statutMarital" required>
-        <option value="Célibataire">Célibataire</option>
-        <option value="Marié">Marié</option>
-        <option value="Divorcé">Divorcé</option>
-      </select>
 
       <label>Département :</label>
       <input [(ngModel)]="ajoutUser.departement" name="departement" required />

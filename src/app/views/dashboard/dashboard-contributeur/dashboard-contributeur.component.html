@@ -8,9 +8,18 @@
 </div>
 
 <h2 class="title">Top 3 de vos articles</h2>
-<ul class="articles">
-  <li *ngFor="let article of topArticles">
-    <strong>{{ article.titre }}</strong>
-    <span>{{ article.vues }} vues</span>
-  </li>
-</ul>
+
+<div class="flip-card-container">
+  <div class="flip-card fade-in" *ngFor="let article of topArticles">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <div class="icon">{{ article.icone }}</div>
+        <h3>{{ article.titre }}</h3>
+      </div>
+      <div class="flip-card-back">
+        <p><strong>{{ article.vues }}</strong> vues</p>
+        <p>Merci pour votre contribution !</p>
+      </div>
+    </div>
+  </div>
+</div>

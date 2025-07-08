@@ -10,18 +10,31 @@ import { CommonModule } from '@angular/common';
 })
 export class DashboardLecteurComponent {
   articlesRecents = [
-    'Guide de la sécurité numérique',
-    'Introduction à PostgreSQL',
-    'Bonnes pratiques Git'
+    {
+      titre: 'Guide sécurité numérique',
+      nom: 'Karim',
+      prenom: 'A.',
+      date: '2025-07-05'
+    },
+    {
+      titre: 'PostgreSQL simplifié',
+      nom: 'Nora',
+      prenom: 'L.',
+      date: '2025-07-03'
+    },
+    {
+      titre: 'Git & bonnes pratiques',
+      nom: 'Ali',
+      prenom: 'M.',
+      date: '2025-07-01'
+    }
   ];
 
-  articlesPopulaires = [
-    { titre: 'Maîtriser Angular', vues: 120 },
-    { titre: 'Gestion de projet Agile', vues: 110 },
-    { titre: 'Sécurité des données', vues: 105 }
-  ];
+  activite = {
+    articlesLus: 24,
+    tempsLecture: 132,
+    evolution: 12
+  };
 
-  thematiques = ['Technique', 'Métiers', 'Sécurité', 'RH'];
-
-  citationDuJour = '“Le savoir ne vaut que s’il est partagé.” – Anonyme';
+  citation = '📯 Lire, c’est semer dans son esprit.';
 }

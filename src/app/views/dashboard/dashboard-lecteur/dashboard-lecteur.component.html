@@ -1,33 +1,52 @@
-<h2 class="title">Bienvenue Lecteur</h2>
-
 <div class="dashboard-container">
-
-  <div class="section">
-    <h3>🆕 Derniers articles</h3>
-    <ul>
-      <li *ngFor="let article of articlesRecents">📄 {{ article }}</li>
-    </ul>
+  <!-- Citation -->
+  <div class="thought-bubble floating">
+    {{ citation }}
   </div>
 
-  <div class="section">
-    <h3>🔥 Thématiques populaires</h3>
-    <div class="tags">
-      <span class="tag" *ngFor="let theme of thematiques">#{{ theme }}</span>
+  <!-- Derniers articles -->
+  <div class="section articles-table">
+    <h3>📰 Derniers articles</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Auteur</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let article of articlesRecents">
+          <td>{{ article.titre }}</td>
+          <td>{{ article.prenom }} {{ article.nom }}</td>
+          <td>{{ article.date }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Activité -->
+  <div class="section monthly-activity">
+    <h3>📅 Activité du mois</h3>
+    <div class="activity-grid">
+      <div class="activity-item">
+        <span>📚</span>
+        <p>Articles lus</p>
+        <strong>{{ activite.articlesLus }}</strong>
+      </div>
+      <div class="activity-item">
+        <span>⏱</span>
+        <p>Temps estimé</p>
+        <strong>{{ activite.tempsLecture }} min</strong>
+      </div>
+      <!-- <div class="activity-item">
+        <span>📈</span>
+        <p>Évolution</p>
+        <strong [ngClass]="{
+          'positive': activite.evolution >= 0,
+          'negative': activite.evolution < 0
+        }">{{ activite.evolution }}%</strong>
+      </div> -->
     </div>
   </div>
-
-  <div class="section">
-    <h3>🏆 Top articles cette semaine</h3>
-    <ul>
-      <li *ngFor="let art of articlesPopulaires">
-        ⭐ {{ art.titre }} — {{ art.vues }} vues
-      </li>
-    </ul>
-  </div>
-
-  <div class="section quote">
-    <h3>💬 Citation du jour</h3>
-    <p>{{ citationDuJour }}</p>
-  </div>
-
 </div>
