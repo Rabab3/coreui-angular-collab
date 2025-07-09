@@ -59,7 +59,7 @@
             </svg>
           </button>
           <!-- Reset mdp -->
-          <button class="reset" title="Réinitialiser le mot de passe" (click)="ouvrirResetPassword(user)">
+          <button class="reset" title="Réinitialiser le mot de passe" (click)="changerMotDePasse(user)">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24">
               <rect x="6" y="10" width="12" height="8" rx="2" stroke="#7b2ff2" stroke-width="2"/>
               <path stroke="#7b2ff2" stroke-width="2" d="M8 10V8a4 4 0 1 1 8 0v2"/>
@@ -94,12 +94,7 @@
         <label>CIN :</label>
         <input [(ngModel)]="utilisateurActuel.cin" name="cin" />
 
-        <label>Statut marital :</label>
-        <select [(ngModel)]="utilisateurActuel.statutMarital" name="statutMarital">
-          <option value="Célibataire">Célibataire</option>
-          <option value="Marié">Marié</option>
-          <option value="Divorcé">Divorcé</option>
-        </select>
+
 
         <label>Rôle :</label>
         <select [(ngModel)]="utilisateurActuel.role" name="role" required>
@@ -162,13 +157,6 @@
 
       <label>CIN :</label>
       <input [(ngModel)]="ajoutUser.cin" name="cin" />
-
-      <label>Statut marital :</label>
-      <select [(ngModel)]="ajoutUser.statutMarital" name="statutMarital" required>
-        <option value="Célibataire">Célibataire</option>
-        <option value="Marié">Marié</option>
-        <option value="Divorcé">Divorcé</option>
-      </select>
 
       <label>Rôle :</label>
       <select [(ngModel)]="ajoutUser.role" name="role" required>

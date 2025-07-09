@@ -21,13 +21,14 @@ export class LoginComponent {
   errorMsg = '';
   showPassword = false;
   loading = false;
+  showForgotPopup = false;
   btnActive = false;
-  showForgotPopup = false; // Pour le popup
+
 
   constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
+      private fb: FormBuilder,
+      private authService: AuthService,
+      private router: Router
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -53,24 +54,27 @@ export class LoginComponent {
       this.loading = true;
       this.errorMsg = '';
       const data = this.loginForm.value;
+
       this.authService.login(data).subscribe({
         next: (res) => {
           this.loading = false;
-          localStorage.setItem('token', res.accessToken);
-          localStorage.setItem('role', res.role);
+          console.log("🎯 Rôle reçu dans login.component :", res.role);
 
-          const role = res.role ? res.role.toLowerCase() : '';
-
-          if (role === 'admin') {
-            this.router.navigate(['/dashboard']);
-          } else if (role === 'moderateur') {
-            this.router.navigate(['/moderation/avalider']);
-          } else if (role === 'contributeur') {
-            this.router.navigate(['/articles/mes-contributions']);
-          } else if (role === 'lecteur') {
-            this.router.navigate(['/articles/liste']);
-          } else {
-            this.router.navigate(['/']);
+          switch (res.role) {
+            case 'ROLE_ADMIN':
+              this.router.navigate(['/dashboard-admin']);
+              break;
+            case 'ROLE_MODERATEUR':
+              this.router.navigate(['/dashboard-moderateur']);
+              break;
+            case 'ROLE_CONTRIBUTEUR':
+              this.router.navigate(['/dashboard-contributeur']);
+              break;
+            case 'ROLE_LECTEUR':
+              this.router.navigate(['/dashboard-lecteur']);
+              break;
+            default:
+              this.router.navigate(['/']);
           }
         },
         error: () => {
@@ -80,4 +84,5 @@ export class LoginComponent {
       });
     }
   }
+
 }

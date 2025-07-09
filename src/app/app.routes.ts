@@ -10,6 +10,15 @@ export const routes: Routes = [
     component: DefaultLayoutComponent,
     // canActivate: [AuthGuard],   // protège toutes les routes enfants
     children: [
+      {
+        path: 'dashboard-admin', loadComponent: () => import('./views/dashboard/dashboard-admin/dashboard-admin.component').then(m => m.DashboardAdminComponent), data: { title: 'Dashboard Admin' }},
+      {
+        path: 'dashboard-contributeur', loadComponent: () => import('./views/dashboard/dashboard-contributeur/dashboard-contributeur.component').then(m => m.DashboardContributeurComponent), data: { title: 'Dashboard Contributeur' }},
+      {
+        path: 'dashboard-moderateur', loadComponent: () => import('./views/dashboard/dashboard-moderateur/dashboard-moderateur.component').then(m => m.DashboardModerateurComponent), data: { title: 'Dashboard Modérateur' }},
+      {
+        path: 'dashboard-lecteur', loadComponent: () => import('./views/dashboard/dashboard-lecteur/dashboard-lecteur.component').then(m => m.DashboardLecteurComponent), data: { title: 'Dashboard Lecteur' }},
+
       { path: 'dashboard', loadComponent: () => import('./views/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'articles/brouillons', loadComponent: () => import('./views/articles/brouillons/brouillons.component').then(m => m.BrouillonsComponent) },
       { path: 'articles/ajouter', loadComponent: () => import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent) },

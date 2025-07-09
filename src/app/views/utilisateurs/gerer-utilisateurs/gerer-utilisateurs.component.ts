@@ -1,11 +1,13 @@
-  import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UtilisateurService } from '../../../services/utilisateur.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-gerer-utilisateurs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './gerer-utilisateurs.component.html',
   styleUrls: ['./gerer-utilisateurs.component.scss']
 })
@@ -29,37 +31,21 @@ export class GererUtilisateursComponent implements OnInit {
 
   ajoutUser: any = {
     nom: '', prenom: '', email: '', telephone: '', dateNaissance: '',
-    cin: '', statutMarital: 'Célibataire', role: 'contributeur'
+    cin: '', role: 'contributeur'
   };
 
+  constructor(private utilisateurService: UtilisateurService) {}
+
   ngOnInit(): void {
-    this.utilisateurs = [
-      {
-        id: 1,
-        nom: 'Mahrache',
-        prenom: 'Rabab',
-        email: 'Rabab.mahrache@example.com',
-        telephone: '0603322111',
-        dateNaissance: '1996-03-22',
-        cin: 'AA445566',
-        statutMarital: 'Célibataire',
-        role: 'contributeur',
-        username: 'rababmah2'
+    this.utilisateurService.getAllUsers().subscribe({
+      next: (data) => {
+        this.utilisateurs = data;
+        this.actualiserListe();
       },
-      {
-        id: 2,
-        nom: 'Moudrik',
-        prenom: 'Laila',
-        email: 'laila.moudrik@example.com',
-        telephone: '0602211333',
-        dateNaissance: '1990-01-01',
-        cin: 'BB778899',
-        statutMarital: 'Célibataire',
-        role: 'moderateur',
-        username: 'lailamdrk'
+      error: (err) => {
+        console.error("Erreur lors du chargement des utilisateurs :", err);
       }
-    ];
-    this.actualiserListe();
+    });
   }
 
   actualiserListe() {
@@ -74,76 +60,114 @@ export class GererUtilisateursComponent implements OnInit {
     this.utilisateurActuel = { ...user };
     this.showModal = true;
   }
+
   fermerModal() {
     this.showModal = false;
   }
+
   enregistrerModifications() {
-    this.utilisateurs = this.utilisateurs.map(u =>
-      u.id === this.utilisateurActuel.id ? this.utilisateurActuel : u
-    );
-    this.fermerModal();
-    this.actualiserListe();
-    this.afficherToast("Utilisateur modifié avec succès !");
+    this.utilisateurService.updateUser(this.utilisateurActuel.id, this.utilisateurActuel).subscribe({
+      next: () => {
+        this.utilisateurs = this.utilisateurs.map(u =>
+            u.id === this.utilisateurActuel.id ? this.utilisateurActuel : u
+        );
+        this.fermerModal();
+        this.actualiserListe();
+        this.afficherToast("Utilisateur modifié avec succès !");
+      },
+      error: (err) => {
+        console.error("Erreur lors de la mise à jour :", err);
+        this.afficherToast("Erreur lors de la modification");
+      }
+    });
   }
 
-  // Popup moderne suppression
+  changerMotDePasse(user: any) {
+    const newPass = this.genererPassword();
+    this.utilisateurService.updatePassword(user.id, newPass).subscribe({
+      next: () => {
+        this.popupTitre = `Nouveau mot de passe pour ${user.nom} ${user.prenom}`;
+        this.popupUsername = user.username;
+        this.popupPassword = newPass;
+        this.showPopupCredentials = true;
+        this.afficherToast("Mot de passe mis à jour !");
+      },
+      error: () => {
+        this.afficherToast("Erreur lors du changement de mot de passe !");
+      }
+    });
+  }
+
   supprimerUtilisateur(id: number) {
     this.userToDeleteId = id;
     this.showDeleteConfirm = true;
   }
+
   confirmerSuppression() {
     if (this.userToDeleteId !== null) {
-      this.utilisateurs = this.utilisateurs.filter(u => u.id !== this.userToDeleteId);
-      this.actualiserListe();
-      this.afficherToast("Utilisateur supprimé !");
+      this.utilisateurService.deleteUser(this.userToDeleteId).subscribe({
+        next: () => {
+          this.utilisateurs = this.utilisateurs.filter(u => u.id !== this.userToDeleteId);
+          this.actualiserListe();
+          this.afficherToast("Utilisateur supprimé !");
+        },
+        error: () => {
+          this.afficherToast("Erreur lors de la suppression !");
+        }
+      });
+      this.showDeleteConfirm = false;
+      this.userToDeleteId = null;
     }
-    this.showDeleteConfirm = false;
-    this.userToDeleteId = null;
   }
+
   annulerSuppression() {
     this.showDeleteConfirm = false;
     this.userToDeleteId = null;
   }
 
-  // --- AJOUT UTILISATEUR
   ouvrirAjoutUtilisateur() {
     this.ajoutUser = {
       nom: '', prenom: '', email: '', telephone: '', dateNaissance: '',
-      cin: '', statutMarital: 'Célibataire', role: 'contributeur'
+      cin: '', role: 'contributeur'
     };
     this.showAjoutModal = true;
   }
+
   fermerAjoutUtilisateur() {
     this.showAjoutModal = false;
   }
+
   confirmerAjoutUtilisateur() {
     const username = this.genererUsername(this.ajoutUser.nom, this.ajoutUser.prenom);
     const password = this.genererPassword();
-    const id = this.utilisateurs.length ? Math.max(...this.utilisateurs.map(u => u.id)) + 1 : 1;
-    const newUser = {
-      id,
-      ...this.ajoutUser,
-      username
-    };
-    this.utilisateurs.push(newUser);
-    this.fermerAjoutUtilisateur();
-    this.actualiserListe();
-    this.popupTitre = "Utilisateur ajouté avec succès !";
-    this.popupUsername = username;
-    this.popupPassword = password;
-    this.showPopupCredentials = true;
-    this.afficherToast("Utilisateur ajouté avec succès !");
-  }
 
-  // --- RÉINITIALISER MOT DE PASSE
-  ouvrirResetPassword(user: any) {
-    const username = user.username;
-    const newPass = this.genererPassword();
-    this.popupTitre = `Nouveau mot de passe pour ${user.nom} ${user.prenom}`;
-    this.popupUsername = username;
-    this.popupPassword = newPass;
-    this.showPopupCredentials = true;
-    this.afficherToast("Mot de passe réinitialisé !");
+    const userDto = {
+      username,
+      nom: this.ajoutUser.nom,
+      prenom: this.ajoutUser.prenom,
+      email: this.ajoutUser.email,
+      telephone: this.ajoutUser.telephone,
+      dateNaissance: this.ajoutUser.dateNaissance,
+      cin: this.ajoutUser.cin,
+      roles: [`ROLE_${this.ajoutUser.role.toUpperCase()}`]
+    };
+
+    this.utilisateurService.createUser(userDto, password).subscribe({
+      next: (createdUser) => {
+        this.utilisateurs.push(createdUser);
+        this.fermerAjoutUtilisateur();
+        this.popupTitre = "Utilisateur ajouté avec succès !";
+        this.popupUsername = username;
+        this.popupPassword = password;
+        this.showPopupCredentials = true;
+        this.afficherToast("Utilisateur ajouté avec succès !");
+        this.actualiserListe();
+      },
+      error: (err) => {
+        console.error(err);
+        this.afficherToast("Erreur lors de l'ajout !");
+      }
+    });
   }
 
   fermerPopupCredentials() {
@@ -154,9 +178,10 @@ export class GererUtilisateursComponent implements OnInit {
     navigator.clipboard.writeText(val);
     this.afficherToast("Copié !");
   }
+
   copierTout() {
     navigator.clipboard.writeText(
-      `Nom d'utilisateur : ${this.popupUsername}\nMot de passe : ${this.popupPassword}`
+        `Nom d'utilisateur : ${this.popupUsername}\nMot de passe : ${this.popupPassword}`
     );
     this.afficherToast("Tout copié !");
   }
@@ -170,10 +195,11 @@ export class GererUtilisateursComponent implements OnInit {
   genererUsername(nom: string, prenom: string): string {
     const base = (prenom + nom).toLowerCase().replace(/[^a-z0-9]/gi, '');
     const rand = Math.random() < 0.5
-      ? Math.floor(100 + Math.random() * 899).toString()
-      : '';
+        ? Math.floor(100 + Math.random() * 899).toString()
+        : '';
     return base + rand;
   }
+
   genererPassword(): string {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*";
     let pwd = "";

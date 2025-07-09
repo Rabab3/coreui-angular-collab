@@ -7,6 +7,7 @@ import { DefaultHeaderComponent } from './default-header/default-header.componen
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ThemeService, Thématique } from 'src/app/services/theme.service';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   selector: 'app-default-layout',
@@ -21,89 +22,146 @@ import { Subscription } from 'rxjs';
   ]
 })
 export class DefaultLayoutComponent implements OnInit, OnDestroy {
-  public role: string | null = '';
+  public role: string = '';
   public filteredNavItems: INavData[] = [];
   private themeSub!: Subscription;
 
-  constructor(private themeService: ThemeService) {}
+  constructor(
+      private themeService: ThemeService,
+      private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.role = localStorage.getItem('role') || '';
+    const fullRole = this.authService.getRole();
+    console.log("🟡 Rôle dans default-layout :", fullRole);
 
-    // Souscription aux thématiques dynamiques
-    this.themeSub = this.themeService.themes$.subscribe((themes: Thématique[]) => {
-      this.generateMenu(themes);
-    });
+    this.role = fullRole ? fullRole.replace('ROLE_', '').toLowerCase() : '';
+
+    const staticNav = this.getStaticMenuByRole(this.role);
+    this.filteredNavItems = [...staticNav];
   }
 
-  generateMenu(themes: Thématique[]) {
-    const dynamicThématiques: INavData = {
-      name: 'Thématiques',
-      iconComponent: { name: 'cil-tags' },
-      children: [
-  {
-    name: '📌 Métiers',
-    url: '/thematiques/metier'
-  },
-  {
-    name: '⚙️ Technique',
-    url: '/thematiques/technique'
-  },
-  {
-    name: '🔐 Sécurité',
-    url: '/thematiques/securite'
-  },
-  {
-    name: '🧑‍💼 RH',
-    url: '/thematiques/rh'
-  },
-  ...themes.map(theme => ({
-    name: `${theme.icone || '📁'} ${theme.nom}`,
-    url: `/thematiques/${theme.id}`
-  }))
-]
 
-    };
+  getStaticMenuByRole(role: string): INavData[] {
+    switch (role) {
+      case 'admin':
+        return [
+          {
+            name: 'Accueil',
+            url: '/dashboard-admin',
+            iconComponent: { name: 'cil-home' }
+          },
+          {
+            name: 'Utilisateurs',
+            url: '/admin/utilisateurs/gerer',
+            iconComponent: { name: 'cil-user' }
+          },
+          {
+            name: 'Rôles',
+            url: '/admin/utilisateurs/roles',
+            iconComponent: { name: 'cil-lock-locked' }
+          },
+          {
+            name: 'Paramètres',
+            url: '/parametres/profil',
+            iconComponent: { name: 'cil-settings' }
+          }
+        ];
+      case 'moderateur':
+        return [
+          {
+            name: 'Accueil',
+            url: '/dashboard-moderateur',
+            iconComponent: { name: 'cil-home' }
+          },
+          {
+            name: 'Articles à valider',
+            url: '/moderation/avalider',
+            iconComponent: { name: 'cil-task' }
+          },
+          {
+            name: 'Paramètres',
+            url: '/parametres/profil',
+            iconComponent: { name: 'cil-settings' }
+          }
+        ];
+      case 'contributeur':
+        return [
+          {
+            name: 'Accueil',
+            url: '/dashboard-contributeur',
+            iconComponent: { name: 'cil-home' }
+          },
+          {
+            name: 'Mes contributions',
+            url: '/articles/mes-contributions',
+            iconComponent: { name: 'cil-library' }
+          },
+          {
+            name: 'Ajouter un article',
+            url: '/articles/ajouter',
+            iconComponent: { name: 'cil-note-add' }
+          },
+          {
+            name: 'Paramètres',
+            url: '/parametres/profil',
+            iconComponent: { name: 'cil-settings' }
+          }
+        ];
+      case 'lecteur':
+        return [
+          {
+            name: 'Articles',
+            url: '/articles/liste',
+            iconComponent: { name: 'cil-list' }
+          },
+          {
+            name: 'Paramètres',
+            url: '/parametres/profil',
+            iconComponent: { name: 'cil-settings' }
+          }
+        ];
+      default:
+        return [
+          {
+            name: 'Accueil',
+            url: '/dashboard',
+            iconComponent: { name: 'cil-home' }
+          }
+        ];
+    }
+  }
 
-    // Ajouter & Gérer une thématique (modérateur uniquement)
+  buildDynamicThématiqueMenu(themes: Thématique[]): INavData {
+    const children: INavData[] = [
+      { name: '📌 Métiers', url: '/thematiques/metier' },
+      { name: '⚙️ Technique', url: '/thematiques/technique' },
+      { name: '🔐 Sécurité', url: '/thematiques/securite' },
+      { name: '🧑‍💼 RH', url: '/thematiques/rh' },
+      ...themes.map(theme => ({
+        name: `${theme.icone || '📁'} ${theme.nom}`,
+        url: `/thematiques/${theme.id}`
+      }))
+    ];
+
     if (this.role === 'moderateur') {
-      dynamicThématiques.children?.push(
-        {
-          name: '➕ Ajouter une thématique',
-          url: '/thematiques/ajouter',
-          attributes: { role: ['moderateur'] }
-        },
-        {
-          name: '📂 Gérer les thématiques',
-          url: '/thematiques/gerer',
-          attributes: { role: ['moderateur'] }
-        }
+      children.push(
+          {
+            name: '➕ Ajouter une thématique',
+            url: '/thematiques/ajouter'
+          },
+          {
+            name: '📂 Gérer les thématiques',
+            url: '/thematiques/gerer'
+          }
       );
     }
 
-    const filteredStatic = this.filterNavItems(navItems);
-    this.filteredNavItems = [...filteredStatic];
-
-    if (['moderateur', 'contributeur', 'lecteur'].includes(this.role || '')) {
-      this.filteredNavItems.push(dynamicThématiques);
-    }
-  }
-
-  filterNavItems(items: INavData[]): INavData[] {
-    return items
-      .filter(item => this.isItemVisibleForRole(item))
-      .map(item => ({
-        ...item,
-        children: item.children?.filter(child => this.isItemVisibleForRole(child))
-      }))
-      .filter(item => !item.children || item.children.length > 0);
-  }
-
-  isItemVisibleForRole(item: INavData): boolean {
-    const requiredRoles = (item.attributes as any)?.role;
-    if (!requiredRoles) return true;
-    if (Array.isArray(requiredRoles)) return requiredRoles.includes(this.role);
-    return requiredRoles === this.role;
+    return {
+      name: 'Thématiques',
+      iconComponent: { name: 'cil-tags' },
+      children
+    };
   }
 
   ngOnDestroy(): void {
