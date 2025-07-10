@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UtilisateurService } from 'src/app/services/utilisateur.service';
 
 @Component({
   selector: 'app-user-role-management',
@@ -11,37 +12,44 @@ import { FormsModule } from '@angular/forms';
 })
 export class UserRoleManagementComponent implements OnInit {
   utilisateurs: any[] = [];
-  roles = ['admin', 'moderateur', 'contributeur', 'lecteur'];
+  utilisateursFiltres: any[] = [];
+  roles = ['ROLE_ADMIN', 'ROLE_MODERATEUR', 'ROLE_CONTRIBUTEUR', 'ROLE_LECTEUR'];
   filtreRole = '';
   recherche = '';
-  utilisateursFiltres: any[] = [];
   showToast = false;
 
-  ngOnInit(): void {
-    this.utilisateurs = [
-      { id: 1, nom: 'Mahrache', prenom: 'Rabab', email: 'Rabab.mahrache@example.com', role: 'contributeur' },
-      { id: 2, nom: 'Moudrik', prenom: 'Laila', email: 'laila.moudrik@example.com', role: 'moderateur' },
+  constructor(private utilisateurService: UtilisateurService) {}
 
-    ];
-    this.filtrer();
+  ngOnInit(): void {
+    this.utilisateurService.getAllUsers().subscribe({
+      next: (data) => {
+        this.utilisateurs = data;
+        this.filtrer();
+      },
+      error: (err) => console.error("Erreur chargement utilisateurs", err)
+    });
   }
 
   filtrer(): void {
     this.utilisateursFiltres = this.utilisateurs.filter(u => {
       const nomMatch = `${u.nom} ${u.prenom}`.toLowerCase().includes(this.recherche.toLowerCase());
-      const roleMatch = this.filtreRole ? u.role === this.filtreRole : true;
+      const roleMatch = this.filtreRole ? u.roles.includes(this.filtreRole) : true;
       return nomMatch && roleMatch;
     });
   }
 
-  changerRole(userId: number, nouveauRole: string) {
-  const utilisateur = this.utilisateurs.find(u => u.id === userId);
-  if (utilisateur) {
-    utilisateur.role = nouveauRole;
-    this.filtrer();
-    this.showToast = true;
-    setTimeout(() => this.showToast = false, 1900);
+  changerRole(userId: number, nouveauRole: string): void {
+    this.utilisateurService.updateUserRole(userId, nouveauRole).subscribe({
+      next: () => {
+        const user = this.utilisateurs.find(u => u.id === userId);
+        if (user) {
+          user.roles = [nouveauRole];
+          this.filtrer();
+          this.showToast = true;
+          setTimeout(() => this.showToast = false, 2000);
+        }
+      },
+      error: (err) => console.error("Erreur mise à jour rôle", err)
+    });
   }
 }
-
-  }

@@ -31,10 +31,10 @@
         <td>{{ user.prenom }}</td>
         <td>{{ user.email }}</td>
         <td>
-          <select [(ngModel)]="user.role" (change)="changerRole(user.id, user.role)"
-            [ngClass]="user.role">
-            <option *ngFor="let role of roles" [value]="role">{{ role | titlecase }}</option>
-          </select>
+            <select [ngModel]="user.roles[0]" (ngModelChange)="changerRole(user.id, $event)" [ngClass]="user.roles[0]">
+                <option *ngFor="let role of roles" [value]="role">{{ role.replace('ROLE_', '') | titlecase }}</option>
+            </select>
+
         </td>
       </tr>
     </tbody>

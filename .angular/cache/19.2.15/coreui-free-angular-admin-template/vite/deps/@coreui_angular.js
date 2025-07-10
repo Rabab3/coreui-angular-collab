@@ -1,7 +1,4 @@
 import {
-  IconDirective
-} from "./chunk-XGKWK5ZQ.js";
-import {
   Platform,
   _bindEventWithOptions,
   _getEventTarget,
@@ -12,6 +9,9 @@ import {
   coerceNumberProperty,
   normalizePassiveListenerOptions
 } from "./chunk-ZERZEN5E.js";
+import {
+  IconDirective
+} from "./chunk-XGKWK5ZQ.js";
 import {
   AnimationBuilder
 } from "./chunk-UB6AM6F3.js";
