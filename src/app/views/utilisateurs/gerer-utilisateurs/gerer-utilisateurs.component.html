@@ -98,7 +98,28 @@
   
 
          <label>Département :</label>
-        <input [(ngModel)]="utilisateurActuel.departement" name="departement" required />
+<select [(ngModel)]="utilisateurActuel.departement" name="departement" required>
+   <option disabled selected value="">-- Sélectionner un département --</option>
+  <option>Ressources Humaines (RH)</option>
+  <option>Développement des Systèmes d’Information (DSI)</option>
+  <option>Infrastructure et Réseau</option>
+  <option>Sécurité Informatique / Cybersécurité</option>
+  <option>Finances & Comptabilité</option>
+  <option>Achats & Approvisionnements</option>
+  <option>Affaires Juridiques</option>
+  <option>Communication & Relations Publiques</option>
+  <option>Direction Générale</option>
+  <option>Support Technique / Assistance</option>
+  <option>Études & Projets</option>
+  <option>Planification & Stratégie</option>
+  <option>Contrôle de Gestion</option>
+  <option>Archives & Documentation</option>
+  <option>Logistique & Patrimoine</option>
+  <option>Service Informatique Utilisateurs</option>
+  <option>Développement Durable / RSE</option>
+  <option>Centre de Données / Cloud & Hébergement</option>
+</select>
+
 
         <div class="modal-actions">
           <button type="submit" class="save">💾 Enregistrer</button>
@@ -155,7 +176,28 @@
       <input [(ngModel)]="ajoutUser.cin" name="cin" />
 
       <label>Département :</label>
-      <input [(ngModel)]="ajoutUser.departement" name="departement" required />
+<select [(ngModel)]="ajoutUser.departement" name="departement" required>
+  <option disabled selected value="">-- Sélectionner un département --</option>
+  <option>Ressources Humaines (RH)</option>
+  <option>Développement des Systèmes d’Information (DSI)</option>
+  <option>Infrastructure et Réseau</option>
+  <option>Sécurité Informatique / Cybersécurité</option>
+  <option>Finances & Comptabilité</option>
+  <option>Achats & Approvisionnements</option>
+  <option>Affaires Juridiques</option>
+  <option>Communication & Relations Publiques</option>
+  <option>Direction Générale</option>
+  <option>Support Technique / Assistance</option>
+  <option>Études & Projets</option>
+  <option>Planification & Stratégie</option>
+  <option>Contrôle de Gestion</option>
+  <option>Archives & Documentation</option>
+  <option>Logistique & Patrimoine</option>
+  <option>Service Informatique Utilisateurs</option>
+  <option>Développement Durable / RSE</option>
+  <option>Centre de Données / Cloud & Hébergement</option>
+</select>
+
 
 
       <label>Rôle :</label>

@@ -15,7 +15,10 @@ import autoTable from 'jspdf-autotable';
 export class MesContributionsComponent {
   searchText: string = '';
   role: string = localStorage.getItem('role') || '';
-  
+
+  showModal = false;
+  articleEnCours: any = null;
+
   articles = [
     {
       titre: 'Sécurité API',
@@ -30,18 +33,12 @@ export class MesContributionsComponent {
       retourCommentaire: 'Merci de préciser les outils RH utilisés.',
       date: new Date('2025-05-30')
     },
-    {
-      titre: 'Angular Moderne',
-      auteur: 'Admin',
-      statut: 'Publié',
-      date: new Date('2025-05-29')
-    }
   ];
 
   get filteredArticles() {
     return this.articles.filter(article =>
       article.titre.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      article.auteur.toLowerCase().includes(this.searchText.toLowerCase())
+      article.auteur?.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
 
@@ -72,5 +69,31 @@ export class MesContributionsComponent {
 
   changerStatut(article: any, nouveauStatut: string): void {
     article.statut = nouveauStatut;
+  }
+
+  ouvrirModal(article: any): void {
+    this.articleEnCours = {
+      ...article,
+      contenu: `Dans un contexte de transformation digitale, les Systèmes d’Information des Ressources Humaines (SIRH) jouent un rôle central dans l’automatisation des processus RH. Cet article explore trois solutions majeures : SAP SuccessFactors, Workday et OrangeHRM. Ces outils permettent une meilleure gestion des talents, un suivi précis des performances, et une dématérialisation complète du cycle RH (recrutement, onboarding, gestion des compétences, etc.).
+
+👉 Par exemple, SAP SuccessFactors permet de créer des workflows personnalisés, tandis que Workday offre une interface utilisateur intuitive pour les collaborateurs. OrangeHRM, quant à lui, se distingue par sa flexibilité open-source pour les PME.
+
+🔗 Source : https://www.soluces-rh.com/outils-sirh-2025
+🔖 #RH #TransformationDigitale #SIRH #Recrutement #Workday #SAP #OrangeHRM`
+    };
+    this.showModal = true;
+  }
+
+  envoyerCorrection(): void {
+    if (this.articleEnCours) {
+      this.articleEnCours.statut = 'En attente';
+      this.articleEnCours.retourCommentaire = null;
+      this.showModal = false;
+    }
+  }
+
+  annuler(): void {
+    this.showModal = false;
+    this.articleEnCours = null;
   }
 }
