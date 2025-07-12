@@ -1,0 +1,121 @@
+.admin-dashboard {
+  padding: 2rem 2.2rem;
+  min-height: 90vh;
+}
+
+.dashboard-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2.8rem;
+  margin-top: 2.5rem;
+  @media (max-width: 1050px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2rem;
+  }
+}
+
+.dashboard-col {
+  background: #f7f8fd;
+  border-radius: 18px;
+  box-shadow: 0 2px 24px #d4d5e96b;
+  padding: 2.3rem 2.2rem;
+  width: 460px;
+  min-width: 320px;
+  @media (max-width: 600px) {
+    width: 100%;
+    min-width: 0;
+    padding: 1.2rem 0.8rem;
+  }
+}
+
+.chart-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h2 { margin-bottom: 1.4rem; text-align: center; }
+  .chart-wrapper {
+    display: flex; justify-content: center; min-height: 300px; align-items: center;
+  }
+}
+
+.reset-section {
+  h2 { margin-bottom: 1.4rem; text-align: center; }
+  .reset-list {
+    display: flex; flex-direction: column; gap: 1.1rem; background: #fbfbfe; border-radius: 14px; padding: 1.2rem 1.5rem; box-shadow: 0 1px 9px #ece9f633;
+  }
+  .reset-item {
+    display: flex;
+    align-items: center;
+    font-size: 1.09rem;
+    gap: 15px;
+    border-left: 5px solid transparent;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px #edeefc0c;
+    padding: 0.7rem 1rem 0.7rem 0.6rem;
+    transition: box-shadow .15s, border-left .2s;
+    margin-bottom: 0.1rem;
+
+    &:hover {
+      box-shadow: 0 6px 22px #b0b3ff22;
+      transform: translateY(-1px) scale(1.02);
+    }
+
+    &.admin { border-left-color: #4caf50; }
+    &.moderateur { border-left-color: #2196f3; }
+    &.contributeur { border-left-color: #ff9800; }
+    &.lecteur { border-left-color: #9c27b0; }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.24rem;
+      font-weight: 700;
+      color: #fff;
+      margin-right: 12px;
+      box-shadow: 0 2px 8px #bdbdbd2a;
+      border: 2px solid #fff;
+      background: #bbb;
+      flex-shrink: 0;
+    }
+
+    .reset-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 170px;
+    }
+
+    .badge-role {
+      border-radius: 11px;
+      padding: 0.23em 1.13em;
+      font-size: 0.98em;
+      font-weight: 600;
+      color: #fff;
+      text-transform: capitalize;
+      margin-top: 2px;
+      margin-left: 0;
+      width: fit-content;
+      display: inline-block;
+      &.admin { background: #4caf50; }
+      &.moderateur { background: #2196f3; }
+      &.contributeur { background: #ff9800; }
+      &.lecteur { background: #9c27b0; }
+    }
+    .reset-date {
+      margin-left: auto;
+      font-size: 1em;
+      color: #888;
+      font-weight: 500;
+      min-width: 85px;
+      text-align: right;
+    }
+    &.empty { justify-content: center; color: #888; font-style: italic; }
+  }
+}

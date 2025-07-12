@@ -1,23 +1,142 @@
-/* You can add global styles to this file, and also import other style files */
+// ==============================
+// GLOBAL SCSS - styles.scss
+// ==============================
 
-// Import styles with default layout.
+// 🌐 CoreUI styles
 @use "@coreui/coreui/scss/coreui" as * with (
   $enable-deprecation-messages: false
 );
 
-// Import Chart.js custom tooltips styles
+// 📊 Chart.js styles
 @use "@coreui/chartjs/scss/coreui-chartjs";
 
-// Custom styles for this theme
+// 🎨 Thème principal
 @use "theme";
 
-// Some temp fixes
+// 🛠️ Custom fixes
 //@use "fixes";
 
-// If you want to add custom CSS you can put it here.
+// 🧩 Styles personnalisés
 @use "custom";
 
-// Examples
-// We use those styles to show code examples, you should remove them in your application.
+// 📚 Exemples (peut être supprimé)
 @use "examples";
 
+// ==============================
+// 🌙 DARK MODE GLOBAL
+// ==============================
+
+body[data-coreui-theme='dark'] {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body[data-coreui-theme='dark'] .container,
+body[data-coreui-theme='dark'] .main,
+body[data-coreui-theme='dark'] .wrapper,
+body[data-coreui-theme='dark'] .content,
+body[data-coreui-theme='dark'] app-root {
+  background-color: #1e1e2f !important;
+  color: #ffffff !important;
+}
+
+body[data-coreui-theme='dark'] .card,
+body[data-coreui-theme='dark'] .modal-content,
+body[data-coreui-theme='dark'] .form-control,
+body[data-coreui-theme='dark'] .form-select {
+  background-color: #2a2a3b !important;
+  color: #ffffff !important;
+}
+
+body[data-coreui-theme='dark'] .form-control,
+body[data-coreui-theme='dark'] .form-select {
+  border: 1px solid #777 !important;
+}
+
+body[data-coreui-theme='dark'] h1,
+body[data-coreui-theme='dark'] h2,
+body[data-coreui-theme='dark'] h3,
+body[data-coreui-theme='dark'] h4,
+body[data-coreui-theme='dark'] .card-title,
+body[data-coreui-theme='dark'] .card-text,
+body[data-coreui-theme='dark'] label {
+  color: #ffffff !important;
+}
+
+body[data-coreui-theme='dark'] .btn-close {
+  filter: invert(1);
+}
+
+// ==============================
+// ❌ SUPPRIMER BORDURES HEADER/SIDEBAR
+// ==============================
+
+.sidebar-header,
+.sidebar-footer,
+.sidebar,
+.sidebar-brand,
+.header,
+.sidebar-fixed,
+.sidebar-header.border-bottom,
+.sidebar-footer.border-top,
+.sidebar-footer.border-top.d-none.d-lg-flex,
+.sidebar-header.border-bottom.d-none.d-lg-flex {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.header,
+.sidebar-header {
+  border-bottom: none !important;
+}
+
+.sidebar-footer {
+  border-top: none !important;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-align: center !important;
+}
+// ==============================
+// ⭐ FAVORIS – TOOLTIP / POPUP
+// ==============================
+
+.favori-popup {
+  position: absolute;
+  top: -35px;
+  left: 0;
+  background-color: #ff4081;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  animation: fade-fav 1.5s ease-in-out;
+  white-space: nowrap;
+  z-index: 999;
+}
+
+@keyframes fade-fav {
+  0% { opacity: 0; transform: translateY(-10px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.favori-tooltip {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  background-color: #444;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.favori-btn-wrapper:hover .favori-tooltip {
+  opacity: 1;
+}

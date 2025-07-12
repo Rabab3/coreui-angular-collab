@@ -1,52 +1,170 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { NgScrollbar } from 'ngx-scrollbar';
-
-import { IconDirective } from '@coreui/icons-angular';
-import {
-  ContainerComponent,
-  ShadowOnScrollDirective,
-  SidebarBrandComponent,
-  SidebarComponent,
-  SidebarFooterComponent,
-  SidebarHeaderComponent,
-  SidebarNavComponent,
-  SidebarToggleDirective,
-  SidebarTogglerDirective
-} from '@coreui/angular';
-
-import { DefaultFooterComponent, DefaultHeaderComponent } from './';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { INavData, SidebarModule } from '@coreui/angular';
 import { navItems } from './_nav';
-
-function isOverflown(element: HTMLElement) {
-  return (
-    element.scrollHeight > element.clientHeight ||
-    element.scrollWidth > element.clientWidth
-  );
-}
+import { DefaultFooterComponent } from './default-footer/default-footer.component';
+import { DefaultHeaderComponent } from './default-header/default-header.component';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { ThemeService, Thématique } from 'src/app/services/theme.service';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-default-layout',
+  standalone: true,
   templateUrl: './default-layout.component.html',
-  styleUrls: ['./default-layout.component.scss'],
   imports: [
-    SidebarComponent,
-    SidebarHeaderComponent,
-    SidebarBrandComponent,
-    SidebarNavComponent,
-    SidebarFooterComponent,
-    SidebarToggleDirective,
-    SidebarTogglerDirective,
-    ContainerComponent,
-    DefaultFooterComponent,
-    DefaultHeaderComponent,
-    IconDirective,
-    NgScrollbar,
     RouterOutlet,
-    RouterLink,
-    ShadowOnScrollDirective
+    SidebarModule,
+    NgScrollbarModule,
+    DefaultHeaderComponent,
+    DefaultFooterComponent
   ]
 })
-export class DefaultLayoutComponent {
-  public navItems = [...navItems];
+export class DefaultLayoutComponent implements OnInit, OnDestroy {
+  public role: string = '';
+  public filteredNavItems: INavData[] = [];
+  private themeSub!: Subscription;
+
+  constructor(
+      private themeService: ThemeService,
+      private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    const fullRole = this.authService.getRole();
+    console.log("🟡 Rôle dans default-layout :", fullRole);
+
+    this.role = fullRole ? fullRole.replace('ROLE_', '').toLowerCase() : '';
+
+    const staticNav = this.getStaticMenuByRole(this.role);
+    this.filteredNavItems = [...staticNav];
+  }
+
+
+  getStaticMenuByRole(role: string): INavData[] {
+    switch (role) {
+      case 'admin':
+        return [
+          {
+            name: 'Accueil',
+            url: '/dashboard-admin',
+            iconComponent: { name: 'cil-home' }
+          },
+          {
+            name: 'Utilisateurs',
+            url: '/admin/utilisateurs/gerer',
+            iconComponent: { name: 'cil-user' }
+          },
+          {
+            name: 'Rôles',
+            url: '/admin/utilisateurs/roles',
+            iconComponent: { name: 'cil-lock-locked' }
+          },
+          {
+            name: 'Paramètres',
+            url: '/parametres/profil',
+            iconComponent: { name: 'cil-settings' }
+          }
+        ];
+      case 'moderateur':
+        return [
+          {
+            name: 'Accueil',
+            url: '/dashboard-moderateur',
+            iconComponent: { name: 'cil-home' }
+          },
+          {
+            name: 'Articles à valider',
+            url: '/moderation/avalider',
+            iconComponent: { name: 'cil-task' }
+          },
+          {
+            name: 'Paramètres',
+            url: '/parametres/profil',
+            iconComponent: { name: 'cil-settings' }
+          }
+        ];
+      case 'contributeur':
+        return [
+          {
+            name: 'Accueil',
+            url: '/dashboard-contributeur',
+            iconComponent: { name: 'cil-home' }
+          },
+          {
+            name: 'Mes contributions',
+            url: '/articles/mes-contributions',
+            iconComponent: { name: 'cil-library' }
+          },
+          {
+            name: 'Ajouter un article',
+            url: '/articles/ajouter',
+            iconComponent: { name: 'cil-note-add' }
+          },
+          {
+            name: 'Paramètres',
+            url: '/parametres/profil',
+            iconComponent: { name: 'cil-settings' }
+          }
+        ];
+      case 'lecteur':
+        return [
+          {
+            name: 'Articles',
+            url: '/articles/liste',
+            iconComponent: { name: 'cil-list' }
+          },
+          {
+            name: 'Paramètres',
+            url: '/parametres/profil',
+            iconComponent: { name: 'cil-settings' }
+          }
+        ];
+      default:
+        return [
+          {
+            name: 'Accueil',
+            url: '/dashboard',
+            iconComponent: { name: 'cil-home' }
+          }
+        ];
+    }
+  }
+
+  buildDynamicThématiqueMenu(themes: Thématique[]): INavData {
+    const children: INavData[] = [
+      { name: '📌 Métiers', url: '/thematiques/metier' },
+      { name: '⚙️ Technique', url: '/thematiques/technique' },
+      { name: '🔐 Sécurité', url: '/thematiques/securite' },
+      { name: '🧑‍💼 RH', url: '/thematiques/rh' },
+      ...themes.map(theme => ({
+        name: `${theme.icone || '📁'} ${theme.nom}`,
+        url: `/thematiques/${theme.id}`
+      }))
+    ];
+
+    if (this.role === 'moderateur') {
+      children.push(
+          {
+            name: '➕ Ajouter une thématique',
+            url: '/thematiques/ajouter'
+          },
+          {
+            name: '📂 Gérer les thématiques',
+            url: '/thematiques/gerer'
+          }
+      );
+    }
+
+    return {
+      name: 'Thématiques',
+      iconComponent: { name: 'cil-tags' },
+      children
+    };
+  }
+
+  ngOnDestroy(): void {
+    this.themeSub?.unsubscribe();
+  }
 }

@@ -1,0 +1,39 @@
+<div class="article-details" *ngIf="article">
+  <h4 class="theme-label">📚 Thématique : {{ theme?.nom }}</h4>
+
+  <h2>{{ article.titre }}</h2>
+  <p class="date">🕒 {{ article.date }}</p>
+
+  <div class="meta">
+    <p><strong>✍️ Mode de saisie :</strong> {{ article.modeSaisie || 'N/A' }}</p>
+    <p><strong>📂 Catégorie :</strong> {{ article.categorie || 'Non spécifiée' }}</p>
+   <p><strong>🏷️ Tags :</strong>
+  <ng-container *ngIf="hasTags(); else noTags">
+    <span *ngFor="let tag of article.tags" class="tag">{{ tag }}</span>
+  </ng-container>
+  <ng-template #noTags>Aucun tag</ng-template>
+</p>
+
+
+
+    <p><strong>✅ Statut :</strong> {{ article.statut || 'Indéfini' }}</p>
+    <p><strong>⭐ Favori :</strong> {{ article.favori ? 'Oui' : 'Non' }}</p>
+    <p *ngIf="article.source">
+      <strong>🌐 Source :</strong>
+      <a [href]="article.source" target="_blank">{{ article.source }}</a>
+    </p>
+  </div>
+
+  <div class="contenu">
+    {{ article.contenu }}
+  </div>
+
+  <hr />
+  <div class="commentaires-section">
+    <h3>💬 Commentaires</h3>
+    <div *ngFor="let c of commentaires" class="commentaire">{{ c }}</div>
+
+    <textarea [(ngModel)]="commentaire" placeholder="Ajouter un commentaire..."></textarea>
+    <button (click)="envoyerCommentaire()">Envoyer</button>
+  </div>
+</div>

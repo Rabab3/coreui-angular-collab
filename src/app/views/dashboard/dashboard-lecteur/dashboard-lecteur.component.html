@@ -1,0 +1,33 @@
+<h2 class="title">Bienvenue Lecteur</h2>
+
+<div class="dashboard-container">
+
+  <div class="section">
+    <h3>🆕 Derniers articles</h3>
+    <ul>
+      <li *ngFor="let article of articlesRecents">📄 {{ article }}</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>🔥 Thématiques populaires</h3>
+    <div class="tags">
+      <span class="tag" *ngFor="let theme of thematiques">#{{ theme }}</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>🏆 Top articles cette semaine</h3>
+    <ul>
+      <li *ngFor="let art of articlesPopulaires">
+        ⭐ {{ art.titre }} — {{ art.vues }} vues
+      </li>
+    </ul>
+  </div>
+
+  <div class="section quote">
+    <h3>💬 Citation du jour</h3>
+    <p>{{ citationDuJour }}</p>
+  </div>
+
+</div>

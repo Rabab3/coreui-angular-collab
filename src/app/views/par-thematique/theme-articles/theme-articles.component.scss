@@ -1,0 +1,72 @@
+.theme-container {
+  padding: 1rem;
+
+  h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 1rem;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .article-card {
+    background: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.01);
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #444;
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      margin-top: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+
+      button {
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: background-color 0.2s;
+
+        &:first-child {
+          background-color: #3f51b5;
+          color: white;
+        }
+
+        &:last-child {
+          background-color: #f0f0f0;
+        }
+
+        &:hover {
+          opacity: 0.85;
+        }
+      }
+    }
+  }
+}

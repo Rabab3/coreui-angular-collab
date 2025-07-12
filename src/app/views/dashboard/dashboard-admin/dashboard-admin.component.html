@@ -1,0 +1,37 @@
+
+<div class="admin-dashboard">
+  <h2 class="text-center">Bienvenue Admin</h2>
+  <div class="dashboard-grid">
+    <!-- Bloc reset à gauche -->
+    <div class="dashboard-col reset-section">
+      <h2>Utilisateurs ayant demandé la réinitialisation du mot de passe</h2>
+      <div class="reset-list">
+        <div *ngFor="let u of demandesReset" class="reset-item" [ngClass]="u.role">
+          <span class="avatar" [ngStyle]="{'background': avatarColor(u.role)}">
+            {{ u.prenom.charAt(0) + u.nom.charAt(0) }}
+          </span>
+          <span class="reset-info">
+            <span class="reset-name"><b>{{ u.nom }} {{ u.prenom }}</b></span>
+            <span class="badge-role" [ngClass]="u.role">{{ u.role | titlecase }}</span>
+          </span>
+          <span class="reset-date">{{ u.date }}</span>
+        </div>
+        <div *ngIf="demandesReset.length === 0" class="reset-item empty">
+          <em>Aucune demande récente.</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc chart à droite -->
+    <div class="dashboard-col chart-section">
+      <h2>Répartition des rôles</h2>
+      <div class="chart-wrapper">
+        <canvas baseChart
+          [data]="chartData"
+          [type]="'doughnut'"
+          [options]="chartOptions">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>
