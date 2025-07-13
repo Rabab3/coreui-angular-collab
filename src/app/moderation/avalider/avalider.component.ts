@@ -37,7 +37,7 @@ export class AvaliderComponent implements OnInit {
   }
 
   valider(article: Article) {
-    this.articleService.updateArticle(article.id, { statut: 'VALIDE' }).subscribe(() => {
+    this.articleService.validerArticle(article.articleId).subscribe(() => {
       alert(`✅ Article "${article.titre}" validé.`);
       this.refreshArticles();
     });
@@ -45,11 +45,7 @@ export class AvaliderComponent implements OnInit {
 
   retourner() {
     if (this.selectedArticle && this.commentaireRetour.trim()) {
-      this.articleService.updateArticle(this.selectedArticle.id, {
-        statut: 'A_CORRIGER',
-        retourCommentaire: this.commentaireRetour,
-        dateRetour: new Date().toISOString()
-      }).subscribe(() => {
+      this.articleService.retournerArticle(this.selectedArticle.articleId, this.commentaireRetour).subscribe(() => {
         alert(`🔁 Article "${this.selectedArticle!.titre}" retourné.`);
         this.closeModal();
         this.refreshArticles();
@@ -67,13 +63,11 @@ export class AvaliderComponent implements OnInit {
     this.selectedArticle = undefined;
   }
 
-
   refreshArticles() {
     this.articleService.getArticlesParStatut('EN_ATTENTE').subscribe(data => {
       this.articles = data;
     });
   }
-
 
   get articlesFiltres(): Article[] {
     return this.articles.filter(a =>
@@ -83,7 +77,7 @@ export class AvaliderComponent implements OnInit {
   }
 
   hasTags(): boolean {
-    return !!this.selectedArticle?.tags && this.selectedArticle.tags.length > 0;
+    return !!this.selectedArticle?.tags?.length;
   }
 
   formatContenu(contenu: string): string {

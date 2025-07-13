@@ -15,8 +15,8 @@
       <h3>{{ article.titre }}</h3>
       <p>{{ article.contenu | slice:0:100 }}...</p>
       <div class="actions">
-        <button (click)="lireArticle(article.id)">📖 Lire</button>
-        <button (click)="toggleFavori(article.id)">
+        <button (click)="lireArticle(article.articleId)">📖 Lire</button>
+        <button (click)="lireArticle(article.articleId)">
           {{ article.favori ? '⭐ Retirer' : '☆ Favori' }}
         </button>
       </div>

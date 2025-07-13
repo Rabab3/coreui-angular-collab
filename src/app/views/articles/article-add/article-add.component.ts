@@ -169,7 +169,7 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
     const isDraft = formValue.visibilite === 'brouillon';
 
     const newArticle: Article = {
-      id: 0,
+      articleId: 0, 
       titre: formValue.titre,
       contenu: formValue.description,
       themeId: 1,

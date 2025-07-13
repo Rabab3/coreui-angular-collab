@@ -20,14 +20,14 @@
 
 
     <div class="d-flex justify-content-start mt-3">
-      <button class="btn btn-primary me-2" (click)="modifier(article.id)">✏️ Modifier</button>
-      <button class="btn btn-success me-2" (click)="publier(article.id)">✅ Publier</button>
+      <button class="btn btn-primary me-2" (click)="modifier(article.articleId)">✏️ Modifier</button>
+      <button class="btn btn-success me-2" (click)="publier(article.articleId)">✅ Publier</button>
     </div>
 
     <!-- Corbeille à droite en bas -->
     <button 
       class="btn btn-outline-danger position-absolute bottom-0 end-0 m-3"
-      (click)="supprimer(article.id)"
+      (click)="supprimer(article.articleId)"
     >
       🗑️
     </button>

@@ -6,7 +6,7 @@ import { AuthService } from '../auth.service';
 export const API_BASE_URL = 'http://localhost:8080/api';
 
 export interface Article {
-  id: number;
+  articleId: number;
   titre: string;
   contenu: string;
   themeId: number;
@@ -59,8 +59,20 @@ export class ArticleService {
     });
   }
 
-  updateArticle(id: number, updates: Partial<Article>): Observable<void> {
+  updateArticleAsContributeur(id: number, updates: Partial<Article>): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/contribute/articles/${id}`, updates, {
+      headers: this.getHeaders()
+    });
+  }
+
+  validerArticle(id: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/moderation/articles/${id}/valider`, {}, {
+      headers: this.getHeaders()
+    });
+  }
+
+  retournerArticle(id: number, message: string): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/moderation/articles/${id}/retourner`, { message }, {
       headers: this.getHeaders()
     });
   }

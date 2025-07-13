@@ -26,14 +26,13 @@ export class AcorrigerComponent implements OnInit {
   refreshArticles() {
     this.articleService.getArticles().subscribe(data => {
       this.articles = data.filter(a => a.statut === 'A_CORRIGER');
-
     });
   }
 
   get articlesFiltres(): Article[] {
     return this.articles.filter(a =>
-      a.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      (a.retourCommentaire?.toLowerCase().includes(this.searchTerm.toLowerCase()) ?? false)
+        a.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (a.retourCommentaire?.toLowerCase().includes(this.searchTerm.toLowerCase()) ?? false)
     );
   }
 
@@ -49,22 +48,25 @@ export class AcorrigerComponent implements OnInit {
 
   corrigerEtRenvoyer() {
     if (this.selectedArticle) {
-      this.articleService.updateArticle(this.selectedArticle.id, {
+      this.articleService.updateArticleAsContributeur(this.selectedArticle.articleId, {
         statut: 'EN_ATTENTE',
         retourCommentaire: undefined,
         dateRetour: undefined
+      }).subscribe(() => {
+        alert(`✏️ Article "${this.selectedArticle!.titre}" renvoyé pour validation.`);
+        this.fermerApercu();
+        this.refreshArticles();
       });
-      alert(`✏️ Article "${this.selectedArticle.titre}" renvoyé pour validation.`);
-      this.fermerApercu();
-      this.refreshArticles();
     }
   }
-get contenuFormate(): string {
-  return this.selectedArticle?.contenu?.replace(/\n/g, '<br>') || '';
-}
-formatContenu(contenu: string | undefined): string {
-  return contenu ? contenu.replace(/\n/g, '<br>') : '';
-}
+
+  get contenuFormate(): string {
+    return this.selectedArticle?.contenu?.replace(/\n/g, '<br>') || '';
+  }
+
+  formatContenu(contenu: string | undefined): string {
+    return contenu ? contenu.replace(/\n/g, '<br>') : '';
+  }
 
   hasTags(): boolean {
     return !!this.selectedArticle?.tags?.length;
