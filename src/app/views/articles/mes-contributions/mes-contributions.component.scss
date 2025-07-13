@@ -12,13 +12,14 @@ h2 {
   color: #2c3e50;
 }
 
-input.form-control {
-  min-width: 200px;
+input.form-control,
+textarea.form-control {
   border-radius: 0.5rem;
   transition: 0.3s;
 }
 
-input.form-control:focus {
+input:focus,
+textarea:focus {
   border-color: #007bff;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
 }
@@ -42,7 +43,6 @@ button:hover {
 .table thead th {
   background-color: #343a40;
   color: white;
-  font-weight: 500;
 }
 
 .badge {
@@ -51,12 +51,31 @@ button:hover {
   border-radius: 0.5rem;
 }
 
-.table-responsive {
-  margin-top: 1rem;
-}
-
 .bg-light.text-danger {
   font-style: italic;
   padding-left: 1rem;
   border-left: 4px solid red;
+}
+
+/* Modal styling */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }

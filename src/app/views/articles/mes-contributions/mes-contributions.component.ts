@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ArticleService, Article } from 'src/app/services/article.service';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -13,30 +12,33 @@ import autoTable from 'jspdf-autotable';
   templateUrl: './mes-contributions.component.html',
   styleUrls: ['./mes-contributions.component.scss']
 })
-export class MesContributionsComponent implements OnInit {
+export class MesContributionsComponent {
   searchText: string = '';
   role: string = localStorage.getItem('role') || '';
-  articles: Article[] = [];
 
-  constructor(private articleService: ArticleService) {}
+  showModal = false;
+  articleEnCours: any = null;
 
-  ngOnInit(): void {
-    this.articleService.getArticles().subscribe({
-      next: (data) => {
-        console.log("📦 Articles reçus du backend :", data);  // ✅ Ajouté pour debug
-        this.articles = data;
-      },
-      error: (err) => {
-        console.error('❌ Erreur lors du chargement des articles', err);
-      }
-    });
-  }
-
+  articles = [
+    {
+      titre: 'Sécurité API',
+      auteur: 'Rabab',
+      statut: 'En attente',
+      date: new Date('2025-05-31')
+    },
+    {
+      titre: 'Système RH',
+      auteur: 'Laila',
+      statut: 'À corriger',
+      retourCommentaire: 'Merci de préciser les outils RH utilisés.',
+      date: new Date('2025-05-30')
+    },
+  ];
 
   get filteredArticles() {
     return this.articles.filter(article =>
-        article.titre.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        (article.source?.toLowerCase().includes(this.searchText.toLowerCase()) ?? false)
+      article.titre.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      article.auteur?.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
 
@@ -45,8 +47,8 @@ export class MesContributionsComponent implements OnInit {
     const head = [['Titre', 'Statut', 'Date']];
     const data = this.filteredArticles.map(a => [
       a.titre,
-      this.getStatutLabel(a.statut),
-      new Intl.DateTimeFormat('fr-FR').format(new Date(a.date))
+      a.statut,
+      new Intl.DateTimeFormat('fr-FR').format(a.date)
     ]);
     autoTable(doc, { head, body: data });
     doc.save('mes-contributions.pdf');
@@ -54,28 +56,44 @@ export class MesContributionsComponent implements OnInit {
 
   exportExcel(): void {
     const worksheet = XLSX.utils.json_to_sheet(
-        this.filteredArticles.map(a => ({
-          Titre: a.titre,
-          Statut: this.getStatutLabel(a.statut),
-          Date: new Intl.DateTimeFormat('fr-FR').format(new Date(a.date))
-        }))
+      this.filteredArticles.map(a => ({
+        Titre: a.titre,
+        Statut: a.statut,
+        Date: new Intl.DateTimeFormat('fr-FR').format(a.date)
+      }))
     );
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Contributions');
     XLSX.writeFile(workbook, 'mes-contributions.xlsx');
   }
 
-  changerStatut(article: Article, nouveauStatut: 'EN_ATTENTE' | 'VALIDE' | 'A_CORRIGER' | 'BROUILLON'): void {
+  changerStatut(article: any, nouveauStatut: string): void {
     article.statut = nouveauStatut;
   }
 
-  getStatutLabel(statut: string | undefined): string {
-    switch (statut) {
-      case 'EN_ATTENTE': return 'En attente';
-      case 'VALIDE': return 'Publié';
-      case 'A_CORRIGER': return 'À corriger';
-      case 'BROUILLON': return 'Brouillon';
-      default: return statut || '';
+  ouvrirModal(article: any): void {
+    this.articleEnCours = {
+      ...article,
+      contenu: `Dans un contexte de transformation digitale, les Systèmes d’Information des Ressources Humaines (SIRH) jouent un rôle central dans l’automatisation des processus RH. Cet article explore trois solutions majeures : SAP SuccessFactors, Workday et OrangeHRM. Ces outils permettent une meilleure gestion des talents, un suivi précis des performances, et une dématérialisation complète du cycle RH (recrutement, onboarding, gestion des compétences, etc.).
+
+👉 Par exemple, SAP SuccessFactors permet de créer des workflows personnalisés, tandis que Workday offre une interface utilisateur intuitive pour les collaborateurs. OrangeHRM, quant à lui, se distingue par sa flexibilité open-source pour les PME.
+
+🔗 Source : https://www.soluces-rh.com/outils-sirh-2025
+🔖 #RH #TransformationDigitale #SIRH #Recrutement #Workday #SAP #OrangeHRM`
+    };
+    this.showModal = true;
+  }
+
+  envoyerCorrection(): void {
+    if (this.articleEnCours) {
+      this.articleEnCours.statut = 'En attente';
+      this.articleEnCours.retourCommentaire = null;
+      this.showModal = false;
     }
+  }
+
+  annuler(): void {
+    this.showModal = false;
+    this.articleEnCours = null;
   }
 }

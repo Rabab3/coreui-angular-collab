@@ -1,28 +1,50 @@
-<div class="theme-manage">
-  <h2>📁 Gérer les thématiques</h2>
+  <div class="theme-manage">
+    <h2>📁 Gérer les thématiques</h2>
 
-  <table *ngIf="themes.length > 0" class="styled-table">
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Description</th>
-        <th>Icône</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let theme of themes" [@fadeOut]>
-        <td>{{ theme.nom }}</td>
-        <td>{{ theme.description }}</td>
-        <td>{{ theme.icone }}</td>
-        <td>
-          <button class="btn-delete" (click)="supprimerTheme(theme.id)">🗑️ Supprimer</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <table *ngIf="themes.length > 0" class="styled-table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Description</th>
+          <th>Icône</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let theme of themes" [@fadeOut]>
+  <td>{{ theme.nom }}</td>
+  <td>{{ theme.description }}</td>
+  <td>{{ theme.icone }}</td>
+  <td>
+    <button class="btn-edit">✏️ Modifier</button>
+    <button class="btn-delete" (click)="supprimerTheme(theme.id)">🗑️ Supprimer</button>
+  </td>
+</tr>
 
-  <div *ngIf="themes.length === 0" class="empty-message">
-    <p>Aucune thématique enregistrée.</p>
+      </tbody>
+    </table>
+
+    <div *ngIf="themes.length === 0" class="empty-message">
+      <p>Aucune thématique enregistrée.</p>
+    </div>
   </div>
-</div>
+  <!-- Modal Modifier Thématique -->
+  <div class="modal-backdrop" id="modalModifier">
+    <div class="modal-content">
+      <h3>🛠️ Modifier la thématique</h3>
+
+      <label for="nom">Nom :</label>
+      <input id="nom" type="text" placeholder="Nom de la thématique" />
+
+      <label for="description">Description :</label>
+      <input id="description" type="text" placeholder="Description" />
+
+      <label for="icone">Icône :</label>
+      <input id="icone" type="text" placeholder="Ex: 📘, 🔒..." />
+
+      <div class="modal-actions">
+        <button class="btn-save">💾 Enregistrer</button>
+        <button class="btn-cancel" onclick="document.getElementById('modalModifier').style.display='none'">❌ Annuler</button>
+      </div>
+    </div>
+  </div>
