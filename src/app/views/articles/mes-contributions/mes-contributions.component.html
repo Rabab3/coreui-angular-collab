@@ -1,83 +1,85 @@
 <div class="container mt-4">
-  <h2 class="mb-3">Mes contributions</h2>
+    <h2 class="mb-3 text-center">Mes contributions</h2>
 
-  <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
-    <input type="text" class="form-control w-25" [(ngModel)]="searchText" placeholder="Rechercher..." />
-    <div>
-      <button class="btn btn-outline-danger me-2" (click)="exportPDF()">📄 PDF</button>
-      <button class="btn btn-outline-success" (click)="exportExcel()">📊 Excel</button>
+    <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+        <input type="text" class="form-control w-25" [(ngModel)]="searchText" placeholder="Rechercher..." />
+        <div>
+            <button class="btn btn-outline-danger me-2" (click)="exportPDF()">📄 PDF</button>
+            <button class="btn btn-outline-success" (click)="exportExcel()">📊 Excel</button>
+        </div>
     </div>
-  </div>
 
-  <div class="table-responsive">
-    <table class="table table-bordered text-center align-middle shadow">
-      <thead class="table-dark">
-        <tr>
-          <th>Titre</th>
-          <th *ngIf="role === 'moderateur'">Auteur</th>
-          <th>Statut</th>
-          <th>Date</th>
-          <th *ngIf="role === 'contributeur'">Corriger</th>
-          <th *ngIf="role === 'moderateur'">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let article of filteredArticles">
-          <tr>
-            <td>{{ article.titre }}</td>
-            <td *ngIf="role === 'moderateur'">{{ article.auteur }}</td>
-            <td>
+    <div class="table-responsive">
+        <table class="table table-bordered text-center align-middle shadow">
+            <thead class="table-dark">
+            <tr>
+                <th>Titre</th>
+                <th>Statut</th>
+                <th>Date</th>
+                <th>Corriger</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let article of filteredArticles">
+                <!-- ✅ Ligne principale de l'article -->
+                <tr [ngClass]="{'row-correction': article.status === 'A_CORRIGER'}">
+                    <td>{{ article.titre }}</td>
+                    <td>
               <span [ngClass]="{
-                'badge bg-warning text-dark': article.statut === 'En attente',
-                'badge bg-success': article.statut === 'Publié',
-                'badge bg-secondary': article.statut === 'À corriger'
+                'badge-status status-attente': article.status === 'EN_ATTENTE',
+                'badge-status status-valide': article.status === 'VALIDE',
+                'badge-status status-corriger': article.status === 'A_CORRIGER'
               }">
-                {{ article.statut }}
+                <ng-container [ngSwitch]="article.status">
+                  <span *ngSwitchCase="'EN_ATTENTE'">⏳ En attente</span>
+                  <span *ngSwitchCase="'VALIDE'">✅ Publié</span>
+                  <span *ngSwitchCase="'A_CORRIGER'">🛠️ À corriger</span>
+                  <span *ngSwitchDefault>{{ article.status }}</span>
+                </ng-container>
               </span>
-            </td>
-            <td>{{ article.date | date:'dd/MM/yyyy' }}</td>
+                    </td>
+                    <td>{{ article.date | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <button *ngIf="article.status === 'A_CORRIGER'" class="btn btn-primary btn-sm" (click)="ouvrirModal(article)">
+                            ⚙️ Corriger
+                        </button>
+                    </td>
+                </tr>
 
-            <!-- Colonne contributeur -->
-            <td *ngIf="role === 'contributeur'">
-              <button *ngIf="article.statut === 'À corriger'" class="btn btn-primary btn-sm" (click)="ouvrirModal(article)">
-                🛠️ Corriger
-              </button>
-            </td>
-
-            <!-- Colonne modérateur -->
-            <td *ngIf="role === 'moderateur'">
-              <button class="btn btn-success btn-sm me-1" (click)="changerStatut(article, 'Publié')">Valider</button>
-              <button class="btn btn-warning btn-sm me-1" (click)="changerStatut(article, 'À corriger')">Retourner</button>
-              <button class="btn btn-info btn-sm">Voir</button>
-            </td>
-          </tr>
-
-          <!-- Affichage commentaire -->
-          <tr *ngIf="article.statut === 'À corriger' && article.retourCommentaire">
-            <td colspan="6" class="text-start bg-light text-danger">
-              <strong>📘 Commentaire de retour :</strong> {{ article.retourCommentaire }}
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
-  </div>
+                <!-- ✅ Commentaire de retour affiché sous l'article -->
+                <tr *ngIf="article.status === 'A_CORRIGER' && article.retourCommentaire">
+                    <td colspan="4" class="p-0">
+                        <div class="feedback-comment">
+                            <strong>📝 Commentaire de retour :</strong>
+                            <span>{{ article.retourCommentaire }}</span>
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- ✅ Modal de correction -->
 <div class="modal-backdrop" *ngIf="showModal">
-  <div class="modal-content">
-    <h3>📝 Corriger l’article</h3>
+    <div class="modal-content">
+        <h3>📝 Corriger l’article</h3>
 
-    <label for="titre">Titre :</label>
-    <input id="titre" class="form-control" [(ngModel)]="articleEnCours.titre" readonly />
+        <label for="titre" class="mt-2">Titre :</label>
+        <input id="titre" class="form-control" [ngModel]="articleEnCours?.titre" readonly />
 
-    <label for="contenu">Contenu :</label>
-    <textarea id="contenu" class="form-control" rows="8" [(ngModel)]="articleEnCours.contenu"></textarea>
+        <div *ngIf="articleEnCours?.retourCommentaire" class="alert alert-warning mt-2 border border-danger">
+            <strong>📝 Commentaire du modérateur :</strong>
+            <div class="fst-italic">{{ articleEnCours?.retourCommentaire }}</div>
+        </div>
 
-    <div class="modal-actions mt-3">
-      <button class="btn btn-success" (click)="envoyerCorrection()">📤 Envoyer</button>
-      <button class="btn btn-secondary" (click)="annuler()">❌ Annuler</button>
+        <label for="contenu" class="mt-2">Contenu :</label>
+        <textarea id="contenu" class="form-control" rows="8" [(ngModel)]="articleEnCours!.contenu"></textarea>
+
+        <div class="modal-actions mt-3">
+            <button class="btn btn-success" (click)="envoyerCorrection()">📤 Envoyer</button>
+            <button class="btn btn-secondary" (click)="annuler()">❌ Annuler</button>
+        </div>
     </div>
-  </div>
 </div>

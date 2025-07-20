@@ -12,7 +12,7 @@ export interface Article {
   themeId: number;
   date: string;
   favori?: boolean;
-  statut?: 'EN_ATTENTE' | 'VALIDE' | 'A_CORRIGER' | 'BROUILLON';
+  status?: 'EN_ATTENTE' | 'VALIDE' | 'A_CORRIGER' | 'BROUILLON';
   retourCommentaire?: string;
   dateRetour?: string;
   modeSaisie?: string;
@@ -55,7 +55,7 @@ export class ArticleService {
 
   getArticleById(id: number): Observable<Article> {
     return this.http.get<Article>(`${this.baseUrl}/contribute/articles/${id}`, {
-      headers: this.getHeaders()
+      headers: this.getHeaders()  
     });
   }
 

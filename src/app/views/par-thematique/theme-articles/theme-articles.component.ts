@@ -36,7 +36,7 @@ export class ThemeArticlesComponent implements OnInit {
 
       this.articleService.getArticlesByTheme(this.themeId).subscribe(articles => {
         // ✅ Correction ici : on utilise 'VALIDE' au lieu de 'Publié'
-        this.allArticles = articles.filter(a => a.statut === 'VALIDE');
+        this.allArticles = articles.filter(a => a.status === 'VALIDE');
         this.articles = [...this.allArticles];
       });
     });
@@ -45,7 +45,7 @@ export class ThemeArticlesComponent implements OnInit {
   toggleFavori(articleId: number): void {
     this.articleService.toggleFavori(articleId);
     this.articleService.getArticlesByTheme(this.themeId).subscribe(data => {
-      this.articles = data.filter(a => a.statut === 'VALIDE');
+      this.articles = data.filter(a => a.status === 'VALIDE');
     });
   }
 

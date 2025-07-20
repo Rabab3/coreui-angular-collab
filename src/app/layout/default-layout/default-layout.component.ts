@@ -75,9 +75,35 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
             iconComponent: { name: 'cil-home' }
           },
           {
-            name: 'Articles à valider',
-            url: '/moderation/avalider',
-            iconComponent: { name: 'cil-task' }
+            name: 'Articles',
+            iconComponent: { name: 'cil-library' },
+            children: [
+              { name: 'Liste des articles', url: '/articles/liste', iconComponent: { name: 'cil-list' } },
+              { name: 'Favoris', url: '/articles/favoris', iconComponent: { name: 'cil-star' } },
+              { name: 'Mes contributions', url: '/articles/mes-contributions', iconComponent: { name: 'cil-description' } },
+              { name: 'Ajouter un article', url: '/articles/ajouter', iconComponent: { name: 'cil-note-add' } },
+              { name: 'Brouillons', url: '/articles/brouillons', iconComponent: { name: 'cil-pencil' } }
+            ]
+          },
+          {
+            name: 'Modération',
+            iconComponent: { name: 'cil-task' },
+            children: [
+              { name: 'À valider', url: '/moderation/avalider', iconComponent: { name: 'cil-check' } },
+              { name: 'À corriger', url: '/moderation/acorriger', iconComponent: { name: 'cil-warning' } }
+            ]
+          },
+          {
+            name: 'Thématiques',
+            iconComponent: { name: 'cil-tags' },
+            children: [
+              { name: '📌 Métiers', url: '/thematiques/metier' },
+              { name: '⚙️ Technique', url: '/thematiques/technique' },
+              { name: '🔐 Sécurité', url: '/thematiques/securite' },
+              { name: '🧑‍💼 RH', url: '/thematiques/rh' },
+              { name: '➕ Ajouter une thématique', url: '/thematiques/ajouter' },
+              { name: '📂 Gérer les thématiques', url: '/thematiques/gerer' }
+            ]
           },
           {
             name: 'Paramètres',
@@ -85,6 +111,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
             iconComponent: { name: 'cil-settings' }
           }
         ];
+
       case 'contributeur':
         return [
           {
@@ -93,14 +120,45 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
             iconComponent: { name: 'cil-home' }
           },
           {
-            name: 'Mes contributions',
-            url: '/articles/mes-contributions',
-            iconComponent: { name: 'cil-library' }
+            name: 'Articles',
+            iconComponent: { name: 'cil-library' },
+            children: [
+              {
+                name: 'Liste des articles',
+                url: '/articles/liste',
+                iconComponent: { name: 'cil-list' }
+              },
+              {
+                name: 'Favoris',
+                url: '/articles/favoris',
+                iconComponent: { name: 'cil-star' }
+              },
+              {
+                name: 'Mes contributions',
+                url: '/articles/mes-contributions',
+                iconComponent: { name: 'cil-description' }
+              },
+              {
+                name: 'Ajouter un article',
+                url: '/articles/ajouter',
+                iconComponent: { name: 'cil-note-add' }
+              },
+              {
+                name: 'Brouillons',
+                url: '/articles/brouillons',
+                iconComponent: { name: 'cil-pencil' }
+              }
+            ]
           },
           {
-            name: 'Ajouter un article',
-            url: '/articles/ajouter',
-            iconComponent: { name: 'cil-note-add' }
+            name: 'Thématiques',
+            iconComponent: { name: 'cil-tags' },
+            children: [
+              { name: '📌 Métiers', url: '/thematiques/metier' },
+              { name: '⚙️ Technique', url: '/thematiques/technique' },
+              { name: '🔐 Sécurité', url: '/thematiques/securite' },
+              { name: '🧑‍💼 RH', url: '/thematiques/rh' }
+            ]
           },
           {
             name: 'Paramètres',
@@ -108,19 +166,41 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
             iconComponent: { name: 'cil-settings' }
           }
         ];
+
       case 'lecteur':
         return [
+          {
+            name: 'Accueil',
+            url: '/dashboard-lecteur',
+            iconComponent: { name: 'cil-home' }
+          },
           {
             name: 'Articles',
             url: '/articles/liste',
             iconComponent: { name: 'cil-list' }
           },
           {
+            name: 'Favoris',
+            url: '/articles/favoris',
+            iconComponent: { name: 'cil-star' }
+          },
+          {
+            name: 'Thématiques',
+            iconComponent: { name: 'cil-tags' },
+            children: [
+              { name: '📌 Métiers', url: '/thematiques/metier' },
+              { name: '⚙️ Technique', url: '/thematiques/technique' },
+              { name: '🔐 Sécurité', url: '/thematiques/securite' },
+              { name: '🧑‍💼 RH', url: '/thematiques/rh' }
+            ]
+          },
+          {
             name: 'Paramètres',
             url: '/parametres/profil',
             iconComponent: { name: 'cil-settings' }
           }
         ];
+
       default:
         return [
           {

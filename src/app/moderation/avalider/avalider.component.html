@@ -1,75 +1,87 @@
-<div class="container">
-    <h2>Articles à valider</h2>
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Mes contributions</h2>
 
-    <input
-            type="text"
-            [(ngModel)]="searchTerm"
-            placeholder="Rechercher un article..."
-            class="search-bar"
-    />
-
-    <div class="article-list">
-        <!-- ✅ Affichage conditionnel si aucun article -->
-        <div class="no-article" *ngIf="articlesFiltres.length === 0">
-            <p class="text-muted text-center">Aucun article en attente de validation.</p>
+    <div class="d-flex justify-content-between mb-3">
+        <input type="text" [(ngModel)]="searchText" class="form-control w-50" placeholder="Rechercher..." />
+        <div>
+            <button class="btn btn-danger me-2" (click)="exportPDF()">📄 PDF</button>
+            <button class="btn btn-success" (click)="exportExcel()">📊 Excel</button>
         </div>
+    </div>
 
-        <!-- ✅ Liste des articles -->
-        <div class="article-card" *ngFor="let article of articlesFiltres">
-            <h3>{{ article.titre }}</h3>
-            <p><strong>🕒 Date :</strong> {{ article.date | date:'yyyy-MM-dd' }}</p>
-            <p>{{ article.contenu }}</p>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark text-center">
+        <tr>
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody *ngIf="filteredArticles.length > 0; else noArticles">
+        <tr *ngFor="let article of filteredArticles">
+            <td>{{ article.titre }}</td>
+            <td>{{ article.auteur }}</td>
+            <td class="text-center">
+          <span class="badge" [ngClass]="getBadgeClass(article.status || '')">
+            {{ afficherStatut(article.status || '') }}
+          </span>
+            </td>
+            <td>{{ article.date | date: 'dd/MM/yyyy' }}</td>
+            <td class="text-center">
+                <button class="btn btn-success btn-sm me-1" (click)="valider(article)">Valider</button>
+                <button class="btn btn-warning btn-sm me-1" (click)="openRetourModal(article)">Retourner</button>
+                <button class="btn btn-primary btn-sm" (click)="voir(article)">Voir</button>
+            </td>
+        </tr>
+        <tr *ngIf="selectedArticle?.retourCommentaire">
+            <td colspan="5">
+                <div class="alert alert-danger mt-2">
+                    <strong>💬 Commentaire de retour :</strong> {{ selectedArticle?.retourCommentaire }}
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-            <div class="actions">
-                <button (click)="valider(article)">✔️ Valider</button>
-                <button (click)="openRetourModal(article)">🔁 Retourner</button>
-                <button (click)="voir(article)">👁️ Voir</button>
-            </div>
+    <ng-template #noArticles>
+        <tr>
+            <td colspan="5" class="text-center text-muted">Aucun article trouvé.</td>
+        </tr>
+    </ng-template>
+</div>
+
+<!-- Modal Retour -->
+<div *ngIf="showRetourModal" class="modal-backdrop">
+    <div class="modal-content-custom">
+        <h5>Commentaire de retour</h5>
+        <textarea class="form-control" [(ngModel)]="commentaireRetour" rows="5" placeholder="Saisir un commentaire..."></textarea>
+        <div class="text-end mt-3">
+            <button class="btn btn-secondary me-2" (click)="showRetourModal = false">Annuler</button>
+            <button class="btn btn-warning" (click)="retourner()">Envoyer</button>
         </div>
     </div>
 </div>
 
-<!-- Modale Retour -->
-<div class="modal-backdrop" *ngIf="showModal">
-    <div class="modal-content">
-        <h3>💬 Commentaire de retour</h3>
-        <textarea [(ngModel)]="commentaireRetour" placeholder="Pourquoi retourner cet article ?"></textarea>
-        <div class="modal-actions">
-            <button (click)="closeModal()">Annuler</button>
-            <button (click)="retourner()">Envoyer</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modale Aperçu -->
-<div class="modal-backdrop" *ngIf="showApercu">
-    <div class="modal-content apercu-modal">
-        <h3 class="apercu-title">🔐 {{ selectedArticle?.titre || 'Article' }}</h3>
+<!-- Aperçu modal -->
+<!-- Aperçu modal amélioré -->
+<div *ngIf="showApercu" class="modal-backdrop">
+    <div class="apercu-modal">
+        <h2 class="apercu-title">📝 {{ selectedArticle?.titre }}</h2>
 
         <div class="meta">
-            <p>🕒 {{ selectedArticle?.date | date: 'yyyy-MM-dd' }}</p>
-            <p>✍️ <strong>Mode de saisie :</strong> {{ selectedArticle?.mode || 'Éditeur' }}</p>
-            <p>📂 <strong>Catégorie :</strong> {{ selectedArticle?.categorie || 'Non spécifiée' }}</p>
-
-            <ng-container *ngIf="hasTags()">
-                <p>🏷️ <strong>Tags :</strong></p>
-                <div class="tags">
-                    <span *ngFor="let tag of selectedArticle?.tags">{{ tag }}</span>
-                </div>
-            </ng-container>
-
-            <ng-container *ngIf="selectedArticle?.source">
-                <p>🌐 <strong>Source :</strong></p>
-                <a [href]="selectedArticle?.source" target="_blank">{{ selectedArticle?.source }}</a>
-            </ng-container>
+            <p><strong>👤 Auteur :</strong> {{ selectedArticle?.auteur }}</p>
+            <p><strong>📅 Date :</strong> {{ selectedArticle?.date | date: 'dd/MM/yyyy' }}</p>
         </div>
 
         <hr />
 
-        <div class="apercu-content" [innerHTML]="formatContenu(selectedArticle?.contenu || '')"></div>
+        <div class="apercu-content" [innerHTML]="selectedArticle?.contenu"></div>
 
         <div class="modal-actions">
             <button (click)="fermerApercu()">Fermer</button>
         </div>
     </div>
 </div>
+

@@ -31,7 +31,7 @@ export class BrouillonsComponent implements OnInit {
 
   publier(id: number): void {
     this.articleService.updateArticleAsContributeur(id, {
-      statut: 'EN_ATTENTE',
+      status: 'EN_ATTENTE',
       visibilite: 'public',
       isDraft: false // ✅ très important
     }).subscribe(() => {

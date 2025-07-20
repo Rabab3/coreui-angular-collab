@@ -25,7 +25,7 @@ export class AcorrigerComponent implements OnInit {
 
   refreshArticles() {
     this.articleService.getArticles().subscribe(data => {
-      this.articles = data.filter(a => a.statut === 'A_CORRIGER');
+      this.articles = data.filter(a => a.status === 'A_CORRIGER');
     });
   }
 
@@ -49,7 +49,7 @@ export class AcorrigerComponent implements OnInit {
   corrigerEtRenvoyer() {
     if (this.selectedArticle) {
       this.articleService.updateArticleAsContributeur(this.selectedArticle.articleId, {
-        statut: 'EN_ATTENTE',
+        status: 'EN_ATTENTE',
         retourCommentaire: undefined,
         dateRetour: undefined
       }).subscribe(() => {

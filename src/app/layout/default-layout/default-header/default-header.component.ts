@@ -4,13 +4,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import {
   AvatarComponent,
-  BadgeComponent,
   BreadcrumbRouterComponent,
   ColorModeService,
   ContainerComponent,
   DropdownComponent,
-  DropdownDividerDirective,
-  DropdownHeaderDirective,
   DropdownItemDirective,
   DropdownMenuDirective,
   DropdownToggleDirective,
@@ -25,12 +22,29 @@ import {
 import { IconDirective } from '@coreui/icons-angular';
 
 @Component({
-    selector: 'app-default-header',
-    templateUrl: './default-header.component.html',
-  imports: [ContainerComponent, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective]
+  selector: 'app-default-header',
+  templateUrl: './default-header.component.html',
+  imports: [
+    ContainerComponent,
+    HeaderTogglerDirective,
+    SidebarToggleDirective,
+    IconDirective,
+    HeaderNavComponent,
+    NavItemComponent,
+    NavLinkDirective,
+    RouterLink,
+    RouterLinkActive,
+    NgTemplateOutlet,
+    BreadcrumbRouterComponent,
+    DropdownComponent,
+    DropdownToggleDirective,
+    AvatarComponent,
+    DropdownMenuDirective,
+    DropdownItemDirective // ✅ conservé si utilisé
+    // ❌ Supprimé : DropdownHeaderDirective, BadgeComponent, DropdownDividerDirective
+  ]
 })
 export class DefaultHeaderComponent extends HeaderComponent {
-
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
 

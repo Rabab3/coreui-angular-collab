@@ -20,7 +20,7 @@
     <!-- Upload fichier -->
     <div class="mb-3" *ngIf="!useTextEditor">
       <label>Téléverser un fichier</label>
-      <input type="file" class="form-control" (change)="onFileChange($event)" multiple />
+        <input type="file" class="form-control" (change)="onFileChange($event)" accept=".txt,.md,.json" />
       <ul class="mt-2" *ngIf="selectedFiles.length > 0">
         <li *ngFor="let file of selectedFiles; let i = index" class="file-item">
           {{ file.name }}

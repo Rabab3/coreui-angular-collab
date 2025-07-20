@@ -84,10 +84,26 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.selectedFiles = Array.from(input.files);
-    }
+    if (!input.files || input.files.length === 0) return;
+
+    this.selectedFiles = Array.from(input.files);
+
+    const file = this.selectedFiles[0]; // 👈 On prend le premier fichier
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const fileContent = reader.result as string;
+      this.articleForm.patchValue({ description: fileContent });
+      console.log("✅ Contenu du fichier chargé :", fileContent);
+    };
+
+    reader.onerror = () => {
+      console.error("❌ Erreur lors de la lecture du fichier");
+    };
+
+    reader.readAsText(file); // 👈 Compatible avec .txt, .md, .csv, .json simples
   }
+
 
   removeFile(index: number): void {
     this.selectedFiles.splice(index, 1);
@@ -175,7 +191,7 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
       themeId: 1,
       date: new Date().toISOString().split('T')[0],
       favori: false,
-      statut: isDraft ? 'BROUILLON' : 'EN_ATTENTE',
+      status: isDraft ? 'BROUILLON' : 'EN_ATTENTE',
       modeSaisie: this.useTextEditor ? 'texte' : 'fichier',
       categorie: formValue.categorie,
       tags: formValue.tags.split(' '),

@@ -19,5 +19,5 @@ import { DashboardLecteurComponent } from './dashboard-lecteur/dashboard-lecteur
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
-  role = localStorage.getItem('role') || 'admin';
+  role = sessionStorage.getItem('role') || 'admin';
 }
