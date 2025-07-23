@@ -25,26 +25,29 @@ export class BrouillonsComponent implements OnInit {
     return html.replace(/<[^>]*>/g, '');
   }
 
-  modifier(id: number): void {
-    this.router.navigate(['/articles/modifier', id]);
+  supprimer(id: number): void {
+    if (confirm('🗑️ Voulez-vous vraiment supprimer ce brouillon ?')) {
+      this.articleService.supprimerArticle(id).subscribe({
+        next: () => {
+          this.brouillons = this.brouillons.filter(a => a.articleId !== id);
+        },
+        error: () => alert('❌ Échec de la suppression. Vérifiez vos permissions.')
+      });
+    }
   }
 
   publier(id: number): void {
     this.articleService.updateArticleAsContributeur(id, {
       status: 'EN_ATTENTE',
       visibilite: 'public',
-      isDraft: false // ✅ très important
+      isDraft: false
     }).subscribe(() => {
-      this.ngOnInit(); // Recharge les brouillons
+      this.ngOnInit();
       this.router.navigate(['/articles/mes-contributions']);
     });
   }
 
-  supprimer(id: number): void {
-    if (confirm('Voulez-vous vraiment supprimer ce brouillon ?')) {
-      this.articleService.supprimerArticle(id).subscribe(() => {
-        this.ngOnInit(); // Recharge les brouillons
-      });
-    }
+  modifier(id: number): void {
+    this.router.navigate(['/articles/ajouter', id]);
   }
 }

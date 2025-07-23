@@ -18,6 +18,7 @@ export class ThemeArticlesComponent implements OnInit {
   articles: Article[] = [];
   allArticles: Article[] = [];
   role: string = '';
+  username: string = ''; // ✅ Ajouté
   searchTerm: string = '';
 
   constructor(
@@ -29,13 +30,13 @@ export class ThemeArticlesComponent implements OnInit {
 
   ngOnInit(): void {
     this.role = localStorage.getItem('role') || 'lecteur';
+    this.username = localStorage.getItem('username') || 'contributor'; // ✅ récupération dynamique
 
     this.route.params.subscribe(params => {
       this.themeId = +params['id'];
       this.theme = this.themeService.getThemeById(this.themeId);
 
       this.articleService.getArticlesByTheme(this.themeId).subscribe(articles => {
-        // ✅ Correction ici : on utilise 'VALIDE' au lieu de 'Publié'
         this.allArticles = articles.filter(a => a.status === 'VALIDE');
         this.articles = [...this.allArticles];
       });
@@ -43,9 +44,12 @@ export class ThemeArticlesComponent implements OnInit {
   }
 
   toggleFavori(articleId: number): void {
-    this.articleService.toggleFavori(articleId);
-    this.articleService.getArticlesByTheme(this.themeId).subscribe(data => {
-      this.articles = data.filter(a => a.status === 'VALIDE');
+    this.articleService.toggleFavori(articleId, this.username).subscribe(() => {
+      // ✅ Rafraîchir uniquement les favoris si besoin ou mettre à jour l’état local
+      this.articleService.getArticlesByTheme(this.themeId).subscribe(data => {
+        this.allArticles = data.filter(a => a.status === 'VALIDE');
+        this.filtrerArticles(); // ✅ Conserver le filtre si actif
+      });
     });
   }
 

@@ -1,62 +1,74 @@
 <div class="container mt-4">
-  <h2 class="mb-3">Liste des articles</h2>
+    <h2 class="mb-3 text-center">Liste des articles</h2>
 
-  <!-- Filtres -->
-  <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
-    <input type="text" class="form-control w-50" placeholder="Rechercher par titre..." [(ngModel)]="searchText">
-    <select class="form-select w-auto" [(ngModel)]="selectedCategory">
-      <option value="">Toutes les catégories</option>
-      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-    </select>
-  </div>
+    <!-- Filtres -->
+    <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
+        <input
+                type="text"
+                class="form-control w-50"
+                placeholder="Rechercher par titre..."
+                [(ngModel)]="searchText"
+        >
+        <select class="form-select w-auto" [(ngModel)]="selectedCategory">
+            <option value="">Toutes les catégories</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+    </div>
 
-  <!-- Cartes des articles -->
-  <div class="row g-4">
-    <div class="col-md-4" *ngFor="let article of filteredArticles()">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">{{ article.titre }}</h5>
-          <p class="card-text text-muted small">{{ article.categorie }} • {{ article.date | date:'dd/MM/yyyy' }}</p>
-          <p class="card-text">{{ article.description | slice:0:100 }}...</p>
-        </div>
-        <div class="card-footer text-end bg-white border-top-0">
-          <div class="position-relative d-inline-block favori-btn-wrapper">
-            <button
-              class="btn btn-sm me-2"
-              [ngClass]="{
+    <!-- Cartes des articles -->
+    <div class="row g-4">
+        <div class="col-md-4" *ngFor="let article of filteredArticles()">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.titre }}</h5>
+                    <p class="card-subtitle mb-2 text-muted small">
+                        {{ article.categorie || 'Non spécifiée' }} • {{ article.date | date:'dd/MM/yyyy' }}
+                    </p>
+                    <p class="card-text">
+                        {{ stripHtml(article.contenu).slice(0, 100) }}...
+                    </p>
+                </div>
+                <div class="card-footer bg-white d-flex justify-content-between align-items-center border-top-0">
+                    <!-- Bouton Favori -->
+                    <div class="position-relative favori-btn-wrapper">
+                        <button
+                                class="btn btn-sm"
+                                [ngClass]="{
                 'btn-outline-warning': !estFavori(article),
                 'btn-warning': estFavori(article)
               }"
-              (click)="toggleFavori(article)"
-            >⭐</button>
+                                (click)="toggleFavori(article)"
+                        >
+                            ⭐
+                        </button>
+                        <div class="favori-tooltip">Favoris</div>
+                        <div class="favori-popup" *ngIf="popupFavoriVisible && favoriArticleTitre === article.titre">
+                            ⭐ Favori {{ estFavori(article) ? 'ajouté' : 'retiré' }} !
+                        </div>
+                    </div>
 
-            <div class="favori-tooltip">Favoris</div>
-
-            <div class="favori-popup" *ngIf="popupFavoriVisible && favoriArticleTitre === article.titre">
-              ⭐ Favori {{ estFavori(article) ? 'ajouté' : 'retiré' }} !
+                    <!-- Bouton Lire -->
+                    <button class="btn btn-outline-primary btn-sm" (click)="ouvrirPopup(article)">Lire</button>
+                </div>
             </div>
-          </div>
-          <button class="btn btn-outline-primary btn-sm" (click)="ouvrirPopup(article)">Lire</button>
         </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Popup modal -->
-  <div class="modal fade" [ngClass]="{ 'show d-block': popupVisible }" tabindex="-1" (click)="fermerPopup()">
-    <div class="modal-dialog modal-lg" (click)="$event.stopPropagation()">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ articleSelectionne?.titre }}</h5>
-          <button type="button" class="btn-close" aria-label="Fermer" (click)="fermerPopup()"></button>
+    <!-- Popup modal -->
+    <div class="modal fade" [ngClass]="{ 'show d-block': popupVisible }" tabindex="-1" (click)="fermerPopup()">
+        <div class="modal-dialog modal-lg modal-dialog-centered" (click)="$event.stopPropagation()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ articleSelectionne?.titre }}</h5>
+                    <button type="button" class="btn-close" aria-label="Fermer" (click)="fermerPopup()"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Auteur :</strong> {{ articleSelectionne?.auteur || 'Inconnu' }}</p>
+                    <p><strong>Catégorie :</strong> {{ articleSelectionne?.categorie || 'Non spécifiée' }}</p>
+                    <hr>
+                    <div [innerHTML]="articleSelectionne?.contenu"></div>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <p><strong>Auteur :</strong> {{ articleSelectionne?.auteur }}</p>
-          <p><strong>Catégorie :</strong> {{ articleSelectionne?.categorie }}</p>
-          <p><strong>Contenu :</strong></p>
-          <p>{{ articleSelectionne?.contenu }}</p>
-        </div>
-      </div>
     </div>
-  </div>
 </div>

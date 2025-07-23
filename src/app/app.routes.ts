@@ -22,6 +22,8 @@ export const routes: Routes = [
       { path: 'dashboard', loadComponent: () => import('./views/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'articles/brouillons', loadComponent: () => import('./views/articles/brouillons/brouillons.component').then(m => m.BrouillonsComponent) },
       { path: 'articles/ajouter', loadComponent: () => import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent) },
+      { path: 'articles/ajouter/:id', loadComponent: () => import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent) },
+      { path: 'articles/ajouter/:id', loadComponent: () => import('./views/articles/article-add/article-add.component').then(m => m.ArticleAddComponent) },
       { path: 'articles/mes-contributions', loadComponent: () => import('./views/articles/mes-contributions/mes-contributions.component').then(m => m.MesContributionsComponent) },
       { path: 'articles/liste', loadComponent: () => import('./views/articles/article-list/article-list.component').then(m => m.ArticleListComponent) },
       { path: 'articles/favoris', loadComponent: () => import('./views/articles/favoris-list/favoris-list.component').then(m => m.FavorisListComponent) },

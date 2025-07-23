@@ -8,6 +8,7 @@ import jsPDF from 'jspdf';
 import { saveAs } from 'file-saver';
 import * as docx from 'docx';
 import { ArticleService } from 'src/app/services/article.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-article-add',
@@ -33,7 +34,8 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
       private fb: FormBuilder,
       private router: Router,
       private route: ActivatedRoute,
-      private articleService: ArticleService
+      private articleService: ArticleService,
+      private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -87,8 +89,7 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
     if (!input.files || input.files.length === 0) return;
 
     this.selectedFiles = Array.from(input.files);
-
-    const file = this.selectedFiles[0]; // 👈 On prend le premier fichier
+    const file = this.selectedFiles[0];
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -101,9 +102,8 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
       console.error("❌ Erreur lors de la lecture du fichier");
     };
 
-    reader.readAsText(file); // 👈 Compatible avec .txt, .md, .csv, .json simples
+    reader.readAsText(file);
   }
-
 
   removeFile(index: number): void {
     this.selectedFiles.splice(index, 1);
@@ -115,6 +115,38 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
 
   closePreview() {
     this.showPreviewModal = false;
+  }
+
+  sauvegarderBrouillon() {
+    this.submitted = true;
+    if (this.articleForm.invalid) return;
+
+    const formValue = this.articleForm.value;
+    const newArticle: Article = {
+      articleId: 0,
+      titre: formValue.titre,
+      contenu: formValue.description,
+      themeId: 1,
+      date: new Date().toISOString().split('T')[0],
+      favori: false,
+      status: 'BROUILLON',
+      modeSaisie: this.useTextEditor ? 'texte' : 'fichier',
+      categorie: formValue.categorie,
+      tags: formValue.tags.split(' '),
+      source: formValue.source,
+      visibilite: formValue.visibilite,
+      isDraft: true
+    };
+
+    this.articleService.addArticle(newArticle).subscribe({
+      next: () => {
+        this.toastr.success('💾 Article enregistré comme brouillon.');
+        this.router.navigate(['/articles/brouillons']);
+      },
+      error: () => {
+        this.toastr.error("❌ Erreur lors de l'enregistrement du brouillon.");
+      }
+    });
   }
 
   stripHtmlAndPreserveLineBreaks(html: string): string {
@@ -133,9 +165,7 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
 
     let y = 10;
     doc.setFontSize(14);
-    doc.text(`Titre : ${this.articleForm.value.titre}`, 10, y);
-    y += 10;
-
+    doc.text(`Titre : ${this.articleForm.value.titre}`, 10, y); y += 10;
     doc.setFontSize(12);
     doc.text(`Date : ${this.today}`, 10, y); y += 8;
     doc.text(`Catégorie : ${this.articleForm.value.categorie}`, 10, y); y += 8;
@@ -185,7 +215,7 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
     const isDraft = formValue.visibilite === 'brouillon';
 
     const newArticle: Article = {
-      articleId: 0, 
+      articleId: 0,
       titre: formValue.titre,
       contenu: formValue.description,
       themeId: 1,
@@ -200,25 +230,18 @@ export class ArticleAddComponent implements OnInit, OnDestroy {
       isDraft: isDraft
     };
 
-    // ✅ Ajout du log ici :
-    console.log('Article envoyé au backend:', newArticle);
-
     this.articleService.addArticle(newArticle).subscribe({
       next: () => {
         this.articleForm.reset();
         this.submitted = false;
         this.selectedFiles = [];
-        if (isDraft) {
-          this.router.navigate(['/articles/brouillons']);
-        } else {
-          this.router.navigate(['/articles/mes-contributions']);
-        }
+        this.router.navigate([
+          isDraft ? '/articles/brouillons' : '/articles/mes-contributions'
+        ]);
       },
       error: (err) => {
         console.error("Erreur lors de l'ajout :", err);
       }
     });
   }
-
-
 }

@@ -1,89 +1,92 @@
-<!-- ✅ article-add.component.html (complet avec brouillon, public, actualisation reset) -->
 <div class="container mt-4 add-article-container">
-  <h2>Ajouter un article</h2>
+    <h2>Ajouter un article</h2>
 
-  <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" novalidate>
-    <!-- Titre -->
-    <div class="mb-3">
-      <label for="titre">Titre</label>
-      <input type="text" id="titre" class="form-control" formControlName="titre" />
-      <div *ngIf="submitted && f['titre'].errors" class="text-danger">Le titre est requis.</div>
-    </div>
+    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" novalidate>
 
-    <!-- Mode de saisie -->
-    <div class="mb-3">
-      <label>Mode de saisie</label><br />
-      <button type="button" class="btn btn-outline-light me-2" [class.active]="!useTextEditor" (click)="toggleInputMode('file')">📎 Fichier</button>
-      <button type="button" class="btn btn-outline-light" [class.active]="useTextEditor" (click)="toggleInputMode('text')">📝 Écrire</button>
-    </div>
+        <!-- Titre -->
+        <div class="mb-3">
+            <label for="titre">Titre</label>
+            <input type="text" id="titre" class="form-control" formControlName="titre" />
+            <div *ngIf="submitted && f['titre'].errors" class="text-danger">Le titre est requis.</div>
+        </div>
 
-    <!-- Upload fichier -->
-    <div class="mb-3" *ngIf="!useTextEditor">
-      <label>Téléverser un fichier</label>
-        <input type="file" class="form-control" (change)="onFileChange($event)" accept=".txt,.md,.json" />
-      <ul class="mt-2" *ngIf="selectedFiles.length > 0">
-        <li *ngFor="let file of selectedFiles; let i = index" class="file-item">
-          {{ file.name }}
-          <button type="button" class="btn btn-sm btn-danger ms-2" (click)="removeFile(i)">❌</button>
-        </li>
-      </ul>
-    </div>
+        <!-- Mode de saisie -->
+        <div class="mb-3">
+            <label>Mode de saisie</label><br />
+            <button type="button" class="btn btn-outline-light me-2" [class.active]="!useTextEditor" (click)="toggleInputMode('file')">📎 Fichier</button>
+            <button type="button" class="btn btn-outline-light" [class.active]="useTextEditor" (click)="toggleInputMode('text')">📝 Écrire</button>
+        </div>
 
-    <!-- Éditeur -->
-    <div class="mb-3" *ngIf="useTextEditor">
-      <label>Contenu  </label>
-      <ngx-editor [editor]="editor" formControlName="description" placeholder="Rédigez ici..."></ngx-editor>
-    </div>
+        <!-- Upload fichier -->
+        <div class="mb-3" *ngIf="!useTextEditor">
+            <label>Téléverser un fichier</label>
+            <input type="file" class="form-control" (change)="onFileChange($event)" accept=".txt,.md,.json" />
+            <ul class="mt-2" *ngIf="selectedFiles.length > 0">
+                <li *ngFor="let file of selectedFiles; let i = index" class="file-item">
+                    {{ file.name }}
+                    <button type="button" class="btn btn-sm btn-danger ms-2" (click)="removeFile(i)">❌</button>
+                </li>
+            </ul>
+        </div>
 
-    <!-- Catégorie -->
-    <div class="mb-3">
-      <label for="categorie">Catégorie</label>
-      <select class="form-select" formControlName="categorie">
-        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-      </select>
-    </div>
+        <!-- Éditeur -->
+        <div class="mb-3" *ngIf="useTextEditor">
+            <label>Contenu</label>
+            <ngx-editor [editor]="editor" formControlName="description" placeholder="Rédigez ici..."></ngx-editor>
+        </div>
 
-    <!-- Tags -->
-    <div class="mb-3">
-      <label for="tags">Tags (hashtags)</label>
-      <input type="text" class="form-control" formControlName="tags" placeholder="#angular #sécurité ..." />
-    </div>
+        <!-- Catégorie -->
+        <div class="mb-3">
+            <label for="categorie">Catégorie</label>
+            <select class="form-select" formControlName="categorie">
+                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+            </select>
+        </div>
 
-    <!-- Source -->
-    <div class="mb-3">
-      <label for="source">Source (facultatif)</label>
-      <input type="text" class="form-control" formControlName="source" placeholder="https://..." />
-    </div>
+        <!-- Tags -->
+        <div class="mb-3">
+            <label for="tags">Tags (hashtags)</label>
+            <input type="text" class="form-control" formControlName="tags" placeholder="#angular #sécurité ..." />
+        </div>
 
-    <!-- Visibilité -->
-    <div class="mb-3">
-      <label for="visibilite">Visibilité</label>
-      <select class="form-select" formControlName="visibilite">
-        <option value="public">🌍 Public</option>
-        <option value="brouillon">📋 Brouillon</option>
-      </select>
-    </div>
+        <!-- Source -->
+        <div class="mb-3">
+            <label for="source">Source (facultatif)</label>
+            <input type="text" class="form-control" formControlName="source" placeholder="https://..." />
+        </div>
 
-    <!-- Actions -->
-    <div class="text-center mt-4">
-      <button type="button" class="btn btn-outline-primary me-2" (click)="openPreview()">👁️ Aperçu</button>
-      <button type="button" class="btn btn-secondary me-2" (click)="exportAsPDF()">📄 Export PDF</button>
-      <button type="button" class="btn btn-secondary me-2" (click)="exportAsWord()">📝 Export Word</button>
-      <button type="submit" class="btn btn-success px-4">✅ Soumettre</button>
-    </div>
-  </form>
+        <!-- Visibilité -->
+        <div class="mb-3">
+            <label for="visibilite">Visibilité</label>
+            <select class="form-select" formControlName="visibilite">
+                <option value="public">🌍 Public</option>
+                <option value="brouillon">📋 Brouillon</option>
+            </select>
+        </div>
 
-  <!-- MODALE APERÇU -->
-  <div *ngIf="showPreviewModal" class="preview-modal">
-    <div class="preview-box">
-      <h4>Aperçu de l’article</h4>
-      <p><strong>Titre :</strong> {{ articleForm.value.titre }}</p>
-      <p><strong>Catégorie :</strong> {{ articleForm.value.categorie }}</p>
-      <p><strong>Tags :</strong> {{ articleForm.value.tags }}</p>
-      <p><strong>Visibilité :</strong> {{ articleForm.value.visibilite }}</p>
-      <p><strong>Date :</strong> {{ today }}</p>
-      <div class="content-preview" [innerHTML]="useTextEditor ? articleForm.value.description : '📌 Fichier sélectionné'"></div>
-      <button class="btn btn-outline-light mt-3" (click)="closePreview()">❌ Fermer</button>
+        <!-- Actions -->
+        <div class="text-center mt-4 d-flex flex-wrap justify-content-center gap-2">
+            <button type="button" class="btn btn-secondary" (click)="sauvegarderBrouillon()">
+                💾 Sauvegarder comme brouillon
+            </button>
+            <button type="button" class="btn btn-outline-primary" (click)="openPreview()">👁️ Aperçu</button>
+            <button type="button" class="btn btn-secondary" (click)="exportAsPDF()">📄 Export PDF</button>
+            <button type="button" class="btn btn-secondary" (click)="exportAsWord()">📝 Export Word</button>
+            <button type="submit" class="btn btn-success px-4">✅ Soumettre</button>
+        </div>
+    </form>
+
+    <!-- MODALE APERÇU -->
+    <div *ngIf="showPreviewModal" class="preview-modal">
+        <div class="preview-box">
+            <h4>Aperçu de l’article</h4>
+            <p><strong>Titre :</strong> {{ articleForm.value.titre }}</p>
+            <p><strong>Catégorie :</strong> {{ articleForm.value.categorie }}</p>
+            <p><strong>Tags :</strong> {{ articleForm.value.tags }}</p>
+            <p><strong>Visibilité :</strong> {{ articleForm.value.visibilite }}</p>
+            <p><strong>Date :</strong> {{ today }}</p>
+            <div class="content-preview" [innerHTML]="useTextEditor ? articleForm.value.description : '📌 Fichier sélectionné'"></div>
+            <button class="btn btn-outline-light mt-3" (click)="closePreview()">❌ Fermer</button>
+        </div>
     </div>
-  </div>
 </div>

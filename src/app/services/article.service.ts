@@ -20,6 +20,7 @@ export interface Article {
   tags?: string[];
   source?: string;
   visibilite?: 'public' | 'brouillon';
+  vues?: number;
   mode?: string;
   isDraft?: boolean;
   auteur?: string;
@@ -83,11 +84,7 @@ export class ArticleService {
     });
   }
 
-  toggleFavori(id: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/contribute/articles/${id}/favoris`, {}, {
-      headers: this.getHeaders()
-    });
-  }
+
 
   getArticlesByTheme(themeId: number): Observable<Article[]> {
     return this.http.get<Article[]>(`${this.baseUrl}/themes/${themeId}/articles`, {
@@ -112,6 +109,25 @@ export class ArticleService {
       headers: this.getHeaders()
     });
   }
+  getArticlesPublies(): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.baseUrl}/contribute/articles/publies`, {
+      headers: this.getHeaders()
+    });
+  }
+  toggleFavori(articleId: number, username: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/favoris/${articleId}`, null, {
+      params: { username },
+      headers: this.getHeaders() // ✅ ajoute les headers avec JWT
+    });
+  }
+
+  getFavorisIds(username: string): Observable<number[]> {
+    return this.http.get<number[]>(`${this.baseUrl}/favoris`, {
+      params: { username },
+      headers: this.getHeaders() // ✅ ajoute les headers avec JWT
+    });
+  }
+
 
   getArticlesEnAttente(): Observable<Article[]> {
     return this.getArticlesParStatut('EN_ATTENTE');

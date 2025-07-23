@@ -76,3 +76,33 @@ body[data-coreui-theme='dark'] .btn-close {
   80% { opacity: 1; }
   100% { opacity: 0; transform: translateY(-10px); }
 }
+.favori-btn-wrapper {
+  position: relative;
+
+  .favori-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+
+  .favori-popup {
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    color: #ffc107;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+}

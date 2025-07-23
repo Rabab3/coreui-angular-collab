@@ -26,24 +26,27 @@ export class MesContributionsComponent implements OnInit {
     this.chargerArticles();
   }
 
+  // 🔁 Récupération + filtrage des brouillons
   chargerArticles(): void {
     this.articleService.getArticles().subscribe(data => {
-      this.articles = data;
+      this.articles = data.filter(article => article.status !== 'BROUILLON');
     });
   }
 
+  // 🔎 Recherche dynamique uniquement sur les articles visibles
   get filteredArticles(): Article[] {
+    const search = this.searchText.trim().toLowerCase();
     return this.articles.filter(article =>
-        article.titre.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        article.auteur?.toLowerCase().includes(this.searchText.toLowerCase())
+        article.titre?.toLowerCase().includes(search) ||
+        article.auteur?.toLowerCase().includes(search)
     );
   }
 
   afficherStatut(statut?: string): string {
     switch (statut) {
-      case 'EN_ATTENTE': return 'En attente';
-      case 'A_CORRIGER': return 'À corriger';
-      case 'VALIDE': return 'Publié';
+      case 'EN_ATTENTE': return '⏳ En attente';
+      case 'A_CORRIGER': return '🛠️ À corriger';
+      case 'VALIDE': return '✅ Publié';
       default: return statut || 'Inconnu';
     }
   }
@@ -77,11 +80,9 @@ export class MesContributionsComponent implements OnInit {
     this.articleService.getArticleById(article.articleId).subscribe(detail => {
       this.articleEnCours = detail;
       this.showModal = true;
-      console.log('✅ articleEnCours avec détail complet :', detail);
+      console.log('✅ Article en cours (détail) :', detail);
     });
   }
-
-
 
   envoyerCorrection(): void {
     if (this.articleEnCours) {

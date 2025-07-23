@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgFor, NgIf, NgClass, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ArticleService, Article } from 'src/app/services/article.service';
 
 @Component({
   selector: 'app-article-list',
@@ -10,80 +11,78 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./article-list.component.scss'],
   providers: [DatePipe]
 })
-export class ArticleListComponent {
+export class ArticleListComponent implements OnInit {
   searchText = '';
   selectedCategory = '';
-  popupVisible = false; 
+  popupVisible = false;
   popupFavoriVisible = false;
   favoriArticleTitre = '';
-  articleSelectionne: any = null;
+  articleSelectionne: Article | null = null;
 
   categories = ['RH', 'TECHNIQUE', 'SÉCURITÉ', 'METEOR'];
+  articles: Article[] = [];
 
-  articles = [
-    {
-      titre: 'Gestion RH collaborative',
-      auteur: 'Rabab',
-      categorie: 'RH',
-      description: 'Un guide complet pour les processus RH modernisés.',
-      contenu: 'Contenu complet de l’article RH...',
-      statut: 'Publié',
-      date: new Date('2024-04-10')
-    },
-    {
-      titre: 'Déploiement sécurisé avec JWT',
-      auteur: 'Laila',
-      categorie: 'SÉCURITÉ',
-      description: 'Comment sécuriser vos APIs avec JWT.',
-      contenu: 'Contenu complet de l’article sécurité...',
-      statut: 'Publié',
-      date: new Date('2024-03-15')
-    }
-  ];
+  favorisIds: number[] = [];
+  username = 'contributor'; // TODO: récupérer dynamiquement via AuthService
 
-  filteredArticles() {
+  constructor(private articleService: ArticleService) {}
+
+  ngOnInit(): void {
+    this.articleService.getArticlesPublies().subscribe((articles) => {
+      this.articles = articles;
+    });
+
+    this.articleService.getFavorisIds(this.username).subscribe(ids => {
+      this.favorisIds = ids;
+    });
+  }
+
+  filteredArticles(): Article[] {
     return this.articles.filter(article =>
-      article.statut === 'Publié' &&
-      article.titre.toLowerCase().includes(this.searchText.toLowerCase()) &&
-      (this.selectedCategory === '' || article.categorie === this.selectedCategory)
+        article.status === 'VALIDE' &&
+        article.titre?.toLowerCase().includes(this.searchText.toLowerCase()) &&
+        (
+            this.selectedCategory === '' ||
+            article.categorie?.toLowerCase() === this.selectedCategory.toLowerCase()
+        )
     );
   }
 
-  ouvrirPopup(article: any) {
+  stripHtml(html: string): string {
+    return html ? html.replace(/<[^>]+>/g, '') : '';
+  }
+
+  estFavori(article: Article): boolean {
+    return this.favorisIds.includes(article.articleId);
+  }
+
+  toggleFavori(article: Article): void {
+    this.articleService.toggleFavori(article.articleId, this.username).subscribe(() => {
+      if (this.estFavori(article)) {
+        this.favorisIds = this.favorisIds.filter(id => id !== article.articleId);
+      } else {
+        this.favorisIds.push(article.articleId);
+      }
+
+      this.favoriArticleTitre = article.titre;
+      this.popupFavoriVisible = true;
+
+      setTimeout(() => {
+        this.popupFavoriVisible = false;
+        this.favoriArticleTitre = '';
+      }, 1500);
+    });
+  }
+
+  ouvrirPopup(article: Article): void {
     this.articleSelectionne = article;
     this.popupVisible = true;
     document.body.classList.add('modal-open');
   }
 
-  fermerPopup() {
+  fermerPopup(): void {
     this.popupVisible = false;
     this.articleSelectionne = null;
     document.body.classList.remove('modal-open');
-  }
-
-  estFavori(article: any): boolean {
-    const favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
-    return favoris.some((a: any) => a.titre === article.titre);
-  }
-
-  toggleFavori(article: any): void {
-    let favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
-    const index = favoris.findIndex((a: any) => a.titre === article.titre);
-
-    if (index > -1) {
-      favoris.splice(index, 1); // retirer
-    } else {
-      favoris.push(article); // ajouter
-    }
-
-    localStorage.setItem('favoris', JSON.stringify(favoris));
-
-    this.favoriArticleTitre = article.titre;
-    this.popupFavoriVisible = true;
-
-    setTimeout(() => {
-      this.popupFavoriVisible = false;
-      this.favoriArticleTitre = '';
-    }, 1500);
   }
 }
